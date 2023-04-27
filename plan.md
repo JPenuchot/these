@@ -1,6 +1,6 @@
 Intro
 
-- Part 1: Codegen through metaprog (new metaprog -> part 2)
+- Part 1: Codegen through template metaprog (new metaprog -> part 2)
   - SotA metaprog (Can't read)
     - C++ (Can't read)
     - Reflection
