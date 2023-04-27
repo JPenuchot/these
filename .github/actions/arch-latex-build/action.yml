@@ -1,0 +1,7 @@
+name: 'LaTeX build'
+author: 'Jules Pénuchot'
+description: 'Builds the paper'
+
+runs:
+  using: 'Docker'
+  image: 'Dockerfile'
