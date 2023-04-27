@@ -1,0 +1,3 @@
+[submodule "external/poacher"]
+	path = external/poacher
+	url = git@github.com:JPenuchot/poacher.git

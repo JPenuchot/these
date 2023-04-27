@@ -1,0 +1,79 @@
+@article{braid,
+  author = {Sampson, Adrian and McKinley, Kathryn S. and Mytkowicz, Todd},
+  title = {Static Stages for Heterogeneous Programming},
+  year = {2017},
+  issue_date = {October 2017},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  volume = {1},
+  number = {OOPSLA},
+  url = {https://doi.org/10.1145/3133895},
+  doi = {10.1145/3133895},
+  abstract = {Heterogeneous hardware is central to modern advances in
+              performance and efficiency. Mainstream programming models for
+              heterogeneous architectures, however, sacrifice safety and
+              expressiveness in favor of low-level control over performance
+              details. The interfaces between hardware units consist of verbose,
+              unsafe APIs; hardware-specific languages make it difficult to move
+              code between units; and brittle preprocessor macros complicate the
+              task of specializing general code for efficient accelerated
+              execution. We propose a unified low-level programming model for
+              heterogeneous systems that offers control over performance, safe
+              communication constructs, cross-device code portability, and
+              hygienic metaprogramming for specialization. The language extends
+              constructs from multi-stage programming to separate code for
+              different hardware units, to communicate between them, and to
+              express compile-time code optimization. We introduce static staging
+              , a different take on multi-stage programming that lets the
+              compiler generate all code and communication constructs ahead of
+              time. To demonstrate our approach, we use static staging to
+              implement BraidGL, a real-time graphics programming language for
+              CPU-GPU systems. Current real-time graphics software in OpenGL uses
+              stringly-typed APIs for communication and unsafe preprocessing to
+              generate specialized GPU code variants. In BraidGL, programmers
+              instead write hybrid CPU-GPU software in a unified language. The
+              compiler statically generates target-specific code and guarantees
+              safe communication between the CPU and the graphics pipeline
+              stages. Example scenes demonstrate the language's productivity
+              advantages: BraidGL eliminates the safety and expressiveness
+              pitfalls of OpenGL and makes common specialization techniques easy
+              to apply. The case study demonstrates how static staging can
+              express core placement and specialization in general heterogeneous
+              programming.},
+  journal = {Proc. ACM Program. Lang.},
+  month = {oct},
+  articleno = {71},
+  numpages = {27},
+  keywords = {graphics programming, OpenGL, Multi-stage programming,
+              heterogeneous programming},
+}
+
+@inproceedings{metaocaml,
+  author = {Kiselyov, Oleg},
+  editor = {Codish, Michael and Sumii, Eijiro},
+  title = {The Design and Implementation of BER MetaOCaml},
+  booktitle = {Functional and Logic Programming},
+  year = {2014},
+  publisher = {Springer International Publishing},
+  address = {Cham},
+  pages = {86--102},
+  abstract = {MetaOCaml is a superset of OCaml extending it with the data type
+              for program code and operations for constructing and executing such
+              typed code values. It has been used for compiling domain-specific
+              languages and automating tedious and error-prone specializations of
+              high-performance computational kernels. By statically ensuring that
+              the generated code compiles and letting us quickly run it,
+              MetaOCaml makes writing generators less daunting and more
+              productive.},
+  isbn = {978-3-319-07151-0},
+}
+
+@inproceedings{terra,
+  title = {Terra: a multi-stage language for high-performance computing},
+  author = {DeVito, Zachary and Hegarty, James and Aiken, Alex and Hanrahan, Pat
+            and Vitek, Jan},
+  booktitle = {Proceedings of the 34th ACM SIGPLAN conference on Programming
+               language design and implementation},
+  pages = {105--116},
+  year = {2013},
+}
