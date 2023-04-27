@@ -1,10 +1,10 @@
 %%%% Modèle proposé par kira.ribeiro@universite-paris-saclay.fr  %%%%
 %%%% màj : 27/01/2023 %%%%
 
-\documentclass[french,12pt,a4paper]{book}
+\documentclass[english,12pt,a4paper]{book}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[french]{babel}
+\usepackage[english]{babel}
 \usepackage[default,oldstyle, scale=.95]{opensans} % police Open Sans
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -49,7 +49,6 @@
     linkcolor=black,
     urlcolor=A5}
 
-
 \usepackage{listings}
 \usepackage{xspace}
 \usepackage{graphicx}
@@ -57,45 +56,42 @@
 
 \usepackage{subfiles} % Garder a la fin
 
-\renewcommand{\FrenchLabelItem}{\textbullet}
+% \renewcommand{\FrenchLabelItem}{\textbullet}
 
-\pagestyle{plain} % pour ne garder que les n°de page en milieu-bas et supprimer les indications de chapitre en marge haute
-
-
+% pour ne garder que les n°de page en milieu-bas
+% et supprimer les indications de chapitre en marge haute
+\pagestyle{plain}
 
 \addbibresource{bibliography/biblio.bib}
 \addbibresource{bibliography/comptime.bib}
+\addbibresource{bibliography/ctbench.bib}
 \addbibresource{bibliography/metalanguages.bib}
 \addbibresource{bibliography/metalibraries.bib}
 \addbibresource{bibliography/poacher.bib}
 \addbibresource{bibliography/simd.bib}
-\addbibresource{bibliography/stdcpp.bib}
+% \addbibresource{bibliography/stdcpp.bib}
 
 \newcommand{\constexpr}{\lstinline{constexpr}\xspace}
 \newcommand{\cpp}{\textsc{C++}}
-\newcommand{\ie}{\textit{i.e.}}
-\newcommand{\eg}{\textit{e.g.}}
-\newcommand{\dsl}{\textit{DSL}}
-\newcommand{\dsls}{\textit{DSL}s}
-\newcommand{\dsel}{\textit{DSEL}}
+\newcommand{\ctbench}{\textsc{ctbench}}
 \newcommand{\dsels}{\textit{DSEL}s}
-
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
+\newcommand{\dsel}{\textit{DSEL}}
+\newcommand{\dsls}{\textit{DSL}s}
+\newcommand{\dsl}{\textit{DSL}}
+\newcommand{\eg}{\textit{e.g.}}
+\newcommand{\ie}{\textit{i.e.}}
 
 \lstset{
   frame=single,
   basicstyle={\small\ttfamily},
   numberstyle=\tiny\color{C1},
-  keywordstyle=\color{C4},
-  commentstyle=\color{A5},
+  keywordstyle=\color{B2},
+  commentstyle=\color{D4},
   stringstyle=\color{A3},
   breaklines=true,
   tabsize=2,
   showstringspaces=false
 }
-
 
 \begin{document}
 
@@ -105,7 +101,10 @@
 
 \newgeometry{left=6cm,bottom=2cm, top=1cm, right=1cm}
 
-\tikz[remember picture,overlay] \node[opacity=1,inner sep=0pt] at (-13mm,-135mm){\includegraphics{ups/frame.pdf}};
+\tikz[remember picture,overlay]
+\node[opacity=1,inner sep=0pt] at (-13mm,-135mm){
+  \includegraphics{ups/frame.pdf}
+};
 
 %*****************************************************
 %******** NUMÉRO D'ORDRE DE LA THÈSE À COMPLÉTER *****
@@ -128,11 +127,11 @@
 \color{Prune}
 
 \fontsize{22}{26}\selectfont
-  \Huge Titre de la thèse (sur plusieurs lignes si nécessaire) \\
+  \Huge Techniques avanc\'ees de g\'en\'eration de code pour le parall\'elisme\\
 
 \normalsize
 \color{black}
-\Large{\textit{Traduction du titre de la thèse (sur plusieurs lignes si nécessaire)}} \\
+\Large{\textit{Advanced techniques for parallel code generation}} \\
 %*****************************************************
 
 
@@ -202,8 +201,8 @@ Titre, Affiliation   &   \\
 
 \begin{mdframed}[linecolor=Prune,linewidth=1]
 
-\textbf{Titre:} Techniques avanc\'ees de ge\'ne\'ration de code
-pour le paralle\'lisme
+\textbf{Titre:} Techniques avanc\'ees de g\'en\'eration de code pour le
+parall\'elisme
 
 \noindent \textbf{Mots clés:} M\'etaprogrammation, compilation, C++ % TODO
 
@@ -250,10 +249,10 @@ pour le paralle\'lisme
 
 \part{Existing code generation techniques through template metaprogramming}
 
-\subfile{chapters/gemv/main.tex}
-\subfile{chapters/blaze/main.tex}
+\subfile{chapters/tmp-for-hpc/main.tex}
+\subfile{chapters/tmp-state-of-the-art/main.tex}
 
-\part{Metaprogramming, code generation beyond expression templates}
+\part{Metaprogramming and code generation beyond expression templates}
 
 \subfile{chapters/poacher/main.tex}
 \subfile{chapters/ctbench/main.tex}
