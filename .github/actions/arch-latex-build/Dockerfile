@@ -4,6 +4,7 @@ FROM archlinux/archlinux:base-devel
 
 RUN pacman -Syu --noconfirm
 RUN pacman -S --noconfirm \
+  biber \
   texlive-bibtexextra \
   texlive-fontsextra \
   texlive-most \
