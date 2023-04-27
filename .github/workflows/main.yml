@@ -7,6 +7,8 @@ jobs:
     steps:
       - name: Fetch current branch
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - name: Building LaTeX
         uses: ./.github/actions/arch-latex-build
       - uses: actions/upload-artifact@v3
