@@ -1,10 +1,5 @@
 \documentclass[../../main.tex]{subfiles}
 
-% \usepackage{booktabs}   %% For formal tables:
-%                         %% http://ctan.org/pkg/booktabs
-% \usepackage{subcaption} %% For complex figures with subfigures/subcaptions
-%                         %% http://ctan.org/pkg/subcaption
-
 \begin{document}
 
 % \begin{abstract}
@@ -205,7 +200,7 @@ heritage-based polymorphism in \constexpr~programming when used with
 % https://www.boost.org/doc/libs/1_81_0/libs/spirit/doc/html/spirit/references.html
 % https://github.com/antlr/antlr4
 
-\section{Brainfuck as a \cpp~\dsel}
+\section{Brainfuck as a C++ DSEL}
 
 Brainfuck (as known as BF) is a structured imperative language characterized by
 8 tokens that allow increasing or decreasing a pointer to single byte values in
@@ -301,8 +296,6 @@ public:
 Note that all methods are \constexpr, including the constructor and the virtual
 destructor. Code blocks and while loops were kept as two separate entities.
 
-\clearpage%
-
 % \lstinputlisting[
 %   language=C++,
 %   caption=\lstinline|ast_node_kind_t| definition,
@@ -364,8 +357,6 @@ we add a type-based expression template intermediate representation, and another
 one that serializes the AST into a representation that is compatible with
 non-type template parameters constraints.
 
-\clearpage%
-
 \subsubsection{Pass-by-generator backend}
 
 Despite values containing \constexpr~allocated memory not being storable in
@@ -399,8 +390,6 @@ This technique can be applied to generate expression templates as well.
 This is interesting as it makes \constexpr~programming interoperable with
 existing metaprogramming libraries based on template metaprogramming.
 
-\clearpage%
-
 \lstinputlisting[
   language=C++,
   firstline=27,
@@ -431,8 +420,6 @@ For that we simply replicate the existing types, and instead of using
 heritage-based polymorphsim and pointers, AST nodes are being stored a single
 array using \lstinline|std::variant| for polymorphism and numeric indexes to
 reference other nodes within the same array (listing~\ref{lst:flat_ast}).
-
-\clearpage%
 
 \lstinputlisting[
   language=C++,
@@ -628,8 +615,6 @@ the final result is a function that takes two polymorphic input variables
 \lstinline|x| and \lstinline|y| and performs the calculation represented by the
 formula.
 
-\clearpage%
-
 \lstinputlisting[
   language=C++,
   firstline=14,
@@ -637,8 +622,6 @@ formula.
   caption=\lstinline|parse| definition,
   label=lst:sy-sa-parse
 ]{external/poacher/shunting-yard/include/rubbish_algebra.hpp}
-
-\clearpage%
 
 Let's have a look at how to use it.
 In the listing~\ref{lst:sy-sa-use}, the formula is first parsed into a function,
@@ -793,8 +776,6 @@ The figure~\ref{fig:sy-rubbish-benchmark-graph} shows a compiler execution time
 overhead of around 20\% when adding compile time parsing.
 While it is noticeable, Blaze still accounts for most of the compiler execution
 time.
-
-\clearpage%
 
 \section{Conclusion}
 
