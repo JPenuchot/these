@@ -44,7 +44,8 @@
 \usepackage{geometry}
 \usepackage{titlesec}
 \usepackage{hyperref}
-\hypersetup{ % paramétrage couleur des liens hypertextes, toujours garder colorlinks=true
+% paramétrage couleur des liens hypertextes, toujours garder colorlinks=true
+\hypersetup{
     colorlinks=true,
     linkcolor=black,
     urlcolor=A5}
@@ -72,14 +73,15 @@
 % \addbibresource{bibliography/stdcpp.bib}
 
 \newcommand{\constexpr}{\lstinline{constexpr}\xspace}
-\newcommand{\cpp}{\textsc{C++}}
-\newcommand{\ctbench}{\textsc{ctbench}}
-\newcommand{\dsels}{\textit{DSEL}s}
-\newcommand{\dsel}{\textit{DSEL}}
-\newcommand{\dsls}{\textit{DSL}s}
-\newcommand{\dsl}{\textit{DSL}}
-\newcommand{\eg}{\textit{e.g.}}
-\newcommand{\ie}{\textit{i.e.}}
+\newcommand{\cpp}{\textsc{C++}\xpsace}
+\newcommand{\ctbench}{\textsc{ctbench}\xspace}
+\newcommand{\dsels}{\textit{DSEL}s\xpsace}
+\newcommand{\dsel}{\textit{DSEL}\xpsace}
+\newcommand{\dsls}{\textit{DSL}s\xpsace}
+\newcommand{\dsl}{\textit{DSL}\xpsace}
+\newcommand{\eg}{\textit{e.g.}\xpsace}
+\newcommand{\grapher}{\lstinline{grapher}\xspace}
+\newcommand{\ie}{\textit{i.e.}\xpsace}
 
 \lstset{
   frame=single,
@@ -150,7 +152,10 @@
 \small Graduate School : voir annexe. Référent : voir annexe \\
 \vspace{6mm}
 
-\footnotesize Thèse préparée dans la (ou les) unité(s) de recherche \textbf{Nom(s)} (voir annexe), sous la direction de \textbf{Joel FALCOU}, titre du directeur ou de la directrice de thèse, la co-direction de \textbf{Prénom NOM}, titre du co-directeur ou de la co-directrice de thèse, le co-encadrement de \textbf{Prénom NOM}, titre, du co-encadrant ou de la co-encadrante ou la co-supervision de \textbf{Prénom NOM}, titre, du tuteur ou de la tutrice (en cas de partenariat industriel) \\
+% TODO: Verifier l'unite de recherche
+\footnotesize Thèse préparée dans la (ou les) unité(s) de recherche
+\textbf{STIC} (voir annexe), sous la direction de \textbf{Joel FALCOU},
+titre du directeur ou de la directrice de thèse \\
 \vspace{15mm}
 
 \textbf{Thèse soutenue à Paris-Saclay, le JJ mois AAAA, par}\\
@@ -254,8 +259,8 @@ parall\'elisme
 
 \part{Metaprogramming and code generation beyond expression templates}
 
-\subfile{chapters/poacher/main.tex}
 \subfile{chapters/ctbench/main.tex}
+\subfile{chapters/poacher/main.tex}
 
 \printbibliography
 
