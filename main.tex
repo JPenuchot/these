@@ -80,7 +80,7 @@
 \newcommand{\dsls}{\textit{DSL}s\xspace}
 \newcommand{\dsl}{\textit{DSL}\xspace}
 \newcommand{\eg}{\textit{e.g.}\xspace}
-\newcommand{\grapher}{\lstinline{grapher}\xspace}
+\newcommand{\grapher}{\textsc{grapher}\xspace}
 \newcommand{\ie}{\textit{i.e.}\xspace}
 
 \lstset{
@@ -93,6 +93,12 @@
   breaklines=true,
   tabsize=2,
   showstringspaces=false
+}
+
+\lstdefinelanguage{cmake}{
+  morekeywords={STRING, BOOL, CACHE, REQUIRED},
+  morecomment=[l]{\#},
+  morestring=[b]"
 }
 
 \begin{document}
