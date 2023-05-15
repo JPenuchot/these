@@ -264,7 +264,7 @@ nodes.\\
 The next step then is to define 3 kinds of AST nodes: single tokens (\ie single
 instructions), instruction blocks, and loops. They all inherit
 \lstinline|node_interface_t|, which keeps track of the kind of underlying node
-using a value of type \lstinline|ast_node_kind_t|
+using a value of type \lstinline{ast_node_kind_t}
 (listing \ref{lst:node_interface_t}).
 
 \begin{lstlisting}[
@@ -571,7 +571,7 @@ type is defined as a \lstinline|std::vector| of \lstinline|token_t| elements.
   language=C++,
   caption=\lstinline|token_t| definition,
   label=lst:sy-token_t-typedef
-]
+]{}
 using token_t = std::variant<failure_t, variable_t, function_t,
   operator_t, lparen_t, rparen_t, constant_t>;
 \end{lstlisting}
@@ -800,8 +800,8 @@ adopt for the implementation of future \dsel based on \constexpr parsers
 based on considerations for compilation times or implementation complexity.\\
 
 Going forward, \constexpr parser generators could help reduce
-\dsel implementation time and help embed more languages into \cpp23. Further research
-has to be made to determine the impact of such generators on
+\dsel implementation time and help embed more languages into \cpp23.
+Further research has to be made to determine the impact of such generators on
 \dsel implementation complexity and compilation times.
 
 
