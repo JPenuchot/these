@@ -1,3 +1,6 @@
 [submodule "external/poacher"]
 	path = external/poacher
 	url = git@github.com:JPenuchot/poacher.git
+[submodule "external/ctbench"]
+	path = external/ctbench
+	url = git@github.com:JPenuchot/ctbench.git
