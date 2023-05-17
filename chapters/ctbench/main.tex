@@ -197,6 +197,7 @@ It takes a target name and a path to a JSON configuration file followed by an
 arbitrary number of benchmark targets as arguments.
 
 \subsection{JSON API for plotter configuration}
+\label{lbl:ctbench-json-api}
 
 JSON configuration files are used to pass parameters such as the plot generator
 name, some generic plotting parameters such as an export format list or axis
@@ -413,12 +414,27 @@ compiling \cpp sources that have already been pre-processed. Note that a staged
 pre-processing method could be implemented using the compiler launcher described
 in \ref{lbl:ctbench-ttw}.
 
-\paragraph{Example}
-
 \subsubsection{Time trace event predicate engine}
 \label{lbl:grapher-predicate-engine}
 
-% TODO
+\grapher provides a powerful predicate engine for event filtering.
+The predicate engine is an interpreter for a JSON-based predicate language for
+integration in JSON configuration files.
+
+Each predicate can be represented by a JSON object, as we've seen in
+\ref{lbl:ctbench-json-api}.
+
+\begin{itemize}
+\item \lstinline{regex} and \lstinline{streq}: true if the value at the given
+      pointer matches the given regex or string.
+\item \lstinline{match}: true if a time trace event matches a given JSON object,
+      ie. if the event has all the values present in the given JSON object.
+      Regex matching can also be enabled for value matching.
+\item \lstinline{op_or} and \lstinline{op_and}: binary operators to combine
+      other predicates.
+\item \lstinline{val_true} and \lstinline{val_false}: arbitrary true/false
+      values, mostly used for debugging and testing.
+\end{itemize}
 
 \subsubsection{Other miscellaneous stuff}
 
