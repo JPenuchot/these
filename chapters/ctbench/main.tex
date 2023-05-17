@@ -4,15 +4,15 @@
 
 \chapter{Establishing a methodology for compile time benchmarking}
 
-With libraries like Eigen\cite{eigen}, Blaze\cite{blazelib}, or CTRE\cite{ctre} being
-developed with a large tempalte metaprogrammed implementation, we're seeing
+With libraries like Eigen\cite{eigen}, Blaze\cite{blazelib}, or CTRE\cite{ctre}
+being developed with a large tempalte metaprogrammed implementation, we're seeing
 increasing computing needs at compile time. These needs might grow even larger
 as \cpp embeds more features over time to support and extend this kind of
 practices, like compile time containers\cite{more-constexpr-containers} or static
 reflection\cite{static-reflection}. However, there is still no clear cut methodology
-to compare the performance impact of different metaprogramming strategies. But,
-as new \cpp features allows for new techniques with claimed better compile time
-performance, no proper methodologies is provided to back up those claims.
+to compare the performance impact of different metaprogramming strategies. But
+as new \cpp features allow for new techniques with claimed better compile time
+performance, no proper methodology is provided to back up those claims.
 
 In this chapter I introduce \ctbench, which is a set of tools for compile time
 benchmarking and analysis in \cpp. It aims to provide developer-friendly tools
@@ -48,7 +48,9 @@ methodologies:
       capabilities with debugging and profiling tools.
 \end{itemize}
 
-\subsection{Clang's built-int profiler}
+\subsection{Clang's built-in profiler}
+
+% TODO: More details about time trace JSON structure
 
 Additionally, Clang has a built-in profiler\cite{time-trace} that provides in-depth
 time measurements of various compilation steps, which can be enabled by passing
@@ -58,9 +60,13 @@ symbols on various stages of compilation. The output format is a JSON file meant
 to be compatible with Chrome's flame graph visualizer, that contains a series of
 time events with optional metadata like the mangled \cpp symbol or the file
 related to an event. The profiling data can then be visualized using tools such
-as Google's [Perfetto UI](https://ui.perfetto.dev/).
+as Google's Perfetto UI as shown in figure \ref{fig:perfetto-time-trace-ui}.
 
-![Perfetto UI displaying a sample Clang time trace file](docs/images/perfetto-ui.png)
+\begin{figure}[h]
+\includegraphics[scale=0.264]{images/perfetto-ui.png}
+\caption{Clang time trace file in Perfetto UI}
+\label{fig:perfetto-time-trace-ui}
+\end{figure}
 
 Clang's profiler data is very exhaustive and insightful, however there is no
 tooling to make sense of it in the context of variable size compile time
@@ -104,6 +110,7 @@ compile time benchmarking tool that can use Clang profiling data for metaprogram
 scaling analysis.
 
 \subsection{CMake API for benchmark declaration}
+\label{lbl:ctbench-cmake-api}
 
 The decision of using CMake as a scripting language for \ctbench was rather
 straightforward as it is the most widely used build system generator for \cpp
@@ -178,15 +185,16 @@ A similar function called \lstinline{ctbench_add_benchmark_for_size_list} allows
 defining benchmark targets using a list of sizes instead of an incremental
 range.
 
+Both commands will declare CMake targets that generate the time trace files.
+The files will be located at the following path:
+\lstinline{<benchmark target name>/<iteration size>/<iteration number>.json}.
+This
+Moreover, the compiler is called through a compiler launcher to work around
+CMake's lack for access to compile commands.
+
 At this point we can declare a graph target using \lstinline{ctbench_add_graph}.
 It takes a target name and a path to a JSON configuration file followed by an
 arbitrary number of benchmark targets as arguments.
-
-The \lstinline{ctbench_add_graph} command will declare CMake targets that
-generate the time trace files. The files will be located at the following path:
-\lstinline{<benchmark target name>/<iteration size>/<iteration number>.json}.
-Moreover, the compiler is called through a compiler launcher to work around
-CMake's lack for access to compile commands.
 
 \subsection{JSON API for plotter configuration}
 
@@ -247,13 +255,14 @@ Other options are worth mentioning:
 \item Plot file extensions, allowing several export formats to be used at once.
 \item Allowing median and average to be drawn, as well as single data points,
       or even average error bars.
-\item \cpp symbol demangling using \lstinline{llvm::demangle}.
+\item \cpp symbol demangling using LLVM's demangler.
 \end{itemize}
 
 Time trace event filtering is done through a predicate engine that will be
-further explained in subsection \ref{lbl:grapher}.
+further explained in subsection \ref{lbl:grapher-predicate-engine}.
 
 \subsection{ctbench-ttw: ctbench's compiler launcher}
+\label{lbl:ctbench-ttw}
 
 CMake abstracts most of the compilation process and makes it impossible to
 retrieve derivative files in a reliable way. The object files themselves are
@@ -287,7 +296,7 @@ measurement and allowing the use of different compilers for targets inside a
 single CMake project. These two additional features make compiler performance
 comparison possible for variable sized compile time benchmarks.
 
-\subsection{grapher} \label{lbl:grapher}
+\subsection{grapher}
 
 The \grapher component of \ctbench was developed as a tookit that can be used
 through executable tools, and as a C++ library as well.
@@ -298,15 +307,116 @@ generate plots with different plot generators.
 
 \subsubsection{Library for handling benchmark directory structure}
 
-% TODO
+The most important part of \ctbench's \grapher library is its core types.
+They define a hierarchy of elements:
 
-\subsubsection{Homogeneous plotter engines}
+\begin{itemize}
+\item Benchmark set, which constitutes a set of different benchmark cases to
+      compare.
+\item Benchmark case, which represents a benchmark case that will be
+      instantiated at several sizes.
+\item Benchmark instance, a benchmark case instantiated at a given size.
+\item Repetition, a single repetition, run, or sample of a benchmark instance.
+\end{itemize}
 
-% TODO: Introduce plotter interface
+The type definitions are shown in listing \ref{lst:ctbench-core-types}.
 
-% TODO: Show some implementations
+\begin{lstlisting}[language=C++, label=lst:ctbench-core-types]{}
+struct benchmark_instance_t {
+  unsigned size;
+  std::vector<std::filesystem::path> repetitions;
+};
 
-\subsubsection{Time trace event filtering engine}
+struct benchmark_case_t {
+  std::string name;
+  std::vector<benchmark_instance_t> instances;
+};
+
+using benchmark_set_t = std::vector<benchmark_case_t>;
+\end{lstlisting}
+
+The \grapher library also provides type aliases for containers or even basic
+values to enforce the use of coherent types across the whole codebase. The most
+important are \lstinline{json_t} and \lstinline{value_t}, which represent JSON
+objects and scalar values extracted from JSON objects respectively (see listing
+\ref{lst:ctbench-core-aliases}).
+
+\begin{lstlisting}[language=C++, label=lst:ctbench-core-aliases]{}
+using json_t = nlohmann::basic_json<boost::container::flat_map>;
+using value_t = unsigned long;
+\end{lstlisting}
+
+Boost's \lstinline{flat_map} container is used instead of \lstinline{std::map}
+for JSON objects instead as overall performance was measurably better with it.
+
+Most importantly, the \grapher library provides a function to extract benchmark
+data from a folder structure as laid out by the benchmark declaration functions
+described in \ref{lbl:ctbench-cmake-api}.
+
+\subsubsection{Homogeneous plotter engines and CLI boilerplate}
+
+Besides boilerplate code, \grapher also provides an interface for the addition
+of new plotters. This and command line interface boilerplate code make the
+addition and implementation of new visualization strategies rather
+straightforward.
+
+\paragraph{The plotter interface}
+
+The plotter interface
+
+\begin{lstlisting}[
+  language=C++,
+  label=lst:ctbench-plotter-base,
+  caption=\lstinline{plotter_base_t} type definition]{}
+struct plotter_base_t {
+  virtual ~plotter_base_t() = default;
+  virtual void plot(benchmark_set_t const &bset,
+                    std::filesystem::path const &dest,
+                    grapher::json_t const &config) const = 0;
+
+  virtual grapher::json_t get_default_config() const = 0;
+};
+
+using plotter_t = std::unique_ptr<plotter_base_t>;
+\end{lstlisting}
+
+\paragraph{Command line interface}
+
+The \grapher project provides a command line interface for interaction with
+users through shell commands, and with the CMake API as well. It provides two
+executables that serve as drivers for \grapher plotters:
+
+\begin{itemize}
+
+\item \lstinline{ctbench-grapher-plot}: Main program that generates plots.
+      It takes a configuration file and an output folder as options followed by
+      several benchmark result folders.
+      It is essentially a command line interface over plotters.
+      It builds a benchmark set, and passes it to a plotter along with a JSON
+      config object and a destination folder.
+
+\item \lstinline{ctbench-grapher-utils}: Auxiliary program currently used to
+      obtain default JSON configurations for every plotter. Its functionality
+      may be extended in the future.
+
+\end{itemize}
+
+The command line interface is implemented using LLVM's CommandLine 2.0 library.
+Both programs can be used without \ctbench's CMake API for reuse in any other
+scripting environment as CMake may not always be the best way to generate \cpp
+compile time benchmark cases.
+
+For example, Metabench\cite{metabench} uses Embedded Ruby as a source code
+generator to instantiate benchmarks at arbitrary sizes. Benchmarks could very
+well be generated using other methods such as Python scripting, or even
+compiling \cpp sources that have already been pre-processed. Note that a staged
+pre-processing method could be implemented using the compiler launcher described
+in \ref{lbl:ctbench-ttw}.
+
+\paragraph{Example}
+
+\subsubsection{Time trace event predicate engine}
+\label{lbl:grapher-predicate-engine}
 
 % TODO
 
@@ -314,12 +424,6 @@ generate plots with different plot generators.
 
 % TODO: Error handling for JSON, statistics, and some other stuff
 
-\subsubsection{Command line interface}
-
-\begin{itemize}
-\item \lstinline{ctbench-grapher-plot} % TODO
-\item \lstinline{ctbench-grapher-utils} % TODO
-\end{itemize}
 
 \section{Statement of interest} % TODO: Rework
 
