@@ -110,7 +110,8 @@ If meta-programming is used in languages as different as
 C++ [9],D [10], OCaml [11] or Haskell [12], a subset of
 basic notions emerges:
 
-• Code fragment generation: Any meta-programmable
+\begin{itemize}
+\item Code fragment generation: Any meta-programmable
 language has a way to build an object that represents a
 piece of code. The granularity of this fragment of code
 may vary –ranging from statement to a complete class
@@ -121,7 +122,7 @@ a special syntax can be provided to construct such
 fragment. In some others, code fragment are represented
 as a string containing the code itself.
 
-• Code processing: Code fragments are meant to
+\item Code processing: Code fragments are meant to
 be combined, introspected or replicated in order to
 let the developer rearrange these fragments and as a
 consequence to provide a given service. Those processing
@@ -129,7 +130,7 @@ steps can be done either via a special syntax construct,
 like the MetaOCaml code aggregation operator, or can
 use a similar syntax than a regular code.
 
-• Code expansion: Once the initial code fragments have
+\item Code expansion: Once the initial code fragments have
 been processed, the last step is to turn them into an
 actual code. This is often done in an explicit manner by
 using a function or a syntax construct provided by the
@@ -144,24 +145,25 @@ infrastructures based on source-to-source compilers, which
 are actually able to perform the same techniques proposed by
 this paper. Such systems includes:
 
-• SYCL [13]: a single-source abstraction over OpenCL
+\item SYCL [13]: a single-source abstraction over OpenCL
 for heterogeneous systems. By using OpenCL, one can
 effectively write SYCL code for a large selection of
 architectures including SIMD capable CPU.
 
-• BLIS [14]: a framework for generating BLAS like oper-
+\item BLIS [14]: a framework for generating BLAS like oper-
 ations in ISO C99 from a small subset of kernels that can
 be retargeted for different back-end. Its performances are
 on par with open-source solutions like OpenBLAS and
 ATLAS.
 
-• LGEN [15]: a compiler that produces performance-
+\item LGEN [15]: a compiler that produces performance-
 optimized basic linear algebra computations on matrices
 of fixed sizes with or without structure composed
 from matrix multiplication, matrix addition, matrix
 transposition, and scalar multiplication. Based on
 polyhedral analysis using CLoog, the generated code
 outperforms MKL and Eigen.
+\end{itemize}
 
 In this paper, we will focus on language-based meta-
 programming techniques so that the proposed method can
@@ -186,7 +188,8 @@ the learning gap was still high.
 With the standard C++ revision in 2014 and 2017, this
 strategy was renewed with three new C++ features:
 
-• Polymorphic, variadic anonymous functions: C++11
+\begin{itemize}
+\item Polymorphic, variadic anonymous functions: C++11
 introduced the notion of local, anonymous functions
 (also known as lambda functions) in the language.
 Their primary goal was to simplify the use of standard
@@ -199,21 +202,18 @@ lambdas, i.e anonymous functions accepting a list of
 arguments of arbitrary size. Listing 1 below demonstrates
 this particular feature.
 
-\begin{lstlisting}[language=c++]{}
+\begin{lstlisting}[language=c++, caption=Sample polymorphic lambda definition]{}
 // Variadic function object building array
-auto array_from = [](auto... values)
-{
-// sizeof... retrieves the number
-of arguments
-return std::array<double,sizeof..
-.(values)>{values...};
+auto array_from = [](auto... values) {
+  // sizeof... retrieves the number of arguments
+  return std::array<double,sizeof...(values)>{values...};
 }
 // Build an array of 4 double
 auto data = array_from(1,2,3.,4.5f);
 \end{lstlisting}
-Listing 1. Sample polymorphic lambda definition
+Listing 1.
 
-• Fold expressions: C++11 introduced the ... operator
+\item Fold expressions: C++11 introduced the \lstinline{...} operator
 which was able to enumerate a variadic list of functions
 or template arguments in a comma-separated code
 fragment. Its main use was to provide the syntactic
@@ -227,17 +227,16 @@ counter-intuitive structure. C++17 extends this notation
 to work with an arbitrary binary operator. Listing 2
 illustrates an example for this feature.
 
-\begin{lstlisting}[language=c++]{}
+\begin{lstlisting}[language=c++, caption=C++17 fold expressions]{}
 template<typename... Args>
-auto reduce(Args&&... args)
-{
-// Automatically unroll the args into a sum
-return (args + ...);
+auto reduce(Args&&... args) {
+  // Automatically unroll the args into a sum
+  return (args + ...);
 }
 \end{lstlisting}
-Listing 2. C++17 fold expressions
+Listing 2.
 
-• Tuples: Introduced by C++11, tuple usage in C++ was
+\item Tuples: Introduced by C++11, tuple usage in C++ was
 simplified by providing new tuple related functions in
 C++17 that make tuple a fully programmable struct-like
 entity. The transition between tuple and structure is then
@@ -247,9 +246,9 @@ in a set of disjoint variables, thus making interface
 dealing with tuples easier to use. Listing 3 gives an
 example about tuples.
 
-\begin{lstlisting}[language=c++]{}
+\begin{lstlisting}[language=c++, caption=Tuple and structured bindings]{}
 // Build a tuple from values
-auto datas = std::make_tuple(3.f,5,"test");
+auto datas = std::make_tuple(3.f, 5, "test");
 // Direct access to tuple’s data
 std::get<0>(datas) = 6.5f;
 // Structured binding access
@@ -257,7 +256,9 @@ auto&[a,b,c] = datas;
 // Add 3 tot he second tuple’s element
 b += 3;
 \end{lstlisting}
-Listing 3. Tuple and structured bindings
+Listing 3.
+
+\end{itemize}
 
 \subsection{Application to HPC code generation}
 
@@ -268,7 +269,7 @@ architecture that is vectorization and on the other hand the
 controlled unrolling of the inner loop to ensure proper register
 and pipeline usage.
 
-• Vectorization: Vectorization can be achieved either
+\item Vectorization: Vectorization can be achieved either
 using the specific instructions set of each vendor or
 by relying on auto-vectorization. In our case, to ensure
 homogeneous performances across the different target
@@ -291,36 +292,37 @@ vectorized dot product can simply be derived from using
 Boost.SIMD types and range adapters, polymorphic
 lambdas and standard algorithm.
 
-\begin{lstlisting}[language=c++]{}
+\begin{lstlisting}[language=c++, caption=Sample Boost.SIMD code]{}
 template<typename T>
-auto simd_dot(T* in1, T* in2, std::size_t count)
-{
-// Adapt [in,in+count[ as a vectorizable range
-auto r1 = simd::segmented_range(in1, in1 + count);
-auto r2 = simd::segmented_range(in2, in2 + count);
-// Extract sub-ranges
-auto h1 = r1.head,h2 = r2.head;
-auto t1 = r1.tail,t2 = r2.tail;
-// sum and product polymorphic functions
-auto sum = [](auto&& a, auto&& b) { return a * b; }
-;
-auto prod = [](auto&& r, auto&& v ) { return r + v; }
-;
-// Process vectorizable & scalar sub-ranges
-auto vr = std::transform_reduce( h1.begin(), h1.end()
-, h2.begin()
-, prod, sum
-, simd::pack<T>{}
-);
-auto sr = std::transform_reduce( t1.begin(), t1.end()
-, t2.begin()
-, prod, sum, T{}
-);
-// Compute final dot product
-return sr + simd::sum(vr);
+auto simd_dot(T* in1, T* in2, std::size_t count) {
+  // Adapt [in,in+count[ as a vectorizable range
+  auto r1 = simd::segmented_range(in1, in1 + count);
+  auto r2 = simd::segmented_range(in2, in2 + count);
+
+  // Extract sub-ranges
+  auto h1 = r1.head,h2 = r2.head;
+  auto t1 = r1.tail,t2 = r2.tail;
+
+  // sum and product polymorphic functions
+  auto sum = [](auto&& a, auto&& b) { return a * b; };
+  auto prod = [](auto&& r, auto&& v ) { return r + v; };
+
+  // Process vectorizable & scalar sub-ranges
+  auto vr = std::transform_reduce( h1.begin(), h1.end()
+                                 , h2.begin()
+                                 , prod, sum
+                                 , simd::pack<T>{}
+                                 );
+
+  auto sr = std::transform_reduce( t1.begin(), t1.end()
+                                 , t2.begin()
+                                 , prod, sum, T{}
+                                 );
+  // Compute final dot product
+  return sr + simd::sum(vr);
 }
 \end{lstlisting}
-Listing 4. Sample Boost.SIMD code
+Listing 4.
 
 Note how the Boost.SIMD abstraction shields the end
 user to have to handle any architecture specific idioms
@@ -332,7 +334,7 @@ the quality of the vectorization across compilers and
 compiler versions. It also leads to a cleaner and easier to
 maintain codes, relying only on standard C++ constructs 1 .
 
-• Loop unrolling: The notion of unrolling requires
+\item Loop unrolling: The notion of unrolling requires
 a proper abstraction. Loop unrolling requires three
 elements : the code fragment to repeat, the code
 replication process and the iteration space declaration.
@@ -344,7 +346,7 @@ polymorphic lambda function. This lambda
 function will takes a polymorphic argument which
 will represent the current value of the iteration
 variable. This value is passed as an instance of
-std::integral_constant which allows to
+\lstinline{std::integral_constant} which allows to
 turn an arbitrary compile-time constant integer into
 a type. By doing so, we are able to propagate the
 constness of the iteration variable as far as possible
@@ -362,17 +364,17 @@ an unrollable statement.
 as an entity supporting expansion via ...
 and containing the actual value of the
 iteration space. Standard C++ provides the
-std::integral_sequence<N...> class that
+\lstinline{std::integral_sequence<N...>} class that
 acts as a variadic container of integral constant. It
 can be generated via one helper meta-function such
-as std::make_integral_sequence<T,N>
+as \lstinline{std::make_integral_sequence<T,N>}
 and passed directly to a variadic function template.
 All these elements can then be combined into a
 for_constexpr function detailed in Listing 5.
 The function proceed to compute the proper
 integral constant sequence from the Start,
 End and D compile-time integral constant. As
-std::integral_sequence<N...> enumerates values
+\lstinline{std::integral_sequence<N...>} enumerates values
 from 0 to N , we need to pass the start index and iteration
 1 pragma are compiler-dependent and can be ignored
 increment as separate constants. The actual index is then
@@ -380,60 +382,59 @@ computed at the unrolling site. To prevent unwanted copies
 and ensure inlining, all elements are passed to the function
 as a rvalue-reference or an universal reference.
 
-\begin{lstlisting}[language=c++]{}
+\begin{lstlisting}[language=c++, caption=Compile-time unroller]{}
 template<int Start, int D, typename Body, int... Step>
 void for_constexpr( Body&& body
-, std::integer_sequence<int, Step...>&&
-, std::integral_constant<int, Start>&&
-, std::integral_constant<int, D>&&
-)
-{
-(body(std::integral_constant<int, Start + D*Step>{}), ...
-);
+                  , std::integer_sequence<int, Step...>&&
+                  , std::integral_constant<int, Start>&&
+                  , std::integral_constant<int, D>&&
+                  ) {
+  (body(std::integral_constant<int, Start + D*Step>{}), ...);
 }
+
 template<int Start, int End, int D = 1, typename Body>
-void for_constexpr(Body&& body)
-{
-constexpr auto size = End - Start;
-for_constexpr( std::forward<Body>(body)
-, std::make_integer_sequence<int, size>{}
-, std::integral_constant<int, Start>{}
-, std::integral_constant<int, D>{}
-);
+void for_constexpr(Body&& body) {
+  constexpr auto size = End - Start;
+  for_constexpr( std::forward<Body>(body)
+               , std::make_integer_sequence<int, size>{}
+               , std::integral_constant<int, Start>{}
+               , std::integral_constant<int, D>{}
+               );
 }
 \end{lstlisting}
-Listing 5. Compile-time unroller
+Listing 5.
 
 A sample usage of the for_constexpr function is given
 in Listing 6 in a function printing every element from a
-std::tuple.
+\lstinline{std::tuple}.
 
-\begin{lstlisting}[language=c++]{}
+\begin{lstlisting}[
+  language=c++,
+  caption=Tuple member walkthrough via compile-time unrolling]{}
 template<typename Tuple>
-void print_tuple(Tuple const& t)
-{
-constexpr auto size = std::tuple_size<Tuple>::value;
-for_constexpr<0, size>( [&](auto&& i)
-{
-std::cout << std::get<i>(t) << "\n";
-}
-);
+void print_tuple(Tuple const& t) {
+  constexpr auto size = std::tuple_size<Tuple>::value;
+  for_constexpr<0, size>( [&](auto&& i) {
+    std::cout << std::get<i>(t) << "\n";
+  }
+  );
 }
 \end{lstlisting}
-Listing 6. Tuple member walkthrough via compile-time unrolling
+Listing 6.
 
 Note that this implementation exposes some interesting
 properties:
 
-• As for_constexpr calls are simple function call, they
+\begin{itemize}
+\item As for_constexpr calls are simple function call, they
 can be nested in arbitrary manners.
 
-• Relying on std::integral_constant to carry the
+\item Relying on \lstinline{std::integral_constant} to carry the
 iteration index gives access to its automatic conversion
 to integer. This means the iteration index can be used in
 both compile-time and runtime contexts.
 
-• Code generation quality will still be optimized by the
+\item Code generation quality will still be optimized by the
 compiler, thus letting all other non-unrolling related op-
 timizations to be applied.
 One can argue about the advantage of such a method
@@ -441,6 +442,7 @@ compared to relying on the compiler unrolling algorithm
 or using non-standard unrolling pragma. In both cases, our
 method ensure that the unrolling is always done at the fullest
 extend and does not rely on non-standard extensions.
+\end{itemize}
 
 \section{The matrix-vector multiplication routine: gemv}
 
@@ -455,7 +457,7 @@ operation [18]. However, for the two-sided factorizations,
 and despite the use of similar techniques, the fraction of the
 Level 2 BLAS floating point operations is still important. For
 instance, for both the bidiagonal and tridiagonal reductions,
-this fraction is around 50% [19]. Thus, having optimized
+this fraction is around 50\% [19]. Thus, having optimized
 implementations for these routines on different architectures
 remains important to improve the performance of several
 algorithms and applications. Moreover, small-scale BLAS
@@ -498,41 +500,36 @@ corresponding columns of the matrix and the elements
 of the vector can respectively be loaded and broadcasted
 into SIMD registers.
 
-\begin{lstlisting}[language=c++]{}
+\begin{lstlisting}[language=c++, caption=Unrolled gemv kernel]{}
 template<typename T, std::size_t H, std::size_t W>
-void gemv(mat<T, H, W>& mat, vec<T, W>& vec, vec<T, W>
-& r)
-{
-using pack_t = bs::pack<T>;
-constexpr auto sz = pack_t::static_size;
-// Separating simd/scalar parts
-constexpr auto c_simd = W - W % sz;
-constexpr auto r_simd = H - H % sz;
-for_constexpr<0, c_simd,sz>( [](auto j)
-{
-pack_t pvec(&vec[j]);
-pack_t mulp_arr[sz];
-// Broadcasting vectors once and for all
-for_constexpr<0,sz>([&](auto idx)
-{
-mulp_arr[idx] = simd::broadcast<idx>(pvec);
-});
-// Walk through SIMD rows
-for_constexpr<0, r_simd>([&](auto I)
-{
-pack_t resp(&res[i + (I * sz)]);
-// Walk through columns
-for_constexpr<0, sz>([&](auto J)
-{
-pack_t matp(&mat(i + (I * sz), j + J));
-resp += matp * mulp_arr[J];
-simd::store(resp, &r[i + (I * sz)]);
-});
-}
-// scalar code follows ...
+void gemv(mat<T, H, W>& mat, vec<T, W>& vec, vec<T, W>& r) {
+  using pack_t = bs::pack<T>;
+  constexpr auto sz = pack_t::static_size;
+  // Separating simd/scalar parts
+  constexpr auto c_simd = W - W % sz;
+  constexpr auto r_simd = H - H % sz;
+  for_constexpr<0, c_simd,sz>( [](auto j) {
+    pack_t pvec(&vec[j]);
+    pack_t mulp_arr[sz];
+    // Broadcasting vectors once and for all
+    for_constexpr<0,sz>([&](auto idx) {
+      mulp_arr[idx] = simd::broadcast<idx>(pvec);
+    });
+    // Walk through SIMD rows
+    for_constexpr<0, r_simd>([&](auto I) {
+      pack_t resp(&res[i + (I * sz)]);
+      // Walk through columns
+      for_constexpr<0, sz>([&](auto J) {
+        pack_t matp(&mat(i + (I * sz), j + J));
+        resp += matp * mulp_arr[J];
+        simd::store(resp, &r[i + (I * sz)]);
+      });
+    }
+
+    // Scalar code follows ...
 }
 \end{lstlisting}
-Listing 7. Unrolled gemv kernel
+Listing 7.
 
 3) A second level of unrolling that pass through all the
 available SIMD registers loadable from a given column.
