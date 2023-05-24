@@ -7,7 +7,7 @@ subset of applications. If a large body of work surrounding
 efficient and large-scale implementation of some routines such
 as gemv exists, the interest for small-sized, highly-optimized
 versions of those routines emerged. In this paper, we propose
-to show how a modern C++ approach based on generative
+to show how a modern \cpp approach based on generative
 programming techniques such as vectorization and loop un-
 rolling in the framework of meta-programming can deliver
 efficient automatically generated codes for such routines, that
@@ -17,7 +17,7 @@ code. In particular, we analyze the performance of automatically
 generated small-sized gemv kernels for both Intel x86 and ARM
 processors. We show through a performance comparison with
 the OpenBLAS gemv kernel on small matrices of sizes ranging
-from 4 to 32 that our C++ kernels are very efficient and may
+from 4 to 32 that our \cpp kernels are very efficient and may
 have a performance that is up to 3 times better than that of
 OpenBLAS gemv.
 
@@ -51,7 +51,7 @@ with the Libflame library [3]. Thus, it offers a framework to
 develop dense linear solvers using algorithmic skeletons [4]
 and an API which is more user-friendly than LAPACK, giving
 satisfactory performance results. A more generic approach is
-the one followed in recent years by C++ libraries built around
+the one followed in recent years by \cpp libraries built around
 expression templates [5] or other generative programming [6]
 principles. In this paper, we will focus on such an approach.
 To show the interest of this approach, we consider as
@@ -63,9 +63,9 @@ challenging as we can see through the current state-of-the-art
 implementation results. Moreover, the different CPU architec-
 tures bring further challenges for its design and optimization.
 In this paper, we describe how we obtained optimized gen-
-erated C++ codes for the gemv routine to make it reach its
+erated \cpp codes for the gemv routine to make it reach its
 peak performance on different target CPU architectures (Intel
-x86 and ARM in this paper). Our gemv C++ generated kernels
+x86 and ARM in this paper). Our gemv \cpp generated kernels
 achieve uniform performances that outperform in the most of
 the cases the peaks of the state-of-the-art OpenBLAS gemv
 kernel for small matrices of sizes ranging from 4 to 128.
@@ -75,7 +75,7 @@ programming principles as well as the main strategies to get
 efficient small-scale BLAS functions. In Section III, we show
 how to apply these programming techniques and principles
 in order to develop an efficient small-scale gemv kernel that
-will be used to automatically generates efficient C++ codes for
+will be used to automatically generates efficient \cpp codes for
 different target architectures. Then, we present in Section IV
 performance comparisons on two CPU architectures (Intel
 x86 and ARM) between our generated gemv kernels for
@@ -88,9 +88,9 @@ The quality and performance of BLAS like code require
 the ability to write tight and highly-optimized code. If the
 raw assembly of low-level C has been the language of choice
 for decades, our position is that the proper use of the zero-
-abstraction property of C++ can lead to the design of a single,
+abstraction property of \cpp can lead to the design of a single,
 generic yet efficient code base for many BLAS like functions.
-To do so, we will rely on two main elements: a proper C++
+To do so, we will rely on two main elements: a proper \cpp
 SIMD layer and a set of code generation techniques stemmed
 from Generic Programming.
 
@@ -107,7 +107,7 @@ abstraction level while being able to get compiled to a very
 ”close to the metal” implementation, often rivaling with a
 handwritten expert code on a given machine [8].
 If meta-programming is used in languages as different as
-C++ [9],D [10], OCaml [11] or Haskell [12], a subset of
+\cpp [9],D [10], OCaml [11] or Haskell [12], a subset of
 basic notions emerges:
 
 \begin{itemize}
@@ -136,7 +136,7 @@ actual code. This is often done in an explicit manner by
 using a function or a syntax construct provided by the
 meta-programming layer to trigger the code generation.
 Note that this code generation can either lead to a code
-ready to be compiled – like in Haskell or C++– or a
+ready to be compiled – like in Haskell or \cpp– or a
 code that can be run – like in OCaml– if the generation
 phase is done at runtime.
 Meta-programming also includes other code generation
@@ -169,7 +169,7 @@ In this paper, we will focus on language-based meta-
 programming techniques so that the proposed method can
 be used in various compilers and OS settings as long as the
 compiler follows a given standard.
-Classical design of meta-programs in C++ usually relies
+Classical design of meta-programs in \cpp usually relies
 on complex template types that forced the compiler to follow
 intricate path during type deduction in order to take advantage
 of the Turing completeness of the template definition. By
@@ -185,24 +185,28 @@ and read as the logic of the code generation was buried
 behind heaps of non-trivial syntax. Some progress was made
 by some infrastructure library like MPL[16] or Fusion, but
 the learning gap was still high.
-With the standard C++ revision in 2014 and 2017, this
-strategy was renewed with three new C++ features:
+
+With the standard \cpp revision in 2014 and 2017, this
+strategy was renewed with three new \cpp features:
 
 \begin{itemize}
-\item Polymorphic, variadic anonymous functions: C++11
+\item Polymorphic, variadic anonymous functions: \cpp11
 introduced the notion of local, anonymous functions
 (also known as lambda functions) in the language.
 Their primary goal was to simplify the use of standard
 algorithms by providing a compact syntax to define a
 function in a local scope, hence raising code locality.
-C++14 added the support for polymorphic lambdas, i.e
+\cpp14 added the support for polymorphic lambdas, \ie
 anonymous functions behaving like function templates
 by accepting arguments of arbitrary types, and variadic
-lambdas, i.e anonymous functions accepting a list of
+lambdas, \ie anonymous functions accepting a list of
 arguments of arbitrary size. Listing 1 below demonstrates
 this particular feature.
 
-\begin{lstlisting}[language=c++, caption=Sample polymorphic lambda definition]{}
+\begin{lstlisting}[
+  language=c++,
+  caption=Sample polymorphic lambda definition
+]{}
 // Variadic function object building array
 auto array_from = [](auto... values) {
   // sizeof... retrieves the number of arguments
@@ -213,7 +217,7 @@ auto data = array_from(1,2,3.,4.5f);
 \end{lstlisting}
 Listing 1.
 
-\item Fold expressions: C++11 introduced the \lstinline{...} operator
+\item Fold expressions: \cpp11 introduced the \lstinline{...} operator
 which was able to enumerate a variadic list of functions
 or template arguments in a comma-separated code
 fragment. Its main use was to provide the syntactic
@@ -223,11 +227,14 @@ this can be used to generate far more complex code
 when paired with other language constructs. Both
 code replication and a crude form of code unrolling
 were possible. However, it required the use of some
-counter-intuitive structure. C++17 extends this notation
+counter-intuitive structure. \cpp17 extends this notation
 to work with an arbitrary binary operator. Listing 2
 illustrates an example for this feature.
 
-\begin{lstlisting}[language=c++, caption=C++17 fold expressions]{}
+\begin{lstlisting}[
+  language=c++,
+  caption=\cpp17 fold expressions
+]{}
 template<typename... Args>
 auto reduce(Args&&... args) {
   // Automatically unroll the args into a sum
@@ -236,9 +243,9 @@ auto reduce(Args&&... args) {
 \end{lstlisting}
 Listing 2.
 
-\item Tuples: Introduced by C++11, tuple usage in C++ was
+\item Tuples: Introduced by \cpp11, tuple usage in \cpp was
 simplified by providing new tuple related functions in
-C++17 that make tuple a fully programmable struct-like
+\cpp17 that make tuple a fully programmable struct-like
 entity. The transition between tuple and structure is then
 handled via the new structured binding syntax that allow
 the compile-time deconstruction of structures and tuples
@@ -246,7 +253,10 @@ in a set of disjoint variables, thus making interface
 dealing with tuples easier to use. Listing 3 gives an
 example about tuples.
 
-\begin{lstlisting}[language=c++, caption=Tuple and structured bindings]{}
+\begin{lstlisting}[
+  language=c++,
+  caption=Tuple and structured bindings
+]{}
 // Build a tuple from values
 auto datas = std::make_tuple(3.f, 5, "test");
 // Direct access to tuple’s data
@@ -275,7 +285,7 @@ by relying on auto-vectorization. In our case, to ensure
 homogeneous performances across the different target
 architectures, we relied on the Boost.SIMD [17] package
 to generates SIMD code for all our architectures.
-Boost.SIMD relies on C++ meta-programming to act as
+Boost.SIMD relies on \cpp meta-programming to act as
 a zero-cost abstraction over SIMD operations in a large
 number of contexts. The SIMD code is then as easily
 written as a scalar version of the code and deliver 95%
@@ -292,7 +302,10 @@ vectorized dot product can simply be derived from using
 Boost.SIMD types and range adapters, polymorphic
 lambdas and standard algorithm.
 
-\begin{lstlisting}[language=c++, caption=Sample Boost.SIMD code]{}
+\begin{lstlisting}[
+  language=c++,
+  caption=Sample Boost.SIMD code
+]{}
 template<typename T>
 auto simd_dot(T* in1, T* in2, std::size_t count) {
   // Adapt [in,in+count[ as a vectorizable range
@@ -308,16 +321,14 @@ auto simd_dot(T* in1, T* in2, std::size_t count) {
   auto prod = [](auto&& r, auto&& v ) { return r + v; };
 
   // Process vectorizable & scalar sub-ranges
-  auto vr = std::transform_reduce( h1.begin(), h1.end()
-                                 , h2.begin()
-                                 , prod, sum
-                                 , simd::pack<T>{}
-                                 );
+  auto vr = std::transform_reduce(
+    h1.begin(), h1.end(), h2.begin(),
+    prod, sum, simd::pack<T>{});
 
-  auto sr = std::transform_reduce( t1.begin(), t1.end()
-                                 , t2.begin()
-                                 , prod, sum, T{}
-                                 );
+  auto sr = std::transform_reduce(
+    t1.begin(), t1.end(), t2.begin(),
+    prod, sum, T{});
+
   // Compute final dot product
   return sr + simd::sum(vr);
 }
@@ -332,13 +343,13 @@ Another point is that, by relying on higher-level library
 instead of SIMD pragma, Boost.SIMD guarantees
 the quality of the vectorization across compilers and
 compiler versions. It also leads to a cleaner and easier to
-maintain codes, relying only on standard C++ constructs 1 .
+maintain codes, relying only on standard \cpp constructs 1 .
 
 \item Loop unrolling: The notion of unrolling requires
 a proper abstraction. Loop unrolling requires three
-elements : the code fragment to repeat, the code
+elements: the code fragment to repeat, the code
 replication process and the iteration space declaration.
-Their mapping into C++ code is as follows :
+Their mapping into \cpp code is as follows :
 
 – The code fragment in itself, which represents
 the original loop body, is stored inside a
@@ -361,16 +372,16 @@ take care of the order of evaluation and behave as
 an unrollable statement.
 
 – The iteration space need to be specified
-as an entity supporting expansion via ...
+as an entity supporting expansion via \lstinline{...}
 and containing the actual value of the
-iteration space. Standard C++ provides the
+iteration space. Standard \cpp provides the
 \lstinline{std::integral_sequence<N...>} class that
 acts as a variadic container of integral constant. It
 can be generated via one helper meta-function such
 as \lstinline{std::make_integral_sequence<T,N>}
 and passed directly to a variadic function template.
 All these elements can then be combined into a
-for_constexpr function detailed in Listing 5.
+\lstinline{for_constexpr} function detailed in Listing 5.
 The function proceed to compute the proper
 integral constant sequence from the Start,
 End and D compile-time integral constant. As
@@ -382,42 +393,44 @@ computed at the unrolling site. To prevent unwanted copies
 and ensure inlining, all elements are passed to the function
 as a rvalue-reference or an universal reference.
 
-\begin{lstlisting}[language=c++, caption=Compile-time unroller]{}
+\begin{lstlisting}[
+  language=c++,
+  caption=Compile-time unroller
+]{}
 template<int Start, int D, typename Body, int... Step>
-void for_constexpr( Body&& body
-                  , std::integer_sequence<int, Step...>&&
-                  , std::integral_constant<int, Start>&&
-                  , std::integral_constant<int, D>&&
-                  ) {
+void for_constexpr(Body body,
+  std::integer_sequence<int, Step...>,
+  std::integral_constant<int, Start>,
+  std::integral_constant<int, D>) {
   (body(std::integral_constant<int, Start + D*Step>{}), ...);
 }
 
 template<int Start, int End, int D = 1, typename Body>
-void for_constexpr(Body&& body) {
+void for_constexpr(Body body) {
   constexpr auto size = End - Start;
-  for_constexpr( std::forward<Body>(body)
-               , std::make_integer_sequence<int, size>{}
-               , std::integral_constant<int, Start>{}
-               , std::integral_constant<int, D>{}
-               );
+  for_constexpr(
+    std::move(body),
+    std::make_integer_sequence<int, size>{},
+    std::integral_constant<int, Start>{},
+    std::integral_constant<int, D>{});
 }
 \end{lstlisting}
 Listing 5.
 
-A sample usage of the for_constexpr function is given
+A sample usage of the \lstinline{for_constexpr} function is given
 in Listing 6 in a function printing every element from a
 \lstinline{std::tuple}.
 
 \begin{lstlisting}[
   language=c++,
-  caption=Tuple member walkthrough via compile-time unrolling]{}
+  caption=Tuple member walkthrough via compile-time unrolling
+]{}
 template<typename Tuple>
 void print_tuple(Tuple const& t) {
   constexpr auto size = std::tuple_size<Tuple>::value;
-  for_constexpr<0, size>( [&](auto&& i) {
+  for_constexpr<0, size>([&](auto&& i) {
     std::cout << std::get<i>(t) << "\n";
-  }
-  );
+  });
 }
 \end{lstlisting}
 Listing 6.
@@ -426,7 +439,7 @@ Note that this implementation exposes some interesting
 properties:
 
 \begin{itemize}
-\item As for_constexpr calls are simple function call, they
+\item As \lstinline{for_constexpr} calls are simple function call, they
 can be nested in arbitrary manners.
 
 \item Relying on \lstinline{std::integral_constant} to carry the
@@ -437,6 +450,7 @@ both compile-time and runtime contexts.
 \item Code generation quality will still be optimized by the
 compiler, thus letting all other non-unrolling related op-
 timizations to be applied.
+
 One can argue about the advantage of such a method
 compared to relying on the compiler unrolling algorithm
 or using non-standard unrolling pragma. In both cases, our
@@ -462,6 +476,7 @@ implementations for these routines on different architectures
 remains important to improve the performance of several
 algorithms and applications. Moreover, small-scale BLAS
 kernels are useful for some batched computations [20].
+
 Here, we consider the matrix-vector multiplication routine
 for general dense matrices, gemv, which performs either
 y := αAx + βy or y := αAT x + βy, where A is an m × n
@@ -472,9 +487,10 @@ most L1 cache memory, thus allowing a maximal throughput
 for SIMD computation units. The algorithm we present in
 Listing 7 is optimized for a column-major matrix. For space
 consideration, we will only focus on the core processing of
-the computation, i.e the SIMD part, as the computation of
+the computation, \ie the SIMD part, as the computation of
 the scalar tail on the last columns and rows can be trivially
 inferred from there.
+
 Our optimized code relies on two types representing
 statically-sized matrix and vector, namely mat<T,H,W>
 and vec<T,N>. Those types carry their height and width
@@ -500,7 +516,10 @@ corresponding columns of the matrix and the elements
 of the vector can respectively be loaded and broadcasted
 into SIMD registers.
 
-\begin{lstlisting}[language=c++, caption=Unrolled gemv kernel]{}
+\begin{lstlisting}[
+  language=c++,
+  caption=Unrolled gemv kernel
+]{}
 template<typename T, std::size_t H, std::size_t W>
 void gemv(mat<T, H, W>& mat, vec<T, W>& vec, vec<T, W>& r) {
   using pack_t = bs::pack<T>;
@@ -533,7 +552,7 @@ Listing 7.
 
 3) A second level of unrolling that pass through all the
 available SIMD registers loadable from a given column.
-We rely on an overloaded operator() on the matrix
+We rely on an overloaded \lstinline{operator()} on the matrix
 to compute the proper position to load from. As usual
 with Boost.SIMD, the actual computation is run with
 scalar-like syntax using regular operators.
@@ -568,22 +587,22 @@ measured time.
 
 \subsection{On X86 Intel processor}
 
-0
-5
-10
-15
-20
-25
-30
-35
-40
-45
-50
-4 8 16 32 64 128 256 512
-Gflop/s
-Matrix size
-SSE generated code
-SSE OpenBLAS
+% 0
+% 5
+% 10
+% 15
+% 20
+% 25
+% 30
+% 35
+% 40
+% 45
+% 50
+% 4 8 16 32 64 128 256 512
+% Gflop/s
+% Matrix size
+% SSE generated code
+% SSE OpenBLAS
 Fig. 2. GEMV performance on Intel i5-7200 processor using SIMD Exten-
 sions set (SSE-4.2)
 
@@ -607,22 +626,22 @@ usage starts to cause spill to the stack, showing that our
 solution can not be arbitrarily extended further to larger matrix
 sizes.
 
-0
-5
-10
-15
-20
-25
-30
-35
-40
-45
-50
-4 8 16 32 64 128 256 512
-Gflop/s
-Matrix size
-AVX generated code
-AVX OpenBLAS
+% 0
+% 5
+% 10
+% 15
+% 20
+% 25
+% 30
+% 35
+% 40
+% 45
+% 50
+% 4 8 16 32 64 128 256 512
+% Gflop/s
+% Matrix size
+% AVX generated code
+% AVX OpenBLAS
 Fig. 3. GEMV performance on Intel i5-7200 processor using Advanced Vector
 Extensions (AVX)
 
@@ -661,25 +680,25 @@ that our method of guiding the compiler and letting it do
 fine grained optimizations generates a better code than the
 hand-written assembly approach of the OpenBLAS library.
 
-0
-2
-4
-6
-8
-10
-12
-4 8 16 32 64 128 256 512
-Gflop/s
-Matrix size
-ARM generated code
-ARM OpenBLAS
+% 0
+% 2
+% 4
+% 6
+% 8
+% 10
+% 12
+% 4 8 16 32 64 128 256 512
+% Gflop/s
+% Matrix size
+% ARM generated code
+% ARM OpenBLAS
 Fig. 4. GEMV performance on ARM Cortex A57 processor
 
 We exhibit performance drops similar to OpenBLAS due to
 L1 → L2 misses. Register spilling also happens once we reach
 512 × 512 elements. The combination of our template based
 unrolling and Boost.SIMD shows that it is indeed possible to
-generate ARM NEON code from high-level C++ with zero
+generate ARM NEON code from high-level \cpp with zero
 abstraction cost.
 
 \section{Conclusion}
@@ -714,71 +733,94 @@ performance with less input from the user.
 
 \end{document}
 
+
 % [1] Intel, “Math kernel library (mkl).” [Online]. Available:
 % http://www.intel.com/software/products/mkl/
+
 % [2] AMD, “Amd core math library (acml).” [Online]. Available:
 % https://developer.amd.com/amd-cpu-libraries/amd-math-library-libm/
+
 % [3] G. Quintana-Ort, E. S. Quintana-Ort, F. G. Zee, R. A. Geijn, and
 % E. Chan, “The libflame library for dense matrix computations,” Com-
 % puting in Science & Engineering, vol. 11, pp. 56–63, 2009.
+
 % [4] M. Cole, Algorithmic Skeletons: Structured Management of Parallel
 % Computation. Cambridge, MA, USA: MIT Press, 1991.
+
 % [5] T. Veldhuizen, “Expression templates,” C++ Report, vol. 7, pp. 26–31,
 % 1995.
+
 % [6] K. Czarnecki, K. Østerbye, and M. V ̈olter, “Generative program-
 % ming,” in Object-Oriented Technology ECOOP 2002 Workshop Reader,
 % J. Hern ́andez and A. Moreira, Eds. Berlin, Heidelberg: Springer Berlin
 % Heidelberg, 2002, pp. 15–29.
+
 % [7] J. Falcou, J. S ́erot, L. Pech, and J. Laprest ́e, “Meta-programming applied
 % to automatic SMP parallelization of linear algebra code,” in Euro-Par
 % 2008 - Parallel Processing, 14th International Euro-Par Conference,
 % Las Palmas de Gran Canaria, Spain, August 26-29, 2008, Proceedings,
 % 2008, pp. 729–738.
+
 % [8] K. Czarnecki and U. W. Eisenecker, Generative Programming: Methods,
 % Tools, and Applications. New York, NY, USA: ACM Press/Addison-
 % Wesley Publishing Co., 2000.
+
 % [9] D. Abrahams and A. Gurtovoy, C++ Template Metaprogramming:
 % Concepts, Tools, and Techniques from Boost and Beyond (C++ in Depth
 % Series). Addison-Wesley Professional, 2004.
+
 % [10] W. Bright, “Templates revisited - d programming language.” [Online].
 % Available: https://dlang.org/articles/templates-revisited.html
+
 % [11] W. Taha, A Gentle Introduction to Multi-stage Programming. Berlin,
 % Heidelberg: Springer Berlin Heidelberg, 2004, pp. 30–50.
+
 % [12] T. Sheard and S. P. Jones, “Template meta-programming for haskell,”
 % SIGPLAN Not., vol. 37, no. 12, pp. 60–75, Dec. 2002.
+
 % [13] R. Keryell, R. Reyes, and L. Howes, “Khronos sycl for opencl: A
 % tutorial,” in Proceedings of the 3rd International Workshop on OpenCL,
 % ser. IWOCL ’15. New York, NY, USA: ACM, 2015, pp. 24:1–24:1.
 % [Online]. Available: http://doi.acm.org/10.1145/2791321.2791345
+
 % [14] F. G. Van Zee and R. A. van de Geijn, “Blis: A framework for
 % rapidly instantiating blas functionality,” ACM Trans. Math. Softw.,
 % vol. 41, no. 3, pp. 14:1–14:33, Jun. 2015. [Online]. Available:
 % http://doi.acm.org/10.1145/2764454
+
 % [15] D. G. Spampinato and M. P ̈uschel, “A basic linear algebra compiler for
 % structured matrices,” in International Symposium on Code Generation
 % and Optimization (CGO), 2016, pp. 117–127.
+
 % [16] A. Gurtovoy and D. Abrahams, “The boost c++ metaprogramming
 % library,” 2002.
+
 % [17] P. Est ́erie, J. Falcou, M. Gaunard, and J.-T. Laprest ́e, “Boost.simd:
 % Generic programming for portable simdization,” in Proceedings of the
 % 2014 Workshop on Programming Models for SIMD/Vector Processing,
 % ser. WPMVP ’14. New York, NY, USA: ACM, 2014, pp. 1–8.
+
 % [18] E. Anderson, Z. Bai, C. Bischof, L. S. Blackford, J. Demmel, J. J.
 % Dongarra, J. Du Croz, S. Hammarling, A. Greenbaum, A. McKenney,
 % and D. Sorensen, LAPACK Users’ Guide (Third Ed.). Philadelphia, PA,
 % USA: Society for Industrial and Applied Mathematics, 1999.
+
 % [19] S. Tomov, R. Nath, and J. Dongarra, “Accelerating the reduction to upper
 % hessenberg, tridiagonal, and bidiagonal forms through hybrid gpu-based
 % computing,” Parallel Computing, vol. 36, no. 12, pp. 645 – 654, 2010.
+
 % [20] T. Dong, A. Haidar, S. Tomov, and J. Dongarra, “Optimizing the
 % svd bidiagonalization process for a batch of small matrices,” Procedia
 % Computer Science, vol. 108, pp. 1008 – 1018, 2017, international
 % Conference on Computational Science, ICCS 2017, 12-14 June 2017,
 % Zurich, Switzerland.
+
 % [21] [Online]. Available: http://www.openblas.net
+
 % [22] R. M. Stallman and G. DeveloperCommunity, Using The Gnu Compiler
 % Collection: A Gnu Manual For Gcc Version 4.3.3. Paramount, CA:
 % CreateSpace, 2009.
+
 % [23] Q. Wang, X. Zhang, Y. Zhang, and Q. Yi, “Augem: Automatically
 % generate high performance dense linear algebra kernels on x86 cpus,”
 % in Proceedings of the International Conference on High Performance
