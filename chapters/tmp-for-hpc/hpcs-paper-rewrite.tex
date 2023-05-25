@@ -244,7 +244,7 @@ auto reduce(Args&&... args) {
 \end{lstlisting}
 Listing 2.
 
-\item Tuples: Introduced by \cpp11, tuple usage in \cpp was
+\paragraph{Tuples} Introduced by \cpp11, tuple usage in \cpp was
 simplified by providing new tuple related functions in
 \cpp17 that make tuple a fully programmable struct-like
 entity. The transition between tuple and structure is then
@@ -253,20 +253,21 @@ the compile-time deconstruction of structures and tuples
 in a set of disjoint variables, thus making interface
 dealing with tuples easier to use. Listing 3 gives an
 example about tuples.
-
-\begin{lstlisting}[
-  language=c++,
-  caption=Tuple and structured bindings
-]{}
-// Build a tuple from values
-auto datas = std::make_tuple(3.f, 5, "test");
-// Direct access to tuple’s data
-std::get<0>(datas) = 6.5f;
-// Structured binding access
-auto&[a,b,c] = datas;
-// Add 3 tot he second tuple’s element
-b += 3;
-\end{lstlisting}
+%
+% \begin{lstlisting}[
+%   language=c++,
+%   caption=Tuple and structured bindings
+% ]{}
+% // Build a tuple from values
+% auto datas = std::make_tuple(3.f, 5, "test");
+%
+% // Direct access to tuple’s data
+% std::get<0>(datas) = 6.5f;
+% // Structured binding access
+% auto&[a,b,c] = datas;
+% // Add 3 tot he second tuple’s element
+% b += 3;
+% \end{lstlisting}
 Listing 3.
 
 \end{itemize}
@@ -280,7 +281,7 @@ architecture that is vectorization and on the other hand the
 controlled unrolling of the inner loop to ensure proper register
 and pipeline usage.
 
-\item Vectorization: Vectorization can be achieved either
+\paragraph{Vectorization} Vectorization can be achieved either
 using the specific instructions set of each vendor or
 by relying on auto-vectorization. In our case, to ensure
 homogeneous performances across the different target
@@ -347,13 +348,14 @@ the quality of the vectorization across compilers and
 compiler versions. It also leads to a cleaner and easier to
 maintain codes, relying only on standard \cpp constructs.
 
-\item Loop unrolling: The notion of unrolling requires
+\paragraph{Loop unrolling} The notion of unrolling requires
 a proper abstraction. Loop unrolling requires three
 elements: the code fragment to repeat, the code
 replication process and the iteration space declaration.
 Their mapping into \cpp code is as follows:
 
-– The code fragment in itself, which represents
+\begin{itemize}
+\item The code fragment in itself, which represents
 the original loop body, is stored inside a
 polymorphic lambda function. This lambda
 function will takes a polymorphic argument which
@@ -365,7 +367,7 @@ a type. By doing so, we are able to propagate the
 constness of the iteration variable as far as possible
 inside the code fragment of the loop body.
 
-– The unrolling process itself relies on the fold-
+\item The unrolling process itself relies on the fold-
 expression mechanism. By using the sequencing
 operator, also known as operator comma, the
 compiler can unroll arbitrary expressions separated
@@ -373,7 +375,7 @@ by the comma operator. The comma operator will
 take care of the order of evaluation and behave as
 an unrollable statement.
 
-– The iteration space need to be specified
+\item The iteration space need to be specified
 as an entity supporting expansion via \lstinline{...}
 and containing the actual value of the
 iteration space. Standard \cpp provides the
@@ -384,6 +386,7 @@ as \lstinline{std::make_integral_sequence<T,N>}
 and passed directly to a variadic function template.
 All these elements can then be combined into a
 \lstinline{for_constexpr} function detailed in Listing 5.
+\end{itemize}
 
 The function proceed to compute the proper
 integral constant sequence from the Start,
@@ -482,9 +485,10 @@ kernels are useful for some batched computations [20].
 
 Here, we consider the matrix-vector multiplication routine
 for general dense matrices, gemv, which performs either
-y := αAx + βy or y := αAT x + βy, where A is an m × n
-matrix, α and β are scalars, and y and x are vectors. In
-this paper, we focus on matrices of small sizes ranging from
+$y := \alpha A x + \beta y$ or $y := \alpha A T x + \beta y$,
+where $A$ is an $m \times n$ matrix, $\alpha$ and $\beta$ are scalars,
+and $y$ and $x$ are vectors. In this paper,
+we focus on matrices of small sizes ranging from
 4 to 512 as this range of sizes encompasses the size of
 most L1 cache memory, thus allowing a maximal throughput
 for SIMD computation units. The algorithm we present in
@@ -495,15 +499,15 @@ the scalar tail on the last columns and rows can be trivially
 inferred from there.
 
 Our optimized code relies on two types representing
-statically-sized matrix and vector, namely mat<T,H,W>
-and vec<T,N>. Those types carry their height and width
+statically-sized matrix and vector, namely \lstinline{mat<T,H,W>}
+and \lstinline{vec<T,N>}. Those types carry their height and width
 as template parameters so that all size related values can be
 derived from them. The code shown in Listing 7 is made up
 of three main steps as detailed in Figure 1:
 Broadcast of each element of
 the vector in different registersSIMDSIMD Scalar
 Fig. 1. An example of matrix vector multiplication showing the SIMD/scalar
-computation boundaries. The matrix is 9 × 9 of simple precision floats so we
+computation boundaries. The matrix is $9 \times 9$ of simple precision floats so we
 can put 4 elements per SIMD register.
 
 1) The computation of SIMD/scalar boundaries based
@@ -613,18 +617,18 @@ In Figure 2, we compare the performance of our implementation
 using the SIMD Extensions set SSE 4.2 and a similarly
 configured OpenBLAS gemv kernel. The obtained results show
 that the performances of our automatically generated code is
-up to 2 times better for matrices of sizes ranging from 4 × 4
-elements to 16 × 16 elements. However, for matrices of size
-32 × 32 elements and 64 × 64 elements, the OpenBLAS gemv
-kernel gives a better performances, especially for the 64 × 64
+up to 2 times better for matrices of sizes ranging from $4 \times 4$
+elements to $16 \times 16$ elements. However, for matrices of size
+$32 \times 32$ elements and $64 \times 64$ elements, the OpenBLAS gemv
+kernel gives a better performances, especially for the $64 \times 64$
 case. This is because the OpenBLAS library uses a dedi-
 cated gemv kernel with specific optimizations and prefetching
 strategies that our generic solution can not emulate. Beyond
-this size (64 × 64 elements), the L1 → L2 cache misses
+this size ($64 \times 64$ elements), the $L1 \rightarrow L2$ cache misses
 cause a performance drop for both our generated code and
 the OpenBLAS gemv kernel. Nevertheless, our generated code
-sustains a better throughput for matrices of sizes 128 × 128
-elements. For matrices of size 256×256 elements, the register
+sustains a better throughput for matrices of sizes $128 \times 128$
+elements. For matrices of size $256 \times 256$ elements, the register
 usage starts to cause spill to the stack, showing that our
 solution can not be arbitrarily extended further to larger matrix sizes.
 
@@ -659,10 +663,10 @@ kernel (15.78 Gflop/s vs 5.06 Gflop/s). Two phenomenons
 appear however. The first one is that the increased number
 of the AVX registers compared to the SSE ones makes the
 effect of register spilling less prevalent. The second one is
-that the code generated for the special 64 × 64 elements
+that the code generated for the special $64 \times 64$ elements
 case [23] in OpenBLAS has a little advantage compared to
 our automatically generated code. Finally, we note the fact
-that, for matrices of size above 512 × 512 elements, we stop
+that, for matrices of size above $512 \times 512$ elements, we stop
 being competitive due to the large amount of registers our
 fully unrolled approach would require.
 
@@ -698,8 +702,8 @@ hand-written assembly approach of the OpenBLAS library.
 Fig. 4. GEMV performance on ARM Cortex A57 processor
 
 We exhibit performance drops similar to OpenBLAS due to
-L1 → L2 misses. Register spilling also happens once we reach
-512 × 512 elements. The combination of our template based
+$L1 \rightarrow L2$ misses. Register spilling also happens once we reach
+$512 \times 512$ elements. The combination of our template based
 unrolling and Boost.SIMD shows that it is indeed possible to
 generate ARM NEON code from high-level \cpp with zero
 abstraction cost.
