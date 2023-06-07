@@ -4,7 +4,6 @@
 
 \chapter{Code generation at low level}
 
-
 BLAS-level functions are the cornerstone of a large
 subset of applications. If a large body of work surrounding
 efficient and large-scale implementation of some routines such
@@ -749,13 +748,13 @@ Another objective will be to adapt such techniques to cooperate
 with tuning framework, hence providing the required level of
 performance with less input from the user.
 
-\chapter{Blaze: code generation at expression level}
+\chapter{Code generation at expression level}
 
 In this chapter I will cover the use of template metapramming for higher levels
 of abstraction. Templates can be used to represent whole mathematical
-expressions at compile time by creating type arborescences where internal
-nodes represent operations, and leaves are the operands. This type of
-representation is called an expression template\cite{veldhuizen:1995}.
+expressions at compile time by creating type-based arborescences.
+This type of representation is called an expression
+template\cite{veldhuizen:1995}, which will be referred to as \et.
 
 Combined with compile-time mechanisms such as function overloading,
 specialization, and operator overloading, expression templates can be used to

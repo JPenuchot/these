@@ -7,7 +7,27 @@
 %   - Reflection
 %   - Can't read
 
+\chapter{Introduction}
+
+This thesis is about metaprogramming techniques for parallel code generation.
+My work aims to study the boundary between compile-time parsing of
+domain-specific embedded languages and high performance code generation in \cpp.
+
+The main motivation is to provide tools, libraries, and guidelines for embedding
+mathematical languages in \cpp with the hope that it can be useful to build a
+cohesive set of tools to make generic high performance computing more accessible
+to non-specialized audiences. This goal is even more important as new computing
+architectures emerge over time. Developing high performance programs requires
+specialized implementations that can be achieved by either specializing
+implementations, or using libraries that provide specialized abstractions at
+various levels and for various domains.
+
 \chapter{State of the art of metaprogramming}
+
+In this state of the art I will first give an overview of metaprogramming in
+historic and contemporary languages. Then I will focus on the state of the art
+of \cpp metaprogramming, and notable high performance computing libraries as they
+are essential for the scope of my thesis.
 
 \section{Metaprogramming styles and languages}
 
@@ -15,21 +35,50 @@
 
 \subsection{Metaprogramming in contemporary languages}
 
-\begin{itemize}
-\item MetaOCaml
+Metaprogramming perpetuates itself in contemporary languages,
+with some being more widespread than others.
 
-\item DLang
+\paragraph{MetaOCaml}
 
-\item Rust
+MetaOCaml\cite{metaocaml} implements quoting and splicing
+\ie the ability to essentially copy and paste expressions,
+as well as staged compilation to evaluate statements at compile-time.
+This enables code generation to occur both at runtime and at compile-time.
 
-\item Braid
+\paragraph{DLang}
 
-\item C++ (plug to section \ref{lbl:meta-cpp})
-\end{itemize}
+DLang more or less extends the metaprogramming model accidentally proposed
+by \cpp. It leverages templates and compile time function evaluation just like
+its predecessor, but with a much more permissive approach than its predecessor.
+
+
+\paragraph{Rust}
+
+Rust proposes metaprogramming through generics, macros and traits.
+Generics are similar to \cpp templates, although
+
+\paragraph{Braid}
+
+\paragraph{Terra}
+
+Terra\cite{terra} implements a very explicit metaprogramming model.
+The language is based on LUA, and exploits the dynamic nature of the language
+together with LLVM JIT compilation to allow code generation
+to happen at runtime.
+It implements multi-staged compilation and splicing just like MetaOCaml.
+
+Additionally, Terra can be embedded in other languages through its C API.
+Overall it is a very versatile and experimental take on metaprogramming,
+but the lack of interoperability with \cpp templates makes it hard to justify
+its use for HPC applications.
+
+As we will see in section \ref{lbl:meta-cpp}, GPU computing libraries
+rely heavily on \cpp metaprogramming to provide building blocks for
+portable high performance compute kernels.
 
 \section{Metaprogramming and HPC in C++} \label{lbl:meta-cpp}
 
-\subsection{The constructs of C++ metaprogramming}
+\subsection{Language constructs of C++ metaprogramming}
 
 \begin{itemize}
 \item Templates
@@ -39,7 +88,7 @@
 \item Constexpr
 \end{itemize}
 
-\subsection{Core and applicative metaprogramming libraries}
+\subsection{Core and application-specific libraries}
 
 \begin{itemize}
 \item Brigand
@@ -56,7 +105,7 @@
 \item CTPG
 \end{itemize}
 
-\subsection{Metaprogramming and HPC libraries}
+\subsection{High performance computing libraries}
 
 \begin{itemize}
 \item Eigen
