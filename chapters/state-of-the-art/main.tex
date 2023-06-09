@@ -10,7 +10,7 @@
 \chapter{Introduction}
 
 This thesis is about metaprogramming techniques for parallel code generation.
-My work aims to study the boundary between compile-time parsing of
+It aims to study the boundary between compile-time parsing of
 domain-specific embedded languages and high performance code generation in \cpp.
 
 The main motivation is to provide tools, libraries, and guidelines for embedding
@@ -80,46 +80,68 @@ portable high performance compute kernels.
 
 \subsection{Language constructs of C++ metaprogramming}
 
-\begin{itemize}
-\item Templates
+Metaprogramming in \cpp relies on
 
-\item Parameter packs
+\paragraph{Templates}
 
-\item Constexpr
-\end{itemize}
+\paragraph{Overloading}
+
+\paragraph{Parameter packs}
+
+\paragraph{Constexpr functions and variables}
 
 \subsection{Core and application-specific libraries}
 
+As previously said \cpp templates can be seen as a functional language.
+Over time a range of libraries emerged, aiming to provide functionalities
+similar to regular language such as containers and algorithms for use in
+template metaprograms. Notable examples of such libraries are MPL\cite{mpl},
+Brigand\cite{brigand}, and mp11\cite{mp11}.
+
+Libraries for more specific uses were also implemented, such as
+Spirit\cite{spirit} for writing parsers (not for compile time parsing),
+Compile Time Regular Expressions (CTRE)\cite{ctre}
+for compiling regular expressions,
+and Compile Time Parser Generator(CTPG)\cite{ctpg}
+for generating LR1 parsers (also not for compile time parsing).
+
+The advertised benefits of metaprogrammed libraries are:
+
 \begin{itemize}
-\item Brigand
 
-\item mp11
-\end{itemize}
+\item Performance: notably in the case of CTRE.
+Regular expressions are usually interpreted at runtime.
+It shows performance on par with Rust's regex library
+which also achieves leading performance levels
+by compiling regular expressions.
 
+\item Language integration: since these are \cpp libraries,
+their APIs can take advantage of \cpp operator overloading and lambdas.
+In CTPG, these are used to provide a domain-specific language that is close to
+what parser generators like YACC or Bison provide,
+though it is still regular \cpp code which can be put inside any function body.
+Using a \cpp API makes these libraries easier to learn
+as the syntax is already familiar to their users.
 
-\begin{itemize}
-\item Boost.Phoenix
+\item Streamlined toolchain: as they only require to be included as headers.
+This avoids complicating compilation toolchains by requiring additional programs
+to be installed and integrated to the build system.
 
-\item CTRE
-
-\item CTPG
 \end{itemize}
 
 \subsection{High performance computing libraries}
 
-\begin{itemize}
-\item Eigen
+Eigen
 
-\item Blaze
+Blaze
 
-\item NT2
+NT2
 
-\item EVE
+EVE
 
-\item HPX
+HPX
 
-\item Thrust, CUB, etc.
-\end{itemize}
+Thrust, CUB, etc.
 
 \section{Conclusion}
 
