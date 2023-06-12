@@ -6,8 +6,11 @@ RUN pacman -Syu --noconfirm
 RUN pacman -S --noconfirm \
   biber \
   texlive-bibtexextra \
+  texlive-bin \
+  texlive-core \
   texlive-fontsextra \
-  texlive-most \
+  texlive-lang \
+  texlive-latexextra \
   ttf-opensans
 
 # Run tests
