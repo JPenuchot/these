@@ -105,15 +105,15 @@ for compiling regular expressions,
 and Compile Time Parser Generator(CTPG)\cite{ctpg}
 for generating LR1 parsers (also not for compile time parsing).
 
-The advertised benefits of metaprogrammed libraries are:
+The benefits of metaprogrammed libraries are:
 
 \begin{itemize}
 
 \item Performance: notably in the case of CTRE.
-Regular expressions are usually interpreted at runtime.
-It shows performance on par with Rust's regex library
-which also achieves leading performance levels
-by compiling regular expressions.
+Regular expressions are usually interpreted at runtime,
+which adds a measurable overhead to text processing.
+CTRE shows leading performance, on par with Rust's regex library
+which also works by compiling regular expressions.
 
 \item Language integration: since these are \cpp libraries,
 their APIs can take advantage of \cpp operator overloading and lambdas.

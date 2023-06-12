@@ -163,40 +163,58 @@ functions in constant expressions\cite{virtual-constexpr}. This allows
 heritage-based polymorphism in \constexpr programming when used with
 \constexpr allocation of polymorphic types.
 
-% \subsection{Cest: standard-like containers for \constexpr programming}
-%
-% As of today, not all standard C++ containers have been made usable in constant
-% expressions. Some useful containers like \lstinline|std::map| or
-% \lstinline|std::set| are still unusable in constant expressions, and some like
-% \lstinline|std::unique_ptr| were made usable in this context with C++23.
-% However, not all standard libraries --especially the ones provided by stable
-% Linux distributions-- implement these modifications.
-%
-% The Cest\cite{cest} project was started to tackle this issue by providing
-% containers that are compatible with the ones present in the C++ standard
-% library, but are usable in constant expressions when most standard containers
-% cannot.
+\subsection{Cest: standard-like containers for constexpr programming}
 
-% \section{C++23 experiments for implementing EDSLs of arbitrary syntaxes}
+As of today not all standard containers can be used in constant expressions.
+It is the case for \lstinline{std::map}, \lstinline{std::set}, and others,
+making some \cpp programs harder to adapt for use in constant evaluations.\\
 
-% We explore two cases of \constexpr parser implementations for small languages
-% that return abstract syntax trees using \constexpr allocated memory through
-% standard containers, and backends that transform the \constexpr function results
-% into programs through templates using different techniques. The use cases we
-% consider are:
-%
-% \begin{itemize}
-%   \item The Brainfuck as a Turing machine emulation language. Its main interest
-%         is its large corpus of example programs.
-%   \item A basic math language supporting infix operators and function calls.
-% \end{itemize}
+The Cest\cite{cest} project was started by Paul Keir to tackle this issue
+by providing containers that are interchangeable with the ones present
+in the C++ standard library, and are usable in constant expressions.
 
-% The Poacher project was started to experiment ways to leverage \constexpr
-% programming for the integration of embedded domain specific languages of
-% arbitrary syntaxes. Considering the current restrictions on \constexpr allocated
-% memory, going from a static string representation of a program, mathematical formula, or
-% regular expression to a compiled program using \constexpr programming might not
-% be trivial.
+Even though the Poacher project does not depend on Cest anymore,
+it has been instrumental to start experimenting with \constexpr programming
+at the beginning of my thesis. It took time for standard libraries such as
+GNU's stdlibc++ and LLVM's libc++ to implement \constexpr compatibility for
+\lstinline{std::vector} (standardized in \cpp20) or \lstinline{std::unique_ptr}
+(standardized in \cpp23), and my motivation was to use implement \constexpr
+parsers with very limited use of unconventional programming techniques.
+
+For example, some \constexpr programs or libraries use \lstinline{std::array}
+as an alternative to \lstinline{std::vector} in \constexpr function bodies
+as \lstinline{std::array} was made compatible for use in \constexpr functions
+as soon as \cpp17. However, the use of preallocated arrays requires workarounds
+such as using additional variables to keep track of element count,
+additional computations to estimate a lower bound for preallocation,
+or simply using arbitrary "magic" values for preallocations.
+Moreover, assigning static arrays of different sizes is not permitted,
+adding more unnecessary complexity to \constexpr functions.\\
+
+I contributed to the Cest project by implementing the \constexpr compatible
+alternative to \lstinline{std::unique_ptr}, which was essential for the
+implementation of the Brainfuck \constexpr parser in \ref{lbl:bf-frontend}.
+
+\section{C++23 experiments for implementing EDSLs of arbitrary syntaxes}
+
+We explore two cases of \constexpr parser implementations for small languages
+that return abstract syntax trees using \constexpr allocated memory through
+standard containers, and backends that transform the \constexpr function results
+into programs through templates using different techniques. The use cases we
+consider are:
+
+\begin{itemize}
+  \item The Brainfuck as a Turing machine emulation language. Its main interest
+        is its large corpus of example programs.
+  \item A basic math language supporting infix operators and function calls.
+\end{itemize}
+
+The Poacher project was started to experiment ways to leverage \constexpr
+programming for the integration of embedded domain specific languages of
+arbitrary syntaxes. Considering the current restrictions on \constexpr allocated
+memory, going from a static string representation of a program, mathematical formula, or
+regular expression to a compiled program using \constexpr programming might not
+be trivial.
 
 % https://www.cs.rhul.ac.uk/research/languages/csle/lookahead_backtrack.html
 % https://www.boost.org/doc/libs/1_81_0/libs/spirit/doc/html/spirit/references.html
@@ -242,7 +260,7 @@ strategies.
 
 % http://esoteric.sange.fi/brainfuck/utils/mandelbrot/
 
-\subsection{Frontend design}
+\subsection{Frontend design} \label{lbl:bf-frontend}
 
 The first building blocks that must be represented by the BF AST are the
 instructions. A trivial kind of representation that can be used in constant
