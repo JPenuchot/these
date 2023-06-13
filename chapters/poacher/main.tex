@@ -189,11 +189,21 @@ such as using additional variables to keep track of element count,
 additional computations to estimate a lower bound for preallocation,
 or simply using arbitrary "magic" values for preallocations.
 Moreover, assigning static arrays of different sizes is not permitted,
-adding more unnecessary complexity to \constexpr functions.\\
+adding more unnecessary complexity to \constexpr functions.
 
-I contributed to the Cest project by implementing the \constexpr compatible
-alternative to \lstinline{std::unique_ptr}, which was essential for the
-implementation of the Brainfuck \constexpr parser in \ref{lbl:bf-frontend}.
+Finally another use of Cest is to make more \constexpr functions
+\cpp20 compatible. For example, \lstinline{cest::unique_ptr} is compatible
+with \cpp20, even though \lstinline{std::unique_ptr} was made \constexpr
+compatible in \cpp23. When used in \cpp23 mode, some containers are replaced
+with aliases of the STL's containers. This ensures that the best implementation
+available is always the one being used, and avoids long term maintainance
+burdens in the as Cest is mostly meant to be a transitory container library.
+\\
+
+I contributed to the Cest project by implementing its \constexpr compatible
+alternative to \lstinline{std::unique_ptr}, which was essential for the initial
+implementation of the Brainfuck \constexpr parser in \ref{lbl:bf-frontend}
+in late 2020.
 
 \section{C++23 experiments for implementing EDSLs of arbitrary syntaxes}
 
