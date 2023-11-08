@@ -1,0 +1,10 @@
+CompileFlags:
+  CompilationDatabase: ./cpp-examples/build/
+Diagnostics:
+  UnusedIncludes: Strict
+  ClangTidy:
+    Add:
+      - 'bugprone-*'
+      - 'readability-*'
+      - 'clang-analyzer-core.*'
+      - 'clang-analyzer-security.*'

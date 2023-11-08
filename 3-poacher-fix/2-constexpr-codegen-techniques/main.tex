@@ -1,0 +1,654 @@
+\documentclass[../../../main]{subfiles}
+\begin{document}
+
+\section{
+  Code generation from constexpr allocated structures
+}
+
+In this section, we will present different solutions to generate code
+from non-literal data structures generated with \constexpr functions.
+
+Non-literal data structures allow more flexibility through the use of
+dynamic memory, and allow simpler code as they do not require contraptions
+to get around the lack of dynamic allocations.
+
+% Limitations
+
+However, keep in mind that there are still limitations.
+The solutions evaluated in this paper are still workarounds.
+What they allow is the use of dynamically-sized structures for code generation.
+
+The first subsection covers a case where we need to convert a
+pointer tree returned by a \constexpr function into code.
+
+The second one will cover a case where the tree is returned in a serialized
+representation.
+
+\subsection{
+  Code generation from pointer tree data structures
+}
+
+\label{lbl:ptr-tree-codegen}
+
+In this subsection, we introduce three techniques that will allow us to use
+a pointer tree generated from a \constexpr function as a template parameter
+for code generation.
+
+To illustrate them, we use a minimalistic use case.
+A generator function returns a pointer tree representation of addition and
+constant nodes, which we will use to generate functions that evaluate
+the tree itself.
+
+\begin{lstlisting}[
+  language=C++,
+  label=lst:tree_generation,
+  caption=\lstinline{tree_t} type definition
+]{}
+/// Enum type to differentiate nodes
+enum node_kind_t {
+  constant_v,
+  add_v,
+};
+
+/// Node base type
+struct node_base_t {
+  node_kind_t kind;
+
+  constexpr node_base_t(node_kind_t kind_) : kind(kind_) {}
+  constexpr virtual ~node_base_t() = default;
+};
+
+/// Tree pointer type
+using tree_ptr_t = std::unique_ptr<node_base_t>;
+
+/// Checks that an object is a tree generator
+template <typename T>
+concept tree_generator = requires(T fun) {
+  { fun() } -> std::same_as<tree_ptr_t>;
+};
+
+/// Constant node type
+struct constant_t : node_base_t {
+  int value;
+  constexpr constant_t(int value_)
+      : node_base_t(constant_v), value(value_) {}
+};
+
+/// Addition node type
+struct add_t : node_base_t {
+  tree_ptr_t left;
+  tree_ptr_t right;
+  constexpr add_t(tree_ptr_t left_, tree_ptr_t right_)
+      : node_base_t(add_v), left(std::move(left_)),
+        right(std::move(right_)) {}
+};
+
+/// Generates an arbitrary tree
+constexpr tree_ptr_t gen_tree() {
+  return std::make_unique<add_t>(
+      std::make_unique<add_t>(std::make_unique<constant_t>(1),
+                              std::make_unique<constant_t>(2)),
+      std::make_unique<constant_t>(3));
+}
+\end{lstlisting}
+
+Listing \ref{lst:tree_generation} shows the type definitions, a concept to
+match tree generator functions, as well as the generator function itself.
+This is a common way to represent trees in \cpp, but the limits mentioned in
+\ref{lbl:constexpr-programming} make it impossible to use the result of
+\lstinline{gen_tree} directly as a template parameter to generate code.
+\\
+
+The techniques we will use to pass the result as a template parameter are:
+
+\begin{itemize}
+\item passing functions that return nodes as non-type template parameters,
+\item converting the tree into an expression template representation,
+\item serializing the tree into a dynamically allocated array,
+      then converting the dynamic array into a static array that can be used as
+      a non-type template parameter,
+\end{itemize}
+
+The compilation performance measurements in \ref{lbl:compile-time-eval} will
+rely on the same data passing techniques, but with more complex examples such
+as embedded compilation of Brainfuck programs, and of \LaTeX math formulae
+into high performance math computation kernels.
+
+\subsubsection{
+  Pass-by-generator
+}
+
+\label{lbl:pbg-technique}
+
+One way to use dynamically allocated data structures as template parameters
+is to pass their generator functions instead of their values.
+You may have noted in listing \ref{lst:cx-examples} that depsite
+\lstinline{generate}'s return value being non-literal, the function itself
+can be passed as a non-type template argument.
+
+Its result can be used to produce literal \constexpr results,
+and the function itself can be used in generator lambda functions
+defined at compile-time.
+
+\begin{lstlisting}[
+  language=C++,
+  label=lst:pass-by-generator-example,
+  caption=Pass-by-generator
+]{}
+/// Accumulates the value from a tree returned by TreeGenerator.
+/// TreeGenerator() is expected to return a std::unique_ptr<tree_t>.
+template <tree_generator auto Fun> constexpr auto codegen() {
+  static_assert(Fun() != nullptr, "Ill-formed tree");
+
+  constexpr node_kind_t Kind = Fun()->kind;
+
+  if constexpr (Kind == add_v) {
+    // Recursive codegen for left and right children:
+    // for each child, a generator function is generated
+    // and passed to codegen.
+    auto eval_left = codegen<[]() {
+      return static_cast<add_t &&>(*Fun()).left;
+    }>();
+    auto eval_right = codegen<[]() {
+      return static_cast<add_t &&>(*Fun()).right;
+    }>();
+
+    return [=]() { return eval_left() + eval_right(); };
+  }
+
+  else if constexpr (Kind == constant_v) {
+    constexpr auto Constant =
+        static_cast<constant_t const &>(*Fun()).value;
+    return [=]() { return Constant; };
+  }
+}
+\end{lstlisting}
+
+In listing \ref{lst:pass-by-generator-example}, we show how a \constexpr
+pointer tree result can be visited recusively using generator lambdas
+to pass the subnodes' values, and used to generate code.
+
+This technique is fairly simple to implement as it does not require any
+transformation into an ad hoc data structure to pass the tree as a type
+or non-type template parameter.
+
+The downside of using this value passing technique is that the
+number of calls of the generator function is proportional to the
+number of nodes. Experiments in \ref{lbl:compile-time-eval} highlight
+the scaling issues induced by this code generation method.
+And while it is very quick to implement, there are still difficulties
+related to \constexpr memory constraints and compiler or library support.
+GCC 13.2.1 is still unable to compile such code
+
+% [TODO] Talk about how awful it is to get to a working codegen function:
+% - bad if constexpr
+
+\subsubsection{
+  Pass-by-generator + ET
+}
+
+\label{lbl:pbg-et-technique}
+
+Why through? Interoperability with type-based metaprogramming libraries.
+
+Types:
+
+\begin{lstlisting}[
+  language=C++
+]{}
+/// Type representation of a constant
+template <int Value> struct et_constant_t {};
+/// Type representation of an addition
+template <typename Left, typename Right> struct et_add_t {};
+\end{lstlisting}
+
+Codegen:
+
+\begin{lstlisting}[
+  language=C++
+]{}
+/// Accumulates the value from a tree returned by TreeGenerator.
+/// TreeGenerator() is expected to return a std::unique_ptr<tree_t>.
+template <tree_generator auto Fun>
+constexpr auto to_expression_template() {
+  static_assert(Fun() != nullptr, "Ill-formed tree");
+
+  constexpr node_kind_t Kind = Fun()->kind;
+
+  if constexpr (Kind == add_v) {
+    // Recursive type generation using the pass-by-generator technique
+    using TypeLeft = decltype(to_expression_template<[]() {
+      return static_cast<add_t &&>(*Fun()).left;
+    }>());
+    using TypeRight = decltype(to_expression_template<[]() {
+      return static_cast<add_t &&>(*Fun()).right;
+    }>());
+
+    return et_add_t<TypeLeft, TypeRight>{};
+  }
+
+  else if constexpr (Kind == constant_v) {
+    constexpr auto Value = static_cast<constant_t &>(*Fun()).value;
+    return et_constant_t<Value>{};
+  }
+}
+
+template <int Value>
+constexpr auto codegen_impl(et_constant_t<Value> /*unused*/) {
+  return []() { return Value; };
+}
+
+template <typename ExpressionLeft, typename ExpressionRight>
+constexpr auto
+codegen_impl(et_add_t<ExpressionLeft, ExpressionRight> /*unused*/) {
+  auto eval_left = codegen_impl(ExpressionLeft{});
+  auto eval_right = codegen_impl(ExpressionRight{});
+  return [=]() { return eval_left() + eval_right(); };
+}
+
+template <tree_generator auto Fun> constexpr auto codegen() {
+  using ExpressionTemplate = decltype(to_expression_template<Fun>());
+  return codegen_impl(ExpressionTemplate{});
+}
+\end{lstlisting}
+
+\subsubsection{
+  FLAT
+}
+
+\label{lbl:flat-technique}
+
+To overcome the performance issues of the previously introduced techniques,
+we can try a different approach. Instead of passing trees as they are,
+they can be transformed into static arrays which can be used as non-type
+template parameters.
+
+\begin{lstlisting}[language=C++, label=lst:flat_struct_def]{}
+/// Serialized representation of a constant
+struct flat_constant_t {
+  int value;
+};
+
+/// Serialized representation of an addition
+struct flat_add_t {
+  std::size_t left;
+  std::size_t right;
+};
+
+/// Serialized representation of a node
+using flat_node_t = std::variant<flat_add_t, flat_constant_t>;
+
+/// Defining max std::size_t value as an equivalent to std::nullptr.
+constexpr std::size_t null_index = std::size_t(0) - 1;
+\end{lstlisting}
+
+This requires the tree to be serialized first.
+For the sake of demonstration, we will serialize the tree into an ad hoc
+data representation that is identical to the original one, except pointers
+are replaced with \lstinline{std::size_t} indexes, and \lstinline{nullptr}
+is replaced with an arbitrary value called \lstinline{null_index} as shown in
+listing \ref{lst:flat_struct_def}.
+
+Heritage polymorphism is also replaced by \lstinline{std::variant}
+
+These nodes will be stored in \lstinline{std::vector} containers,
+and the indexes will refer to the position of other nodes within the container.
+Note that our tree nodes are not polymorphic. If needed,
+\lstinline{std::variant} could have been used to have polymorphic nodes in
+the serialized representation.
+
+\begin{lstlisting}[
+  language=C++,
+  label=lst:flat_backend_serialization,
+  caption=\constexpr tree serialization implementation
+]{}
+/// Serializes the current subtree and returns
+/// the top node's index to the caller.
+constexpr std::size_t serialize_impl(tree_ptr_t const &top,
+                                     std::vector<flat_node_t> &out) {
+  // nullptr translates directly to null_index
+  if (top == nullptr) {
+    return null_index;
+  }
+
+  // Allocating space for the destination node
+  std::size_t dst_index = out.size();
+  out.emplace_back();
+
+  if (top->kind == add_v) {
+    auto const &typed_top = static_cast<add_t const &>(*top);
+
+    // Serializing left and right subtrees,
+    // initializing the new node
+    out[dst_index] = {
+        flat_add_t{.left = serialize_impl(typed_top.left, out),
+                   .right = serialize_impl(typed_top.right, out)}};
+  }
+
+  if (top->kind == constant_v) {
+    auto const &typed_top = static_cast<constant_t const &>(*top);
+    out[dst_index] = {flat_constant_t{.value = typed_top.value}};
+  }
+
+  return dst_index;
+}
+
+/// Returns a serialized representation of a pointer tree.
+constexpr std::vector<flat_node_t> serialize(tree_ptr_t const &tree) {
+  std::vector<flat_node_t> result;
+  serialize_impl(tree, result);
+  return result;
+}
+\end{lstlisting}
+
+Listing \ref{lst:flat_backend_serialization} shows the implementation of the
+serialization step. The implementation itself has nothing particular, except for
+the functions being \constexpr.
+
+Once the data is serialized, it can be converted into a static array container.
+This can be done because the generator function is \constexpr, therefore it
+can be used to produce \constexpr values. The size of the resulting
+\lstinline{std::vector} can be stored at compile time to set the size
+of a static array.
+
+\begin{lstlisting}[
+  language=C++,
+  label=lst:serialize_as_array,
+  caption=Definition of \lstinline{serialize_as_array}
+]{}
+/// Evaluates a tree generator function into a serialized array.
+template <tree_generator auto Fun>
+constexpr auto serialize_as_array() {
+  constexpr std::size_t Size = serialize(Fun()).size();
+  std::array<flat_node_t, Size> result;
+  std::ranges::copy(serialize(Fun()), result.begin());
+  return result;
+}
+\end{lstlisting}
+
+Listing \ref{lst:serialize_as_array} shows the implementation of a helper
+function that takes a \constexpr tree generator function as an input,
+serializes the result, and returns it as a static array.
+
+Static arrays are not dynamically allocated, therefore they can be used as
+non-type template parameters if their values do not hold pointers to
+\constexpr allocated memory either.
+In our case, the elements only hold integers, so a \lstinline{std::array} of
+\lstinline{flat_node_t} elements can be used as a non-type template parameters.
+
+\begin{lstlisting}[
+  language=C++,
+  label=lst:flat_codegen,
+  caption=Code generation implementation for the flat backend
+]{}
+/// Generates code from a tree serialized into a static array,
+/// with CurrentIndex being the index of the starting node which
+/// defaults to 0, ie. the top node of the whole tree.
+template <auto const &Tree, std::size_t Index>
+constexpr auto codegen_aux() {
+  static_assert(Index != null_index, "Ill-formed tree (null index)");
+
+  if constexpr (std::holds_alternative<flat_add_t>(Tree[Index])) {
+    constexpr auto top = std::get<flat_add_t>(Tree[Index]);
+
+    // Recursive code generation for left and right children
+    auto eval_left = codegen_aux<Tree, top.left>();
+    auto eval_right = codegen_aux<Tree, top.right>();
+
+    // Code generation for current node
+    return [=]() { return eval_left() + eval_right(); };
+  }
+
+  else if constexpr (std::holds_alternative<flat_constant_t>(
+                         Tree[Index])) {
+    constexpr auto top = std::get<flat_constant_t>(Tree[Index]);
+    constexpr int Value = top.value;
+    return []() { return Value; };
+  }
+}
+
+/// Stores serialized representations of tree generators' results.
+template <tree_generator auto Fun>
+static constexpr auto tree_as_array = serialize_as_array<Fun>();
+
+/// Takes a tree generator function as non-type template parameter
+/// and generates the lambda associated to it.
+template <tree_generator auto Fun> constexpr auto codegen() {
+  return codegen_aux<tree_as_array<Fun>, 0>();
+}
+\end{lstlisting}
+
+To complete the implementation, we must implement a code generation function
+that accepts a serialized tree as an input as shown in listing
+\ref{lst:flat_codegen}. Note that this function is almost identical to
+the one shown in listing \ref{lst:pass-by-generator-example}.
+The major difference is that \lstinline{TreeGenerator} is called only
+twice regardless of the size of the tree. This allows much better scaling
+as we will see in \ref{lbl:compile-time-eval}.
+The downside is that it requires the implementation of an ad hoc data
+structure and a serialization function, which might be more or less complex
+depending on the complexity of the original tree structure.
+
+\subsection{
+  Using algorithms with serialized outputs
+}
+
+Parsing algorithms may output serialized data. In this case, the serialization
+step described in \ref{lbl:flat-technique} is not needed, and the result
+can be converted into a static array.
+This makes the code generation process rather straightforward as no complicated
+transformation is needed, while still scaling decently as we will see in
+\ref{lbl:compile-time-eval} where we will be using a
+Shunting Yard parser\cite{shunting-yard} to parse math formulae to a
+Reverse Polish notation (RPN), which is its postfix notation.
+\\
+
+Once converted into its postfix notation,
+a formula can be read using the following method:
+
+\begin{itemize}
+\item read symbols in order,
+\item put constants and variables on the top of a stack,
+\item when a function $f$ or operator of arity $N$ is being read,
+      unstack $N$ values and stack the result of $f$ applied
+      to the $N$ operands.
+\end{itemize}
+
+\begin{figure}
+\begin{tabular}{|l|l|l|}
+\hline
+Current token & Action & Stack \\
+\hline
+\lstinline|2| & Stack \lstinline|2| & \lstinline|2| \\
+\lstinline|3| & Stack \lstinline|3| & \lstinline|2|, \lstinline|3| \\
+\lstinline|2| & Stack \lstinline|2| & \lstinline|2|, \lstinline|3|, \lstinline|2| \\
+\lstinline|*| & Multiply \lstinline|2| and \lstinline|3| & \lstinline|2|, \lstinline|6| \\
+\lstinline|+| & Add \lstinline|2| and \lstinline|6| & \lstinline|8| \\
+\hline
+\end{tabular}
+\caption{RPN formula reading example}
+\label{fig:rpn-reading-example}
+\end{figure}
+
+Figure \ref{fig:rpn-reading-example} shows a formula reading example with
+the formula \lstinline{2 + 3 * 2}, or \lstinline{2 3 2 * +} in
+reverse polish notation.
+
+Starting from there, we will see how code can be generated using
+RPN representations of addition trees in \cpp.
+
+\begin{lstlisting}[
+  language=C++,
+  label=lst:rpn_base_definitions,
+  caption=RPN example base type and function definitions
+]{}
+/// Type for RPN representation of a constant
+struct rpn_constant_t {
+  int value;
+};
+
+/// Type for RPN representation of an addition
+struct rpn_add_t {};
+
+/// Type for RPN representation of an arbitrary symbol
+using rpn_node_t = std::variant<rpn_constant_t, rpn_add_t>;
+
+/// RPN equivalent of gen_tree
+constexpr std::vector<rpn_node_t> gen_rpn_tree() {
+  return {rpn_constant_t{1}, rpn_constant_t{2}, rpn_add_t{},
+          rpn_constant_t{3}, rpn_add_t{}};
+}
+\end{lstlisting}
+
+In listing \ref{lst:rpn_base_definitions}, we have the type definitions for an
+RPN representation of an addition tree as well as \lstinline{gen_rpn_tree} which
+returns an RPN equivalent of \lstinline{gen_tree}'s result.
+
+Similar to the flat backend, an \lstinline{eval_as_array} takes care
+of evaluating the \lstinline{std::vector} result into a statically
+allocated array.
+
+\begin{lstlisting}[
+  language=C++,
+  caption=Codegen implementation for RPN formulae,
+  label=lst:rpn_codegen
+]{}
+/// Codegen implementation.
+/// Reads tokens one by one, updates the stack consequently
+/// by consuming and/or stacking operands.
+/// Operands are functions that evaluate parts of the subtree.
+template <auto const &RPNTree, std::size_t Index = 0>
+constexpr auto codegen_impl(kumi::product_type auto stack) {
+  // The end result is the last top stack operand
+  if constexpr (Index == RPNTree.size()) {
+    static_assert(stack.size() == 1, "Invalid tree");
+    return kumi::back(stack);
+  }
+
+  else if constexpr (std::holds_alternative<rpn_constant_t>(
+                         RPNTree[Index])) {
+    // Append the constant operand
+    auto new_operand = [=]() {
+      return get<rpn_constant_t>(RPNTree[Index]).value;
+    };
+    return codegen_impl<RPNTree, Index + 1>(
+        kumi::push_back(stack, new_operand));
+  }
+
+  else if constexpr (std::holds_alternative<rpn_add_t>(
+                         RPNTree[Index])) {
+    // Fetching 2 top elements and popping them off the stack
+    auto left = kumi::get<stack.size() - 1>(stack);
+    auto right = kumi::get<stack.size() - 2>(stack);
+    auto stack_remainder = kumi::pop_back(kumi::pop_back(stack));
+
+    // Append new operand and process next element
+    auto new_operand = [=]() { return left() + right(); };
+    return codegen_impl<RPNTree, Index + 1>(
+        kumi::push_back(stack_remainder, new_operand));
+  }
+}
+
+/// Stores static array representations of RPN generators' results.
+template <auto Fun>
+static constexpr auto rpn_as_array = eval_as_array<Fun>();
+
+/// Code generation function.
+template <auto Fun> constexpr auto codegen() {
+  return codegen_impl<rpn_as_array<Fun>, 0>(kumi::tuple{});
+}
+\end{lstlisting}
+
+In listing \ref{lst:rpn_codegen}, we have function definitions for the
+implementation of \lstinline{codegen} which takes an RPN generator function,
+and generates a function that evaluates the tree.
+
+The code generation process happens by updating an operand stack represented
+by a \lstinline{kumi::tuple}. It is a standard-like tuple type with additional
+element access, extraction, and modification functions.
+We are using it to store functions that evaluate parts of the subtree.
+
+Symbols are read in order, and the stack is updated depending on the symbol:
+
+\begin{itemize}
+\item When a terminal is read, a function that evaluates its value is stacked.
+In this case terminals are simply constants, but they can be anything a \cpp
+lambda can return such as a variable or another function's result.
+
+\item When a function or operator of arity $N$ is read, $N$ operands will be
+consumed from the top of the stack and a new operand will be stacked.
+The new operand evaluates the consumed operands passed to the function
+corresponding to the symbol being read.
+\end{itemize}
+
+Once all symbols are read, there should be only one operand remaining
+on the stack: the function that evaluates the whole tree.
+
+\subsection{
+  Preliminary observations
+}
+
+The presented code snippets already allow us to draw a few observations.
+
+\begin{itemize}
+
+\item
+Code generation from \constexpr dynamic structures is not a trivial process.
+It still requires advanced \cpp knowledge to understand the limits of what
+is or isn't possible to do with \nttps and \constexpr functions.
+
+While the examples show working examples for code generation from \constexpr
+function results with \constexpr allocated memory, they do not show the time
+it takes to comply with \cpp \constexpr restrictions.
+
+% TODO: Phrasing
+For example, condition results in \lstinline{if constexpr} statements must be
+stored in a \constexpr variable if the result is evaluated from an temporary
+object that contains \constexpr allocated memory.
+
+\item
+The easiest way to get around \nttp constraints, \ie the pass-by-generator
+technique, is very costly in terms of compilation times.
+
+Section \ref{lbl:compile-time-eval} covers that scaling issue in more detail.
+The overall assesment is that this technique can be used for small metaprograms,
+but it fails to scale properly as larger ones are being considered
+due to its quadratic compilation time complexity.
+
+In our Brainfuck metacompilation examples, we were able to trigger Clang's
+timeout using this technique when compiling a Mandelbrot visualizer
+whereas the so-called "flat" backend was able to generate the program in less
+than a minute.
+
+\item
+Compiler support for \constexpr programming and constant evaluation in general
+is still very inconsistent across compilers. GCC still has issues with
+\lstinline{if constexpr} where templates are instantiated even when they are
+in a discarded statement.
+
+\item
+Library support is also limited.
+Most of the containers from the \cpp standard library are not usable in
+\constexpr functions simply because the \cpp standard lacks \constexpr
+qualfications for their methods (and \constexpr qualification is not implicit).
+
+As of today, the only exceptions are the main containers such as
+\lstinline{std::vector}, \lstinline{std::string} (since \cpp{}20),
+or \lstinline{std::unique_ptr} (since \cpp{}23).
+
+The C'est\cite{cest} library however provides more standard-like containers
+that are usable in \constexpr functions in \cpp{}20, which is enough to make
+the previous examples run on Clang in \cpp{}20.
+
+\end{itemize}
+
+So far we can conclude that while being doable, code generation from \constexpr
+function results with dynamic memory is still not accessible to all \cpp
+programmers.
+
+An effort on the language itself would be needed to allow easier data passing
+from \constexpr allocated memory to non-type template parameters.
+
+Alternatively, the language could allow code generation
+
+\end{document}

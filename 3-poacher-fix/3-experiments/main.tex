@@ -1,0 +1,126 @@
+\documentclass[../../../main]{subfiles}
+\begin{document}
+
+\section{Experiments and results}
+
+In this section, we will use the techniques we already mentioned to implement
+embedded compilers for the Brainfuck language,
+as well as a subset of \LaTeX math.
+
+The Brainfuck embedded compiler will help us evaluate code generation from
+a pointer tree structures. We will be parsing Brainfuck programs from strings
+to an AST, which we will then convert into \cpp code using the techniques
+introduced in \ref{lbl:ptr-tree-codegen}.
+
+On the other hand the \LaTeX math parser will illustrate a use case where
+the output of a parsing algorithm can be used almost directly
+for code generation. Moreover, we will show how this can be leveraged
+to generate high performance math kernels
+using the Blaze library\cite{blazelib}.
+
+These two experiments will be used as benchmarks to measure
+the impact of embedded compilation on overall \cpp compilation times,
+which will help us establish guidelines for the implementation of
+embedded compilers in \cpp23.
+We will then discuss the issues that emerge from the limitations set by the
+\cpp standard, as well as modifications that could be made to make
+\constexpr based metaprogramming easier
+and with less impact on compilation times.
+
+\subsection{Brainfuck parsing: Generating code from an AST}
+
+Brainfuck is a structured imperative language
+characterized by 8 tokens that allow increasing or decreasing a pointer
+to single byte values in a fixed size array, acting on the pointee value by
+increasing or decreasing it, single character input/output, and looping
+as long as the pointee value is non-zero. Every instruction
+can be directly translated into \cpp code as shown in table \ref{fig:BF}.
+
+\begin{figure}
+\begin{tabular}{|l|l|}
+\hline
+\BF token & \cpp equivalent \\ \hline
+(Program start) & \lstinline|char array[30000] = {0}; char *ptr = array;| \\
+\lstinline|>| & \lstinline|++ptr;| \\
+\lstinline|<| & \lstinline|--ptr;| \\
+\lstinline|+| & \lstinline|++*ptr;| \\
+\lstinline|-| & \lstinline|--*ptr;| \\
+\lstinline|.| & \lstinline|std::putchar(*ptr);| \\
+\lstinline|,| & \lstinline|*ptr = std::getchar();| \\
+\lstinline|[| & \lstinline|while (*ptr) {| \\
+\lstinline|]| & \lstinline|}| \\
+% Any other token & Nothing \\
+\hline
+\end{tabular}
+\caption{
+  \BF token to \cpp code conversion table --
+  https://en.wikipedia.org/wiki/Brainfuck
+}
+\label{fig:BF}
+\end{figure}
+
+The Brainfuck language will be a good candidate for studying
+compilation time scaling. The size of the AST is easily predictable as
+each character is converted directly into an AST node,
+as shown in figure \ref{fig:BF}.
+
+\subsubsection{Constexpr Brainfuck parsing}
+
+\paragraph{A Brainfuck AST}
+
+The Brainfuck AST is very similar to the pointer tree structure defined in
+\ref{lst:tree_generation}. The major difference is the use of inheritance
+polymorphism to differentiate the different kinds of tokens.
+
+\paragraph{A \constexpr Brainfuck parser}
+
+\paragraph{Performance comparison of the 3 AST conversion techniques}
+
+\subsubsection{Experiments}
+
+\paragraph{Variable sized benchmarks}
+
+% Show the kind of code we generate
+
+% Graphs
+
+\paragraph{"Real" programs}
+
+% Hello World
+% Mandelbrot
+
+% Performance table
+
+\subsubsection{Discussion}
+
+% ...
+
+\subsection{Parsing to a serialized representation}
+
+% We want a more realistic/useful use case: parsing math forumulae
+% for high performance code generation
+
+% Goal of the experiment: demonstrate interoperability and study the performance
+% impact of using vs not using compile time parsing in the context of high
+% high performance code generation.
+
+% The fact that we're using Blaze makes the translation unit (explain)
+% much larger and may have an impact on meta-compilation performance
+
+% First: What algorithm
+
+\subsubsection{The Shunting-Yard algorithm}
+
+% Introduce the Shunting-Yard algorithm
+
+\subsubsection{The Blaze library}
+
+% Introduce Blaze
+
+% Say we translate the Shunting-Yard result to Blaze expression templates
+
+\subsubsection{Experiment results}
+
+% ...
+
+\end{document}

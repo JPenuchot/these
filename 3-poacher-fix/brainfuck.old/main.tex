@@ -1,0 +1,371 @@
+\documentclass[../paper.tex]{subfiles}
+\begin{document}
+
+\section{Brainfuck as a C++ DSEL}
+
+Brainfuck (\BF) is a structured imperative language
+characterized by 8 tokens that allow increasing or decreasing a pointer
+to single byte values in a fixed size array, acting on the pointee value by
+increasing or decreasing it, single character input/output, and looping
+as long as the pointee value is non-zero. Each one of its instructions
+can be translated directly into \cpp code (see table~\ref{fig:BF}).
+
+\begin{figure}
+\begin{tabular}{|l|l|}
+\hline
+\BF token & \cpp equivalent \\ \hline
+(Program start) & \lstinline|char array[30000] = {0}; char *ptr = array;| \\
+\lstinline|>| & \lstinline|++ptr;| \\
+\lstinline|<| & \lstinline|--ptr;| \\
+\lstinline|+| & \lstinline|++*ptr;| \\
+\lstinline|-| & \lstinline|--*ptr;| \\
+\lstinline|.| & \lstinline|std::putchar(*ptr);| \\
+\lstinline|,| & \lstinline|*ptr = std::getchar();| \\
+\lstinline|[| & \lstinline|while (*ptr) {| \\
+\lstinline|]| & \lstinline|}| \\
+% Any other token & Nothing \\
+\hline
+\end{tabular}
+\caption{
+  \BF token to \cpp code conversion table --
+  https://en.wikipedia.org/wiki/Brainfuck
+}
+\label{fig:BF}
+\end{figure}
+
+Our objective with this metacompiler is to go from abstract syntax trees built
+using \constexpr dynamic structures to runtime code. The first part of this case
+study will cover the frontend, \ie the AST structure and the parser, then the
+second part will cover the three backends that implement different code
+generation strategies.
+
+% http://esoteric.sange.fi/brainfuck/utils/mandelbrot/
+
+\subsection{Frontend design}
+
+The first building blocks that must be represented by the \BF AST are the
+instructions. A trivial kind of representation that can be used in constant
+expressions are enum types. Because \BF instructions are single character
+tokens, we decided to simply call them "tokens" in our syntactic representation.
+
+\lstinputlisting[
+  language=C++,
+  firstline=12,
+  lastline=22,
+  caption=\lstinline{token_t} enum type definition,
+  label=lst:token_t
+]{poacher/brainfog/include/brainfog/ast.hpp}
+
+Note that the language has to support loops, and eventually nested loops.
+To represent them properly, we will use a polymorphic tree representation.
+Since \cpp20 allows virtual functions and dynamic memory, these can be
+implemented using inheritance, which is a fairly common way to represent AST
+nodes.
+\\
+
+% TODO: Add AST definition scloccount
+
+The next step then is to define 3 kinds of AST nodes: single tokens (\ie single
+instructions), instruction blocks, and loops. They all inherit
+\lstinline{node_interface_t}, which keeps track of the kind of underlying node
+using a value of type \lstinline{ast_node_kind_t}
+(listing \ref{lst:node_interface_t}).
+
+\begin{lstlisting}[
+  language=C++,
+  caption=\lstinline|node_interface_t| definition,
+  label=lst:node_interface_t
+]{}
+enum ast_node_kind_t { ast_token_v, ast_block_v, ast_while_v };
+
+struct node_interface_t {
+private:
+  ast_node_kind_t kind_;
+protected:
+  constexpr node_interface_t(ast_node_kind_t kind) : kind_(kind){};
+public:
+  constexpr ast_node_kind_t get_kind() const { return kind_; }
+  constexpr virtual ~node_interface_t() = default;
+};
+\end{lstlisting}
+
+% \lstinputlisting[
+%   language=C++,
+%   firstline=61,
+%   lastline=73,
+%   caption=\lstinline|node_interface_t| definition,
+%   label=lst:node_interface_t
+% ]{poacher/brainfog/include/brainfog/ast.hpp}
+
+Note that all methods are \constexpr, including the constructor and the virtual
+destructor. Code blocks and while loops were kept as two separate entities.
+
+\clearpage%
+
+% \lstinputlisting[
+%   language=C++,
+%   caption=\lstinline|ast_node_kind_t| definition,
+%   label=lst:ast_node_kind_t
+% ]{poacher/brainfog/include/brainfog/ast.hpp}
+
+The underlying node types are then defined as follows:
+
+\begin{itemize}
+\item \lstinline{ast_token_t}: constains a single token (though they cannot
+      contain all tokens as loop begin and end tokens parsed into
+      \lstinline{ast_while_t} nodes).
+\item \lstinline{ast_block_t}: constains a
+      \lstinline{std::vector<cest::unique_ptr<ast_node_kind_t>>}, \ie a vector
+      of AST nodes.
+\item \lstinline{ast_while_t}: constains an \lstinline{ast_block_t}.
+\end{itemize}
+
+These three kinds of nodes are enough to represent programs written in our
+rudimentary, yet structured and Turing-complete language. Now we'll take a look
+at the \constexpr parser implementation.
+
+\subsection{A constexpr parser for the BF language}
+
+The parser itself is relatively simple and can be used to parse \BF programs at
+runtime as it is a regular \cpp function. The only particularity it has is its
+\constexpr qualification, and thus its reliance on \constexpr functions
+exclusively. Because the function has nothing special except for it being
+\constexpr qualified as \cpp23 provides
+\constexpr containers\cite{more-constexpr-containers}, you will find it in
+Appendix~\ref{app:bf-parser}.
+\\
+
+The output of \lstinline{parse_block} is a
+\lstinline{std::tuple<ast_block_t, token_vec_t::const_iterator>}. The first
+element of the tuple is the content that was parsed by the function, and the
+second element is an iterator pointing after the last parsed element. While
+loops are parsed by calling the function recurisvely, and the function returns a
+block when it detects a while end token. As you may notice, the parser and AST
+implementations were kept as ordinary as possible, as the goal of the
+project is to study metaprogramming --and especially code generation-- using
+ordinary \cpp constructs instead of template metaprogramming.
+\\
+
+Now that we have a \constexpr parser, we'll have a look at how to transform its
+results into programs.
+
+\subsection{Code generator for the BF language}
+
+Once parsed, the AST has to be transformed into \cpp code. The project currently
+has three working backends implementing different strategies. Other
+non-working backends served as implementation attempts to better understand the
+limitations of \cpp23 for transforming an AST that contains non-transient
+allocated memory into \cpp code, but also attempts at using experimental
+features proposed to the \cpp standard such as reflection and
+splicing\cite{scalable-reflection}.
+\\
+
+This paper will not detail the failed attempts. We will start with an approach
+relying on generators to convert the AST directly into code, another one where
+we add a type-based expression template intermediate representation, and another
+one that serializes the AST into a representation that is compatible with
+non-type template parameters constraints.
+
+\subsubsection{Pass-by-generator backend}
+
+Despite values containing \constexpr allocated memory not being storable in
+\constexpr variables, lambda functions that generate them can be stored in
+\constexpr variables and used as NTTP. The following example shows how to use
+this technique to convert a non-literal \constexpr value into an equivalent
+type-based representation, more suitable for code generation.
+\\
+
+First we define a binary tree data structure that can be used in
+\constexpr evaluation called \lstinline{tree_t} and a
+\constexpr function called \lstinline{gen_tree} that generates an arbitrary
+\lstinline{tree_t} value (listing \ref{lst:tree_t}).
+
+\lstinputlisting[
+  language=C++,
+  firstline=4,
+  lastline=22,
+  caption=\lstinline{tree_t} and \lstinline{gen_tree} definitions,
+  label=lst:tree_t
+]{cpp-examples/tree-pass-by-generator.cpp}
+
+As stated earlier, our goal is to generate a program that evaluates the content
+of the tree. However, we cannot use the result of \lstinline{gen_tree} directly
+as a non-type template parameter. The solution is to pass lambdas that evaluate
+its subobjects in a lazy way. In listing \ref{lst:codegen} we demonstrate this
+technique by defining a function template that takes a \lstinline{tree_t}
+generator function as a template parameter and returns a function that evaluates
+the sum of its elements.
+\\
+
+This technique can be applied to generate expression templates as well.
+This is interesting as it makes \constexpr programming interoperable with
+existing metaprogramming libraries based on template metaprogramming.
+
+\lstinputlisting[
+  language=C++,
+  firstline=27,
+  lastline=46,
+  caption=\lstinline{codegen} definition,
+  label=lst:codegen
+]{cpp-examples/tree-pass-by-generator.cpp}
+
+One caveat of this code generation technique as we'll see in
+\ref{lbl:compile-time-eval} is its poor compilation time scaling.
+While it might be good enough for small expressions, its quadratic scaling
+makes it impractical, or even impossible to use when larger expressions
+need to be parsed.
+
+However it is a technique that can be implemented easily, and allows the
+use of non-trivial data structures for code generation with no ad-hoc
+data representation.
+
+It can even be transformed directly into expression templates as we'll see in
+\ref{lbl:bf-expression-template}.
+
+\subsubsection{Expression template backend} \label{lbl:bf-expression-template}
+
+We first define a type-based tree representation based on an expression template
+structure similar to what libraries like Blaze\cite{blazelib} or
+Eigen\cite{eigen} already use. To convert the result of \lstinline{gen_tree}
+into an expression template, we implement a recursive
+function template (listing \ref{lst:to_expression_template}) that takes a
+generator function as a non-type template parameter and returns the expression
+template equivalent to the generator's result. The equivalence can be tested
+at compile time using \lstinline{static_assert} and \lstinline{std::is_same}.
+
+% TODO: Develop more
+
+% TODO: Foreshadow poor performance
+
+The level of performance of this backend is even worse as the previous one.
+However it is interesting to highlight the interoperability of \constexpr
+programming and expression templates.
+
+In \ref{lbl:bf-nttp-backend}, we will discuss another technique for code
+generation that scales linearly, and we will see in \ref{lbl:math-parsing}
+that it can also be used
+
+\subsubsection{NTTP backend} \label{lbl:bf-nttp-backend}
+
+Another solution to explore is serializing the AST into a representation that
+can be passed as a non-type template parameter. This requires the
+implementation of a new intermediate representation of \BF programs that does
+not rely on dynamic memory.
+\\
+
+For that we simply replicate the existing types, and instead of using
+heritage-based polymorphsim and pointers, AST nodes are being stored a single
+array using \lstinline{std::variant} for polymorphism and numeric indexes to
+reference other nodes within the same array (listing \ref{lst:flat_ast}).
+
+\lstinputlisting[
+  language=C++,
+  firstline=50,
+  lastline=74,
+  caption=\lstinline{to_expression_template} definition,
+  label=lst:to_expression_template
+]{cpp-examples/tree-pass-by-generator.cpp}
+
+\lstinputlisting[
+  language=C++,
+  firstline=27,
+  lastline=47,
+  caption=Serialized AST type definitions,
+  label=lst:flat_ast
+]{poacher/brainfog/include/brainfog/backends/flat.hpp}
+
+After being serialized in a \lstinline{std::vector} container, we must convert
+the intermediate representation into a static size array type to make it usable
+as a non-type template parameter. To do so, we use the
+\lstinline{parse_to_fixed_flat_ast} function
+(listing \ref{lst:parse_to_fixed_flat_ast}).
+Note that the function copies the content of
+the vector without copying the memory pointer itself.
+
+\lstinputlisting[
+  language=C++,
+  firstline=243,
+  lastline=254,
+  caption=\lstinline|parse_to_fixed_flat_ast| definition,
+  label=lst:parse_to_fixed_flat_ast
+]{poacher/brainfog/include/brainfog/backends/flat.hpp}
+% std::vector to std::array conversion code:
+% https://discord.com/channels/400588936151433218/491923987824377856/904756037389795349
+
+After this conversion, the AST is stored in a \lstinline{std::array} of
+\lstinline{std::variant}, holding nothing but literal values. This
+representation can therefore be used as a non-type template parameter.
+The code generation function is similar to the pass-by-lambda implementation.
+The main difference is that the whole serialized AST and an index are passed
+to specify the token being processed at each step.
+
+\begin{lstlisting}[
+  language=C++,
+  caption=BF parser with NTTP backend example,
+  label=lst:bf-use-example
+]{}
+static constexpr auto hello_world =
+    "++++++++[>++++[>++>+++>+++>+<<<<-]>+>"
+    "+>->>+[<]<-]>>.>---.+++++++..+++.>>.<"
+    "-.<.+++.------.--------.>>+.>++.";
+
+int main() {
+  static constexpr auto FlatAst =
+      brainfog::flat::parse_to_fixed_flat_ast<hello_world>();
+  auto program = brainfog::flat::codegen<FlatAst>();
+
+  brainfog::program_state_t s;
+  program(s); // Prints "Hello World!"
+}
+\end{lstlisting}
+
+Listing \ref{lst:bf-use-example} shows how to use the \BF metacompiler with the
+NTTP backend.
+
+\subsection{Conclusion}
+
+We designed and analyzed 3 backends for the \BF language. While all these
+backends generate equivalent programs, we have to take into account two
+important elements: their compile time cost, and their implementation
+complexity:
+
+% TODO: Add SLOC figures
+
+\begin{itemize}
+
+\item For the pass-by-generator backend, the implementation complexity is
+the lowest of all three. However, the pass-by-generator backend calls the tree
+generator function at least once for each node.
+In the case of \BF code generation, it implies that the \BF program may be
+parsed a number of times proportional to the size of its AST.
+The parsing time complexity of a \BF program is linear to its size at best,
+so we should expect quadratic compilation times at best using the
+pass-by-generator backend. We will see that this can be problematic in
+\ref{lbl:compile-time-eval} as compilation times will rapidly increase and
+eventually cause compiler timeouts.
+\\
+
+\item For the expression template backend, the implementation complexity is
+higher than the pass-by-generator due to the additional expression template
+code. The compile time should be higher than pass-by-generator as well.
+\\
+
+\item For the NTTP backend (or "Flat" backend), the implementation is the most
+difficult of the three as it requires an ad-hoc representation
+and serialization.
+
+On the other hand, it provides the best performance.
+Converting the AST into a NTTP-compatible representation allows to parse and
+serialize the AST only twice: first to store the size of the resulting
+\lstinline{std::vector} container into a \constexpr variable,
+then a second time to copy the content into a
+correctly sized \lstinline{std::array}.
+Both parsing and serialization should have linear time complexity,
+as well as the AST reading for code generation.
+Consequently, we might expect the whole compilation to happen in linear
+time complexity with this backend.
+\end{itemize}
+
+This backend comparison
+
+\end{document}
