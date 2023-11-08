@@ -33,35 +33,31 @@
 \definecolor{B5}{RGB}{64,183,105}
 \definecolor{C5}{RGB}{140,198,62}
 \definecolor{D5}{RGB}{213,223,61}
-\usepackage{mdframed}
-\usepackage{multirow} %% Pour mettre un texte sur plusieurs rangées
-\usepackage{multicol} %% Pour mettre un texte sur plusieurs colonnes
-\usepackage{tikz}
-\usepackage{graphicx}
-\usepackage[absolute]{textpos} 
-\usepackage{colortbl}
+
+\usepackage[absolute]{textpos}
 \usepackage{array}
-\usepackage{geometry}
-\usepackage{titlesec}
-\usepackage{hyperref}
-% paramétrage couleur des liens hypertextes, toujours garder colorlinks=true
-\hypersetup{
-    colorlinks=true,
-    linkcolor=black,
-    urlcolor=A5}
-
-\usepackage{listings}
-\usepackage{xspace}
-\usepackage{graphicx}
 \usepackage{biblatex}
-
-\usepackage{subfiles} % Garder a la fin
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{mdframed}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{titlesec}
+\usepackage{xspace}
 
 % \renewcommand{\FrenchLabelItem}{\textbullet}
 
 % pour ne garder que les n°de page en milieu-bas
 % et supprimer les indications de chapitre en marge haute
 \pagestyle{plain}
+
+% Fichiers biblio
 
 \addbibresource{bibliography/biblio.bib}
 \addbibresource{bibliography/comptime.bib}
@@ -72,18 +68,29 @@
 \addbibresource{bibliography/poacher.bib}
 \addbibresource{bibliography/simd.bib}
 
-\newcommand{\constexpr}{\lstinline{constexpr}\xspace}
-\newcommand{\cpp}{\textsc{C++}\xspace}
-\newcommand{\ctbench}{\textsc{ctbench}\xspace}
-\newcommand{\dsels}{\textit{DSEL}s\xspace}
-\newcommand{\dsel}{\textit{DSEL}\xspace}
-\newcommand{\ets}{\textit{ET}s\xspace}
-\newcommand{\et}{\textit{ET}\xspace}
-\newcommand{\dsls}{\textit{DSL}s\xspace}
-\newcommand{\dsl}{\textit{DSL}\xspace}
-\newcommand{\eg}{\textit{e.g.}\xspace}
-\newcommand{\grapher}{\textsc{grapher}\xspace}
-\newcommand{\ie}{\textit{i.e.}\xspace}
+% Commandes pour la these de Jules
+
+\providecommand{\BF}{\textit{BF}\xspace}
+\providecommand{\constexpr}{\lstinline{constexpr}\xspace}
+\providecommand{\cpp}{\textsc{C++}\xspace}
+\providecommand{\ctbench}{\textsc{ctbench}\xspace}
+\providecommand{\dsels}{\textit{DSEL}s\xspace}
+\providecommand{\dsel}{\textit{DSEL}\xspace}
+\providecommand{\dsls}{\textit{DSL}s\xspace}
+\providecommand{\dsl}{\textit{DSL}\xspace}
+\providecommand{\eg}{\textit{e.g.}\xspace}
+\providecommand{\ets}{\textit{ET}s\xspace}
+\providecommand{\et}{\textit{ET}\xspace}
+\providecommand{\grapher}{\textsc{grapher}\xspace}
+\providecommand{\ie}{\textit{i.e.}\xspace}
+\providecommand{\nttps}{\textit{NTTP}s\xspace}
+\providecommand{\nttp}{\textit{NTTP}\xspace}
+
+\hypersetup{
+  colorlinks=true, % toujours garder colorlinks=true
+  linkcolor=black,
+  urlcolor=A5
+}
 
 \lstset{
   frame=single,
@@ -114,6 +121,9 @@
   morecomment=[l]{},
   morestring=[b]"
 }
+
+% ==============================================================================
+\usepackage{subfiles} % Garder a la fin
 
 \begin{document}
 
@@ -206,16 +216,15 @@ Titre, Affiliation   &   \\
 \textbf{Prénom NOM} &  Examinateur ou Examinatrice \\ 
 Titre, Affiliation   &   \\ 
  
-
 \end{tabular} 
 
 \end{titlepage}
 
-
-% page des résumés à garder en 2ème page. Si les résumés sont trop longs pour tenir sur une seule et même page, on peut mettre un résumé par page
+% page des résumés à garder en 2ème page.
+% Si les résumés sont trop longs pour tenir sur une seule et même page,
+% on peut mettre un résumé par page
 \thispagestyle{empty}
 \newgeometry{top=1.5cm, bottom=1.25cm, left=2cm, right=2cm}
-
 
 \noindent
 \includegraphics[height=2.45cm]{ups/logo_STIC.png}
@@ -274,13 +283,13 @@ parall\'elisme
 
 \part{Current state of metaprogramming for HPC}
 
-\subfile{chapters/state-of-the-art/main.tex}
-\subfile{chapters/tmp-for-hpc/main.tex}
+\subfile{1-state-of-the-art/main.tex}
+\subfile{2-tmp-for-hpc/main.tex}
 
 \part{Metaprogramming beyond expression templates}
 
-\subfile{chapters/ctbench/main.tex}
-\subfile{chapters/poacher/main.tex}
+\subfile{3-poacher/main.tex}
+\subfile{4-ctbench/main.tex}
 
 \printbibliography
 
