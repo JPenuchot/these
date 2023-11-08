@@ -2,15 +2,10 @@ FROM archlinux/archlinux:base-devel
 
 # Base Arch package installation
 
-RUN pacman -Syu --noconfirm
-RUN pacman -S --noconfirm \
+RUN --mount=type=cache,sharing=locked,target=/var/cache/pacman \
+  pacman -Syu --noconfirm --needed \
   biber \
-  texlive-bibtexextra \
-  texlive-bin \
-  texlive-core \
-  texlive-fontsextra \
-  texlive-lang \
-  texlive-latexextra \
+  texlive \
   ttf-opensans
 
 # Run tests
