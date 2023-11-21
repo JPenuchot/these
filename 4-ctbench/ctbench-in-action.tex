@@ -125,31 +125,30 @@ is present in the \lstinline{/args/detail} value of a timer event). Each graph
 compares the evolution of these timer events in function of the benchmark size.
 
 The graphs following were generated on a Lenovo T470 with an Intel i5 6300U and
-8GB of RAM. The compiler is Clang
-14.0.6, and [Pyperf](https://pyperf.readthedocs.io/en/latest/system.html) was
-used to turn off CPU frequency scaling.
+8GB of RAM. The compiler is Clang 14.0.6, and Pyperf\cite{pyperf} was used
+to turn off CPU frequency scaling to improve measurement precision.
 
-% TODO
-% \begin{figure}[h]
-% \includegraphics{docs/images/ExecuteCompiler.png}
-% \caption{ExecuteCompiler}
-% \end{figure}
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{images/ExecuteCompiler}
+\caption{ExecuteCompiler}
+\end{figure}
 
 The first timer we want to look at is ExecuteCompiler, which is the total
 compilation time. Starting from there we can go down in the timer event
 hierarchy to take a look at frontend and backend execution times.
 
-% TODO
-% \begin{figure}[h]
-% \includegraphics{docs/images/Total_Frontend.png}
-% \caption{Total Frontend}
-% \end{figure}
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{images/Total_Frontend}
+\caption{Total Frontend}
+\end{figure}
 
-% TODO
-% \begin{figure}[h]
-% \includegraphics{docs/images/Total_Backend.png}
-% \caption{Total Backend}
-% \end{figure}
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{images/Total_Backend}
+\caption{Total Backend}
+\end{figure}
 
 The backend is not being impacted here, supposedly because this is purely a
 compile-time program, and the output program is empty. However this might not be
@@ -157,22 +156,22 @@ the case for all metaprograms, and metaprograms might have different impacts on
 the backend as they may generate programs in different ways (ie. generate more
 symbols, larger symbols, more data structures, etc.).
 
-% TODO
-% \begin{figure}[h]
-% \includegraphics{docs/images/Total_InstantiateFunction.png}
-% \caption{Total InstantiateFunction}
-% \end{figure}
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{images/Total_InstantiateFunction}
+\caption{Total InstantiateFunction}
+\end{figure}
 
 The Total Instantiate function timer is an interesting one as it explicitly
 targets function instanciation time. Note that timers that are prefixed with
 "Total" measure the total time spent in a timer section, regardless of the
 specific symbol or source associated to its individual timer events.
 
-% TODO
-% \begin{figure}[h]
-% \includegraphics{docs/images/InstantiateFunction/foovoid.png}
-% \caption{InstantiateFunction foovoid}
-% \end{figure}
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{images/InstantiateFunction/foovoid}
+\caption{InstantiateFunction foovoid}
+\end{figure}
 
 Finally, we can take a look at \lstinline{InstantiateFunction/foovoid.png} which
 measures the InstantiateFunction event time specifically for
