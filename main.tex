@@ -288,7 +288,60 @@ parall\'elisme
 
 \part{Metaprogramming beyond expression templates}
 
+\chapter{
+  Establishing a methodology for compile time benchmarking
+}
 
+With libraries like Eigen\cite{eigen}, Blaze\cite{blazelib}, or CTRE\cite{ctre}
+being developed with a large tempalte metaprogrammed implementation, we're seeing
+increasing computing needs at compile time. These needs might grow even larger
+as \cpp embeds more features over time to support and extend this kind of
+practices, like compile time containers\cite{more-constexpr-containers} or static
+reflection\cite{static-reflection}. However, there is still no clear cut methodology
+to compare the performance impact of different metaprogramming strategies. But
+as new \cpp features allow for new techniques with claimed better compile time
+performance, no proper methodology is provided to back up those claims.
+
+In this chapter I introduce \ctbench, which is a set of tools for compile time
+benchmarking and analysis in \cpp. It aims to provide developer-friendly tools
+to declare and run benchmarks, then aggregate, filter out, and plot the data to
+analyze it. As such, \ctbench is meant to become the first layer of a proper
+scientific methodology for analyzing compile time program behavior.
+
+We'll first have a look at current tools for compile time profiling and
+benchmarking and establish the limits of current tooling, then I'll explain
+what \ctbench brings to overcome these limits.
+
+\ctbench was first presented at the CPPP 2021 conference\cite{ctbench-cppp21}
+which is the main \cpp technical conference in France. It is being used to
+benchmark examples from the poacher\cite{poacher} project, which was briefly
+presented at the Meeting \cpp 2022\cite{meetingcpp22} technical conference.
+
+\subfile{4-ctbench/state-of-the-art.tex}
+\subfile{4-ctbench/features-and-design.tex}
+\subfile{4-ctbench/ctbench-in-action.tex}
+
+\section{Related projects} % TODO: Rework
+
+\begin{itemize}
+
+\item Poacher (https://github.com/jpenuchot/poacher): Experimental constexpr
+      parsing and code generation for the integration of arbitrary syntax DSL in
+      \cpp20
+
+\item Rule of Cheese (https://github.com/jpenuchot/rule-of-cheese):
+      A collection of compile time microbenchmarks to help set better
+      \cpp metaprogramming guidelines to improve compile time performance
+\end{itemize}
+
+\section{Acknowledgements}
+
+We acknowledge contributions from Philippe Virouleau and Paul Keir for their
+insightful suggestions.
+
+\chapter{
+  Constexpr parsing for high performance computing
+}
 % \begin{abstract}
 % Design of high performance, high abstraction libraries in \cpp often take
 % advantages of techniques like template metaprogramming or expression templates
@@ -326,8 +379,8 @@ said \dsels in term of compile time to assess their usability in realistic code.
 
 \subfile{3-poacher/1-technical-background.tex}
 \subfile{3-poacher/2-constexpr-codegen-techniques.tex}
-\subfile{3-poacher/3-experiments.tex}
-\subfile{3-poacher/4-evaluation.tex}
+\subfile{3-poacher/3-brainfuck.tex}
+\subfile{3-poacher/4-math-parsing.tex}
 
 \section{Conclusion}
 
@@ -372,14 +425,12 @@ Further research has to be made to determine the impact of such generators on
 
 % TODO: Talk about Cest
 
-\subfile{3-poacher/appendix.tex}
-
-\subfile{4-ctbench/main.tex}
-
 \printbibliography
 
 \chapter{Appendix}
 
-Voila une ptite annexe
+\appendix
+
+\subfile{3-poacher/appendix.tex}
 
 \end{document}
