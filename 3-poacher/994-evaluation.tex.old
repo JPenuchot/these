@@ -1,0 +1,88 @@
+\documentclass[../main]{subfiles}
+\begin{document}
+
+\section{
+  Performance evaluation of metacompiling strategies
+}
+\label{lbl:compile-time-eval}
+
+In this section, we observe the impact of the previously introduced techniques
+on compiler execution time. We will also assess their implementation costs
+by comparing the amount of additional code it takes to generate code from
+\constexpr dynamic structures.
+
+\subsection{
+  Methodology
+}
+
+All the benchmarks and tests were run on an i5 6300U with 8GB of RAM, and only
+Clang 16.0.6 was used as GCC 13.2.1 lacks support for features used in the
+project such as implicit lambda capture of \constexpr variables. The system was
+tuned using \lstinline{pyperf} to improve measurement precision.
+
+Variable-size benchmarks were made with \ctbench, and single time measurements
+were done using the \lstinline{time} shell command.
+
+\subsection{
+  Brainfuck metacompiler evaluation
+}
+
+Short subsection intro
+
+\subsubsection{
+  A constexpr Brainfuck parser
+}
+
+The main advantage of using \constexpr programming for code generation is
+the ability to use regular \cpp data structures and functions at compile time.
+
+To fully leverage that, we propose an AST in appendix \label{app:bf-ast}
+
+
+
+\subsection{
+  Formula metacompiler evaluation
+}
+
+The mathematical formula metacompiler uses a slighlty different code generation
+technique. It can be used with or without Blaze, and Blaze can be used alone as
+well. In this subsection we are therefore measuring compiler execution times for
+the metacompiler for code generation using Blaze, but also for code generation
+without Blaze by doing simple math operations on integers, and using Blaze
+alone.
+
+\subsubsection{
+  Variable-size benchmark cases
+}
+
+To evaluate the performance compile time impact of mathematical formula parsing,
+we run benchmarks for two cases:
+
+\begin{itemize}
+\item \lstinline{no-formula-blaze}: Blaze code generation using the library's
+      own API, \ie its own \dsel based on \cpp operator overloading.
+\item \lstinline{formula-blaze}: Blaze code generation from a formula parsed at
+      compile time and transformed into a Blaze expression.
+\end{itemize}
+
+Both benchmarks consist in running a series of additions
+\lstinline{x + y + ... x} with \lstinline{x + y + } repeated N times, and the
+variables \lstinline{x} and \lstinline{y} of type
+\lstinline{blaze::DynamicVector<unsigned int>}.
+
+\begin{figure}
+\includegraphics[scale=0.5]{
+  images/shunting-yard.addition-series.graph.png
+}
+\caption{Execution time measurements for math formula compilation
+}\label{fig:sy-rubbish-benchmark-graph}
+\end{figure}
+
+The figure~\ref{fig:sy-rubbish-benchmark-graph} shows a compiler execution time
+overhead of around 20\% when adding compile time parsing.
+While it is noticeable, Blaze still accounts for most of the compiler execution
+time.
+
+\clearpage%
+
+\end{document}

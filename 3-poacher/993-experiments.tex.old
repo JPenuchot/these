@@ -1,16 +1,19 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
-\section{Experiments and results}
+\section{
+  Experiments and results
+}
 
 In this section, we will use the techniques we already mentioned to implement
-embedded compilers for the Brainfuck language,
-as well as a subset of \LaTeX math.
+embedded compilers for the Brainfuck language as well as
+a subset of \LaTeX math.
 
 The Brainfuck embedded compiler will help us evaluate code generation from
-a pointer tree structures. We will be parsing Brainfuck programs from strings
-to an AST, which we will then convert into \cpp code using the techniques
-introduced in \ref{lbl:ptr-tree-codegen}.
+a pointer tree structures with a relatively simple yet capable language
+since Brainfuck is Turing complete. We will be parsing Brainfuck programs
+from strings to an AST, which we will then convert into \cpp code using the
+techniques introduced in \ref{lbl:ptr-tree-codegen}.
 
 On the other hand the \LaTeX math parser will illustrate a use case where
 the output of a parsing algorithm can be used almost directly
@@ -27,7 +30,9 @@ We will then discuss the issues that emerge from the limitations set by the
 \constexpr based metaprogramming easier
 and with less impact on compilation times.
 
-\subsection{Brainfuck parsing: Generating code from an AST}
+\subsection{
+  Brainfuck parsing: Generating code from an AST
+}
 
 Brainfuck is a structured imperative language
 characterized by 8 tokens that allow increasing or decreasing a pointer
@@ -64,7 +69,9 @@ compilation time scaling. The size of the AST is easily predictable as
 each character is converted directly into an AST node,
 as shown in figure \ref{fig:BF}.
 
-\subsubsection{Constexpr Brainfuck parsing}
+\subsubsection{
+  Constexpr Brainfuck parsing
+}
 
 \paragraph{A Brainfuck AST}
 
@@ -76,7 +83,9 @@ polymorphism to differentiate the different kinds of tokens.
 
 \paragraph{Performance comparison of the 3 AST conversion techniques}
 
-\subsubsection{Experiments}
+\subsubsection{
+  Experiments
+}
 
 \paragraph{Variable sized benchmarks}
 
@@ -91,11 +100,15 @@ polymorphism to differentiate the different kinds of tokens.
 
 % Performance table
 
-\subsubsection{Discussion}
+\subsubsection{
+  Discussion
+}
 
 % ...
 
-\subsection{Parsing to a serialized representation}
+\subsection{
+  Parsing to a serialized representation
+}
 
 % We want a more realistic/useful use case: parsing math forumulae
 % for high performance code generation
@@ -109,17 +122,23 @@ polymorphism to differentiate the different kinds of tokens.
 
 % First: What algorithm
 
-\subsubsection{The Shunting-Yard algorithm}
+\subsubsection{
+  The Shunting-Yard algorithm
+}
 
 % Introduce the Shunting-Yard algorithm
 
-\subsubsection{The Blaze library}
+\subsubsection{
+  The Blaze library
+}
 
 % Introduce Blaze
 
 % Say we translate the Shunting-Yard result to Blaze expression templates
 
-\subsubsection{Experiment results}
+\subsubsection{
+  Experiment results
+}
 
 % ...
 
