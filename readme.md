@@ -1,6 +1,6 @@
 # PhD thesis document
 
-[Read it](main.pdf)
+[Read it](https://raw.githubusercontent.com/jpenuchot/these/main/main.pdf)
 
 This is a public repository for my PhD thesis.
 I'm using it mostly to keep track of my work,
