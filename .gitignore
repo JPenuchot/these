@@ -12,3 +12,4 @@
 *.blg
 *.run.xml
 svg-inkscape/
+!main.pdf
