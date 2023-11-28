@@ -2,18 +2,23 @@
 
 \begin{document}
 
-\section{Compile time benchmarking: state of the art}
+\section{
+  Compile time benchmarking: state of the art
+}
 
-\cpp template metaprogramming raised interest for allowing computing libraries to
-offer great performance with a very high level of abstraction. As a tradeoff for
-interpreting representations of calculations at runtime, they are represented at
-compile time, and transformed directly into their own programs.
+\cpp template metaprogramming raised interest for allowing computing libraries
+to offer great performance with a very high level of abstraction.
+Instead of building representations of calculations at runtime for
+interpretation, they are built at compile time to be transformed directly into
+programs.
 
-As metaprogramming became easier with \cpp11 and \cpp17, it became more mainstream
-and consequently, developers have to bear with longer compilation times without
-being able to explain them. Therefore, being able to measure compilation times
-is increasingly important, and being able to explain them as well. A first
-generation of tools aims to tackle this issue with their own specific
+As metaprogramming became easier with \cpp11 and \cpp17,
+it became more frequent. Consequently developers now have to bear with longer
+compilation times, often without being able to explain them.
+Therefore being able to measure compilation times becomes increasingly important
+and being able to profile and explain them as well.
+
+A first generation of tools aimed to tackle this issue with their own specific
 methodologies:
 
 \begin{itemize}
@@ -28,7 +33,9 @@ methodologies:
       capabilities with debugging and profiling tools.
 \end{itemize}
 
-\subsection{Clang's built-in profiler}
+\subsection{
+  Clang's built-in profiler
+}
 
 Additionally, Clang has a built-in profiler\cite{time-trace} that provides
 in-depth time measurements of various compilation steps, which can be enabled by
@@ -52,7 +59,7 @@ The JSON files have a rather simple structure. They contain a
 them containing a \lstinline{name}, a \lstinline{dur} (duration), and
 \lstinline{ts} (timestamp) field. It may also contain additional data in the
 field located at \lstinline{/args/data}, as seen in listing
-\ref{lst:clang-time-trace-event}. Note that temporal values are expressed in
+\ref{lst:clang-time-trace-event}. Duration and timestamps are expressed in
 microseconds.
 
 \begin{lstlisting}[

@@ -2,7 +2,9 @@
 
 \begin{document}
 
-\section{A ctbench use case}
+\section{
+  A ctbench use case
+}
 
 This example covers a short yet practical example of ctbench usage. We want to
 calculate the sum of a series of integers known at compile-time, using a type
@@ -19,7 +21,9 @@ First we need to include \lstinline{utility} to instantiate our benchmark
 according to the size parameter using \lstinline{std::make_index_sequence}, and
 define the compile-time container type for an unsigned integer:
 
-\begin{lstlisting}[language=C++]{}
+\begin{lstlisting}[
+  language=C++
+]{}
 #include <utility>
 
 /// Compile-time std::size_t
@@ -30,7 +34,9 @@ template <std::size_t N> struct ct_uint_t {
 
 The first version of the metaprogram is based on a recursive template function:
 
-\begin{lstlisting}[language=C++]{}
+\begin{lstlisting}[
+  language=C++
+]{}
 /// Recursive compile-time sum implementation
 template<typename ... Ts> constexpr auto sum();
 
@@ -45,7 +51,9 @@ constexpr auto sum(T const &, Ts const &...tl) {
 
 And the other version relies on \cpp11 parameter pack expansion:
 
-\begin{lstlisting}[language=C++]{}
+\begin{lstlisting}[
+  language=C++
+]{}
 /// Expansion compile-time sum implementation
 template<typename ... Ts> constexpr auto sum();
 
@@ -60,7 +68,9 @@ Both versions share the same interface, and thus the same driver code as well.
 The driver code takes care of scaling the benchmark according to
 \lstinline{BENCHMARK_SIZE}, which is defined by \ctbench through the CMake API:
 
-\begin{lstlisting}[language=C++]{}
+\begin{lstlisting}[
+  language=C++
+]{}
 // Driver code
 
 template <typename = void> constexpr auto foo() {

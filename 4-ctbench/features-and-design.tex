@@ -2,7 +2,9 @@
 
 \begin{document}
 
-\section{ctbench features}
+\section{
+  ctbench features
+}
 
 Originally inspired by Metabench\cite{metabench}, \ctbench development was
 driven by the need for a similar tool that allows the observation of Clang's
@@ -33,7 +35,9 @@ benchmarking, making comprehensive benchmark quick and easy, and the only
 compile time benchmarking tool that can use Clang profiling data for metaprogram
 scaling analysis.
 
-\subsection{CMake API for benchmark declaration}
+\subsection{
+  CMake API for benchmark declaration
+}
 \label{lbl:ctbench-cmake-api}
 
 The decision of using CMake as a scripting language for \ctbench was rather
@@ -57,17 +61,23 @@ find_package(ctbench REQUIRED)
 # range and number of samples
 
 # From 1 to 10 with a step of 1
-set(BENCH_RANGE 1 10 1
-  CACHE STRING "Bench range")
+set(
+  BENCH_RANGE 1 10 1
+  CACHE STRING "Bench range"
+)
 
 # 10 samples per benchmark iteration
-set(BENCH_SAMPLES 10
-  CACHE STRING "Samples per iteration")
+set(
+  BENCH_SAMPLES 10
+  CACHE STRING "Samples per iteration"
+)
 
 # Add time trace options to enable Clang's
 # profiler output, and set the granularity
 # to the tiniest value for accurate data
-add_compile_options(-ftime-trace -ftime-trace-granularity=1)
+add_compile_options(
+  -ftime-trace -ftime-trace-granularity=1
+)
 
 # Declare benchmark targets
 # with previously defined parameters
@@ -75,19 +85,22 @@ add_compile_options(-ftime-trace -ftime-trace-granularity=1)
 ctbench_add_benchmark_for_range(
   hello_world-flat
   hello_world/flat.cpp
-  BENCH_RANGE ${BENCH_SAMPLES})
+  BENCH_RANGE ${BENCH_SAMPLES}
+)
 
 ctbench_add_benchmark_for_range(
   hello_world-pass_by_generator
   hello_world/pass_by_generator.cpp
-  BENCH_RANGE ${BENCH_SAMPLES})
+  BENCH_RANGE ${BENCH_SAMPLES}
+)
 
 # Declare graph target
 ctbench_add_graph(
   bfbench-consecutive_loops
   graph-config.json
   hello_world-flat
-  hello_world-pass_by_generator)
+  hello_world-pass_by_generator
+)
 \end{lstlisting}
 
 Listing \ref{lst:ctbench-api-example} shows how to use the CMake API to generate
@@ -120,7 +133,9 @@ At this point we can declare a graph target using \lstinline{ctbench_add_graph}.
 It takes a target name and a path to a JSON configuration file followed by an
 arbitrary number of benchmark targets as arguments.
 
-\subsection{JSON API for plotter configuration}
+\subsection{
+  JSON API for plotter configuration
+}
 \label{lbl:ctbench-json-api}
 
 JSON configuration files are used to pass parameters such as the plot generator
@@ -128,9 +143,11 @@ name, some generic plotting parameters such as an export format list or axis
 names, and generator specific parameters like predicates for filtering or group
 key specifiers for aggregating time trace events.
 
-\begin{lstlisting}[language=json,
+\begin{lstlisting}[
+  language=json,
   caption=ctbench configuration file example,
-  label=lst:ctbench-config]{}
+  label=lst:ctbench-config
+]{}
 {
   "plotter": "compare_by",
   "legend_title": "Timings",
@@ -186,13 +203,18 @@ Other options are worth mentioning:
 Time trace event filtering is done through a predicate engine that will be
 further explained in subsection \ref{lbl:grapher-predicate-engine}.
 
-\subsection{ctbench-ttw: ctbench's compiler launcher}
+\subsection{
+  ctbench-ttw: ctbench's compiler launcher
+}
 \label{lbl:ctbench-ttw}
 
 CMake abstracts most of the compilation process and makes it impossible to
 retrieve derivative files in a reliable way. The object files themselves are
 compiled into temporary directories before being relocated to their final
 locations.
+
+% TODO: Mention the addition of `-ftime-trace=<value>` and new timers for
+% constant evaluation events since Clang 16
 
 Because time trace result files are located in the same directory as the object
 files and are not moved to the output build directory by CMake, a compiler
@@ -221,7 +243,9 @@ measurement and allowing the use of different compilers for targets inside a
 single CMake project. These two additional features make compiler performance
 comparison possible for variable sized compile time benchmarks.
 
-\subsection{grapher}
+\subsection{
+  grapher
+}
 
 The \grapher component of \ctbench was developed as a tookit that can be used
 through executable tools, and as a \cpp library as well.
@@ -230,7 +254,9 @@ It contains all the code needed to aggregate Clang's time-trace data generated
 by \ctbench benchmark targets, read JSON configuration files for plotters, and
 generate plots with different plot generators.
 
-\subsubsection{Library for handling benchmark directory structure}
+\subsubsection{
+  Library for handling benchmark directory structure
+}
 
 The most important part of \ctbench's \grapher library is its core types.
 They define a hierarchy of elements:
@@ -246,7 +272,10 @@ They define a hierarchy of elements:
 
 The type definitions are shown in listing \ref{lst:ctbench-core-types}.
 
-\begin{lstlisting}[language=C++, label=lst:ctbench-core-types]{}
+\begin{lstlisting}[
+  language=C++,
+  label=lst:ctbench-core-types
+]{}
 struct benchmark_instance_t {
   unsigned size;
   std::vector<std::filesystem::path> repetitions;
@@ -278,21 +307,26 @@ Most importantly, the \grapher library provides a function to extract benchmark
 data from a folder structure as laid out by the benchmark declaration functions
 described in \ref{lbl:ctbench-cmake-api}.
 
-\subsubsection{Homogeneous plotter engines and CLI boilerplate}
+\subsubsection{
+  Homogeneous plotter engines and CLI boilerplate
+}
 
 Besides boilerplate code, \grapher also provides an interface for the addition
 of new plotters. This and command line interface boilerplate code make the
 addition and implementation of new visualization strategies rather
 straightforward.
 
-\paragraph{The plotter interface}
+\paragraph{
+  The plotter interface
+}
 
 The plotter interface
 
 \begin{lstlisting}[
   language=C++,
   label=lst:ctbench-plotter-base,
-  caption=\lstinline{plotter_base_t} type definition]{}
+  caption=\lstinline{plotter_base_t} type definition
+]{}
 struct plotter_base_t {
   virtual ~plotter_base_t() = default;
   virtual void plot(benchmark_set_t const &bset,
@@ -305,7 +339,9 @@ struct plotter_base_t {
 using plotter_t = std::unique_ptr<plotter_base_t>;
 \end{lstlisting}
 
-\paragraph{Command line interface}
+\paragraph{
+  Command line interface
+}
 
 The \grapher project provides a command line interface for interaction with
 users through shell commands, and with the CMake API as well. It provides two
@@ -338,7 +374,9 @@ compiling \cpp sources that have already been pre-processed. Note that a staged
 pre-processing method could be implemented using the compiler launcher described
 in \ref{lbl:ctbench-ttw}.
 
-\subsubsection{Time trace event predicate engine}
+\subsubsection{
+  Time trace event predicate engine
+}
 \label{lbl:grapher-predicate-engine}
 
 \grapher provides a powerful predicate engine for event filtering.
@@ -363,7 +401,9 @@ The language implements a wide variety of predicates:
 These are powerful enough to express most conditions on time trace events.
 They can be used to target very specific
 
-\subsubsection{Other miscellaneous stuff}
+\subsubsection{
+  Other miscellaneous stuff
+}
 
 % TODO: Error handling for JSON, statistics, and some other stuff
 
