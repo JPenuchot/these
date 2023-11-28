@@ -1,6 +1,9 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
+% TODO: Rework this as most of this stuff is introduced in the
+% state of the art section
+
 \section{
   A technical background of C++ metaprogramming and DSELs
 }
@@ -12,7 +15,6 @@ features for a particular domain. Domain Specific Embedded Languages (\dsels)
 are a subclass of \dsl that rely on an existing general-purpose language to host
 it. \dsels then reuse the host language syntax and tool ecosystem to be compiled
 or interpreted.
-\\
 
 In \cpp, the compile time process of generating new code is
 \textbf{Template Metaprogramming} to ensure performance and correctness.
@@ -29,7 +31,6 @@ at compile time \cite{unruh:1994}. Due to the fact that template code generation
 is performed at compile time, uses constants and supports pattern-matching and
 recursion thanks to template partial specialization, it can also be looked
 at as a pure functional language \cite{haeri:2012}.
-\\
 
 Templates are an interesting technique for generative programming. As they
 are Turing-complete, one can design a set of template metaprograms acting as a
@@ -98,7 +99,6 @@ of non-type template parameters.
 
 However not all functions and variables can be qualified as \constexpr,
 and not all constant expression results can be used as \nttps.
-\\
 
 Since the introduction of the \constexpr specifier, the requirements on
 functions for being \constexpr specifiable have constantly been relaxed as new
@@ -126,9 +126,12 @@ There are more requirements on \constexpr variables.
 Their values must be literal, meaning that memory allocated in \constexpr
 function bodies cannot be stored in \constexpr variables.
 
-\paragraph{\constexpr memory allocation} Starting from \cpp20,
-\lstinline{std::allocate} and \lstinline{std::deallocate} are \constexpr
-functions, allowing memory allocations to happen in constant evaluation.
+\paragraph{
+  \constexpr memory allocation
+}
+Starting from \cpp20, \lstinline{std::allocate} and \lstinline{std::deallocate}
+are \constexpr functions, allowing memory allocations to happen in
+constant evaluations.
 
 However \constexpr allocated memory is not transient, \ie memory allocated in
 constant expressions cannot be stored in \constexpr variables, and non-type
@@ -258,17 +261,16 @@ programming when used with \constexpr allocation of polymorphic types.
 \dsels in \cpp use template metaprogramming via the \textit{Expression
 Template} idiom.
 \textbf{Expression Templates} \cite{veldhuizen:1995,vandevoorde:2002} is a
-technique implementing a
-form of \textbf{delayed evaluation} in \cpp \cite{spinellis:2001}. Expression
-Templates are built around the \textit{recursive type composition}
-idiom \cite{jarvi:1998} that allows the construction, at compile time, of a type
-representing the abstract syntax tree of an arbitrary statement. This is done by
-overloading functions and operators on those types so they return a lightweight
-object. The object encodes the current operation in the Abstract Syntax Tree
-(AST) being built in its type instead of performing any kind of computation. Once
-reconstructed, this AST can be transformed into arbitrary code fragments using
-Template Metaprograms.
-\\
+technique implementing a form of \textbf{delayed evaluation} in
+\cpp \cite{spinellis:2001}. Expression Templates are built around the
+\textit{recursive type composition} idiom \cite{jarvi:1998} that allows the
+construction, at compile time, of a type representing the abstract syntax tree
+of an arbitrary statement. This is done by overloading functions and operators
+on those types so they return a lightweight object.
+The object encodes the current operation in the Abstract Syntax Tree
+(AST) being built in its type instead of performing any kind of computation.
+Once reconstructed, this AST can be transformed into arbitrary code fragments
+using Template Metaprograms.
 
 As of today, most \cpp EDSLs rely on \textit{Expression Templates} and therefore
 are limited to the \cpp syntax. New techniques are becoming more popular through
