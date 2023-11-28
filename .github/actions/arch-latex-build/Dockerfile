@@ -5,6 +5,7 @@ FROM archlinux/archlinux:base-devel
 RUN --mount=type=cache,sharing=locked,target=/var/cache/pacman \
   pacman -Syu --noconfirm --needed \
   biber \
+  inkscape \
   texlive \
   ttf-opensans
 
