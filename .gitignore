@@ -11,5 +11,6 @@
 *.toc
 *.blg
 *.run.xml
+*.dvi
 svg-inkscape/
 !main.pdf
