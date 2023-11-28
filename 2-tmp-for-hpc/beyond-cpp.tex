@@ -6,29 +6,14 @@
 %   - Reflection
 %   - Can't read
 
-\chapter{Introduction}
-
-This thesis is about metaprogramming techniques for parallel code generation.
-It aims to study the boundary between compile-time parsing of
-domain-specific embedded languages and high performance code generation in \cpp.
-
-The main motivation is to provide tools, libraries, and guidelines for embedding
-mathematical languages in \cpp with the hope that it can be useful to build a
-cohesive set of tools to make generic high performance computing more accessible
-to non-specialized audiences. This goal is even more important as new computing
-architectures emerge over time. Developing high performance programs requires
-specialized implementations that can be achieved by either specializing
-implementations, or using libraries that provide specialized abstractions at
-various levels and for various domains.
-
-\chapter{State of the art of metaprogramming}
-
 In this state of the art I will first give an overview of metaprogramming in
 historic and contemporary languages. Then I will focus on the state of the art
 of \cpp metaprogramming, and notable high performance computing libraries as they
 are essential for the scope of my thesis.
 
-\section{Metaprogramming styles and languages}
+\section{
+  Metaprogramming styles and languages
+}
 
 \subsection{A short history of metaprogramming}
 
@@ -75,19 +60,10 @@ As we will see in section \ref{lbl:meta-cpp}, GPU computing libraries
 rely heavily on \cpp metaprogramming to provide building blocks for
 portable high performance compute kernels.
 
-\section{Metaprogramming and HPC in C++} \label{lbl:meta-cpp}
-
-\subsection{Language constructs of C++ metaprogramming}
-
-Metaprogramming in \cpp relies on
-
-\paragraph{Templates}
-
-\paragraph{Overloading}
-
-\paragraph{Parameter packs}
-
-\paragraph{Constexpr functions and variables}
+\section{
+  Metaprogramming and HPC in C++
+}
+\label{lbl:meta-cpp}
 
 \subsection{Core and application-specific libraries}
 
@@ -142,7 +118,9 @@ HPX
 
 Thrust, CUB, etc.
 
-\section{Conclusion}
+\section{
+  Conclusion
+}
 
 \begin{itemize}
 \item Metaprogramming isn't a new idea

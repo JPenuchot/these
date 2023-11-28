@@ -1,8 +1,6 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
-\chapter{Code generation at low level}
-
 BLAS-level functions are the cornerstone of a large
 subset of applications. If a large body of work surrounding
 efficient and large-scale implementation of some routines such
@@ -22,7 +20,9 @@ from 4 to 32 that our \cpp kernels are very efficient and may
 have a performance that is up to 3 times better than that of
 OpenBLAS gemv.
 
-\section{Introduction}
+\section{
+  Introduction
+}
 
 The efforts of optimizing the performance of BLAS routines
 fall into two main directions. The first direction is about
@@ -84,7 +84,9 @@ x86 and ARM) between our generated gemv kernels for
 small matrices and the OpenBLAS gemv. Finally, concluding
 remarks and perspectives are given in Section V.
 
-\section{High-performance generative programming}
+\section{
+  High-performance generative programming
+}
 
 The quality and performance of BLAS like code require
 the ability to write tight and highly-optimized code. If the
@@ -96,7 +98,9 @@ To do so, we will rely on two main elements: a proper \cpp
 SIMD layer and a set of code generation techniques stemmed
 from Generic Programming.
 
-\subsection{Metaprogramming as code generation principles}
+\subsection{
+  Metaprogramming as code generation principles
+}
 
 Metaprogramming \cite{hpcs7} is about the design and the
 implementation of programs whose input and output
@@ -114,7 +118,8 @@ or Haskell \cite{hpcs12}, a subset of
 basic notions emerges:
 
 \begin{itemize}
-\item Code fragment generation: Any meta-programmable
+\item Code fragment generation:
+Any meta-programmable
 language has a way to build an object that represents a
 piece of code. The granularity of this fragment of code
 may vary –ranging from statement to a complete class
@@ -125,7 +130,8 @@ a special syntax can be provided to construct such
 fragment. In some others, code fragment are represented
 as a string containing the code itself.
 
-\item Code processing: Code fragments are meant to
+\item Code processing:
+Code fragments are meant to
 be combined, introspected or replicated in order to
 let the developer rearrange these fragments and as a
 consequence to provide a given service. Those processing
@@ -133,7 +139,8 @@ steps can be done either via a special syntax construct,
 like the MetaOCaml code aggregation operator, or can
 use a similar syntax than a regular code.
 
-\item Code expansion: Once the initial code fragments have
+\item Code expansion:
+Once the initial code fragments have
 been processed, the last step is to turn them into an
 actual code. This is often done in an explicit manner by
 using a function or a syntax construct provided by the
@@ -148,19 +155,22 @@ infrastructures based on source-to-source compilers, which
 are actually able to perform the same techniques proposed by
 this paper. Such systems includes:
 
-\item SYCL \cite{hpcs13}: a single-source abstraction over OpenCL
+\item SYCL \cite{hpcs13}:
+a single-source abstraction over OpenCL
 for heterogeneous systems. By using OpenCL, one can
 effectively write SYCL code for a large selection of
 architectures including SIMD capable CPU.
 
-\item BLIS \cite{hpcs14}: a framework for generating BLAS like oper-
+\item BLIS \cite{hpcs14}:
+a framework for generating BLAS like oper-
 ations in ISO C99 from a small subset of kernels that can
 be retargeted for different back-end. Its performances are
 on par with open-source solutions like OpenBLAS and
 ATLAS.
 
-\item LGEN \cite{hpcs15}: a compiler that produces performance-
-optimized basic linear algebra computations on matrices
+\item LGEN \cite{hpcs15}:
+a compiler that produces performance-optimized
+basic linear algebra computations on matrices
 of fixed sizes with or without structure composed
 from matrix multiplication, matrix addition, matrix
 transposition, and scalar multiplication. Based on
@@ -276,7 +286,9 @@ Listing 3.
 
 \end{itemize}
 
-\subsection{Application to HPC code generation}
+\subsection{
+  Application to HPC code generation
+}
 
 The main strategies to get efficient small-scale BLAS
 functions are on one hand the usage of the specific
@@ -285,7 +297,11 @@ architecture that is vectorization and on the other hand the
 controlled unrolling of the inner loop to ensure proper register
 and pipeline usage.
 
-\paragraph{Vectorization} Vectorization can be achieved either
+\paragraph{
+  Vectorization
+}
+
+Vectorization can be achieved either
 using the specific instructions set of each vendor or
 by relying on auto-vectorization. In our case, to ensure
 homogeneous performances across the different target
@@ -468,7 +484,9 @@ method ensure that the unrolling is always done at the fullest
 extend and does not rely on non-standard extensions.
 \end{itemize}
 
-\section{The matrix-vector multiplication routine: gemv}
+\section{
+  The matrix-vector multiplication routine: gemv
+}
 
 Level 2 BLAS routines such as gemv have a low
 computational intensity compared to Level 3 BLAS operations
@@ -580,7 +598,9 @@ by a regular code. The notion of code fragment detailed
 in Section II helps us to encapsulate those complex metaprogramming
 cases into an API based on function calls.
 
-\section{Performance results of the generated gemv codes}
+\section{
+  Performance results of the generated gemv codes
+}
 
 To validate our approach, we consider two main targeted
 processor architectures: an x86 Intel processor i5-7200 and an
@@ -600,7 +620,9 @@ experiments have been repeated for a duration of 3s, using
 the median time as an approximation of the most frequent
 measured time.
 
-\subsection{On X86 Intel processor}
+\subsection{
+  On X86 Intel processor
+}
 
 % TODO
 
@@ -688,7 +710,9 @@ on partial loop unrolling and using compile-time informations
 about architecture to decide the level of unrolling to apply for
 a given size on a given architecture.
 
-\subsection{On ARM processor}
+\subsection{
+  On ARM processor
+}
 
 The comparison between our automatically generated code
 and the ARM OpenBLAS gemv kernel is given in Figure 4.
@@ -722,7 +746,9 @@ unrolling and Boost.SIMD shows that it is indeed possible to
 generate ARM NEON code from high-level \cpp with zero
 abstraction cost.
 
-\section{Conclusion}
+\section{
+  Conclusion
+}
 
 This paper presented the details of generating an optimized
 level 2 BLAS routine gemv. As a key difference with respect
@@ -752,54 +778,5 @@ may lead to an easier to parallelize solvers or decompositions.
 Another objective will be to adapt such techniques to cooperate
 with tuning framework, hence providing the required level of
 performance with less input from the user.
-
-\chapter{Code generation at expression level}
-
-In this chapter I will cover the use of template metapramming for higher levels
-of abstraction. Templates can be used to represent whole mathematical
-expressions at compile time by creating type-based arborescences.
-This type of representation is called an expression
-template\cite{veldhuizen:1995}, which will be referred to as \et.
-
-Combined with compile-time mechanisms such as function overloading,
-specialization, and operator overloading, expression templates can be used to
-implement expression level \dsels and convert large mathematical expressions
-into high performance code.
-
-There are two main libraries that are able to do just this: Eigen\cite{eigen}
-and Blaze\cite{blazelib}.
-
-How do they work?
-
-Your math expressions aren't represented by structures,
-they're represented by types.
-
-You don't use conditions at runtime but overloading at compile time.
-
-Enables a whole range of optimizations:
-
-\begin{itemize}
-\item Lazy evaluation
-\item Fused operations using BLAS
-\item Eventually: GPU code generation, although Blaze needs a significant
-      rewrite for that. Source rewriting tools might be a good fit for that job.
-\end{itemize}
-
-Expression templates can provide expression level APIs for HPC libraries.
-
-Still two limitations:
-
-\begin{itemize}
-\item Slow compilation times
-\item \cpp syntax only
-\end{itemize}
-
-Expression templates are aging (pretty well but still).
-Newer \cpp standards provide metaprogramming features that can fundamentally
-change the way we write metaprograms.
-
-The next part of my thesis will focus on how to leverage these features to
-implement \dsel of arbitrary syntax, and the study of their impact on
-compilation times.
 
 \end{document}
