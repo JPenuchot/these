@@ -284,8 +284,41 @@ parall\'elisme
 
 \part{Current state of metaprogramming for HPC}
 
-\subfile{1-state-of-the-art/main.tex}
-\subfile{2-tmp-for-hpc/main.tex}
+\chapter{
+  Introduction
+}
+
+This thesis is about metaprogramming techniques for parallel code generation.
+It aims to study the boundary between compile-time parsing of
+domain-specific embedded languages and high performance code generation in \cpp.
+
+The main motivation is to provide tools, libraries, and guidelines for embedding
+mathematical languages in \cpp with the hope that it can be useful to build a
+cohesive set of tools to make generic high performance computing more accessible
+to non-specialized audiences. This goal is even more important as new computing
+architectures emerge over time. Developing high performance programs requires
+specialized implementations that can be achieved by either specializing
+implementations, or using libraries that provide specialized abstractions at
+various levels and for various domains.
+
+\chapter{
+  State of the art of metaprogramming
+}
+
+\subfile{2-tmp-for-hpc/beyond-cpp.tex}
+\subfile{2-tmp-for-hpc/cpp-constructs.tex}
+
+\chapter{
+  Code generation at low level
+}
+
+\subfile{2-tmp-for-hpc/low-level.tex}
+
+\chapter{
+  Code generation at expression level
+}
+
+\subfile{2-tmp-for-hpc/expression-level.tex}
 
 \part{Metaprogramming beyond expression templates}
 
@@ -360,14 +393,12 @@ binary code. Some more radical techniques can be used to force the compiler to
 interpret \cpp code as a \dsel. Template metaprogramming is such a technique
 and it spawned a large corpus of related idioms from compile time function
 evaluation to lazy evaluation via \textit{Expression Templates}.
-\\
 
 In the field of High Performance Computing, \cpp users are often driven to use
 libraries built on top of those idioms like Eigen\cite{eigen} or
 Blaze\cite{blazelib,iglberger2012_2}. They all suffer from a major limitation:
 by being tied to the natural \cpp syntax, they can't express nor embed arbitrary
 languages.
-\\
 
 In this paper, we try to demonstrate that the new features of \cpp23 related to
 compile time programming are able to help developers designing \dsels with
@@ -395,7 +426,6 @@ We wanted to demonstrate that using \constexpr code to implement parsers for
 \dsel of arbitrary syntax in \cpp23 is possible despite limitations on
 \constexpr memory allocation, and that doing so is possible with reasonable
 impact on compilation times.
-\\
 
 We achieved that by implementing a \constexpr parser for the Brainfuck language,
 with code generation backends implementing three different strategies to
@@ -404,7 +434,6 @@ generators, expression templates, and non-type template parameters.
 We also demonstrated the interoperability of these \constexpr parsers by
 implementing a parser for mathematical languages that can be used as a frontend
 for existing high performance \cpp computation libraries.
-\\
 
 Our benchmarks highlight compilation time scaling issues with pass-by-generator
 and expression template code generation strategies for large programs, and
@@ -412,7 +441,6 @@ excellent scaling capabilities for non-type template parameter based code
 generation strategies. These results can be used to decide which strategy to
 adopt for the implementation of future \dsel based on \constexpr parsers
 based on considerations for compilation times or implementation complexity.
-\\
 
 Going forward, \constexpr parser generators could help reduce
 \dsel implementation time and help embed more languages into \cpp23.
