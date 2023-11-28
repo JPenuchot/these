@@ -19,51 +19,69 @@ template <typename F> struct nullary_t : expr_t {
   nullary_t(F f_) : f(std::move(f_)) {}
   F f;
 
-  // Provides an operator[] to access the Nth element of f().
-  auto operator[](std::size_t idx) const { return f()[idx]; }
+  // Provides an operator[] to access the Nth element
+  // of f().
+  auto operator[](std::size_t idx) const {
+    return f()[idx];
+  }
 };
 
 // Map expression node
 template <Expr E, typename F> struct map_t : expr_t {
-  map_t(F f_, E e_) : f(std::move(f_)), e(std::move(e_)) {}
+  map_t(F f_, E e_)
+      : f(std::move(f_)), e(std::move(e_)) {}
   F f;
   E e;
 
   // Provides an operator[] mapping f
   // to the elements of the expression e
-  auto operator[](std::size_t idx) const { return f(e[idx]); }
+  auto operator[](std::size_t idx) const {
+    return f(e[idx]);
+  }
 };
 
 // Addition expression node
 template <Expr A, Expr B> struct add_t : expr_t {
-  add_t(A a_, B b_) : a(std::move(a_)), b(std::move(b_)) {}
+  add_t(A a_, B b_)
+      : a(std::move(a_)), b(std::move(b_)) {}
   A a;
   B b;
 
-  // Provides an operator[] returning the result of the addition
-  // of the Nth elements expressions a and b.
-  auto operator[](std::size_t idx) const { return a[idx] + b[idx]; }
+  // Provides an operator[] returning the result of
+  // the addition of the Nth elements expressions a
+  // and b.
+  auto operator[](std::size_t idx) const {
+    return a[idx] + b[idx];
+  }
 };
 
-// Operator overloading and function definitions for our DSEL
+// Operator overloading and function definitions for
+// our DSEL
 
 // Binds a container to a nullary_t expression
 auto bind(auto const &v) {
-  return nullary_t([&]() -> auto const & { return v; });
+  return nullary_t(
+      [&]() -> auto const & { return v; });
 }
 
 // Maps an expression to a function f through map_t
-auto operator|(Expr auto a, auto f) { return map_t(f, a); }
+auto operator|(Expr auto a, auto f) {
+  return map_t(f, a);
+}
 
 // Generates an add_t node from two expressions
-auto operator+(Expr auto a, Expr auto b) { return add_t(a, b); }
+auto operator+(Expr auto a, Expr auto b) {
+  return add_t(a, b);
+}
 
 // Usage example
 std::vector<int> foo() {
-  std::vector<int> a(10, 20), b({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+  std::vector<int> a(10, 20),
+      b({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 
   // Generating an expression template
-  auto expr = (bind(a) + bind(b)) | [](auto e) { return e * e; };
+  auto expr = (bind(a) + bind(b)) |
+              [](auto e) { return e * e; };
 
   std::vector<int> res(10);
   for (std::size_t i = 0; i < 10; i++) {

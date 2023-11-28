@@ -7,7 +7,8 @@ template <unsigned N> struct fibonacci_t;
 // General definition
 template <unsigned N> struct fibonacci_t {
   static constexpr unsigned value =
-      fibonacci_t<N - 2>::value + fibonacci_t<N - 1>::value;
+      fibonacci_t<N - 2>::value +
+      fibonacci_t<N - 1>::value;
 };
 
 // Specialization for cases 0 and 1
