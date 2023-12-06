@@ -27,8 +27,8 @@ OpenBLAS gemv.
 The efforts of optimizing the performance of BLAS routines
 fall into two main directions. The first direction is about
 writing very specific assembly code. This is the case for
-almost all the vendor libraries including Intel MKL \cite{hpcs1},
-AMD ACML \cite{hpcs2} etc. To provide the users with efficient BLAS
+almost all the vendor libraries including Intel MKL\cite{hpcs1},
+AMD ACML\cite{hpcs2} etc. To provide the users with efficient BLAS
 routines, the vendors usually implement their own routines
 for their own hardware using assembly code with specific
 optimizations which is a low level solution that gives the
@@ -48,12 +48,12 @@ However, they only solve partially the trade-off between the
 abstraction level and the efficiency of the generated codes.
 This is for example the case of the approach followed by
 the Formal Linear Algebra Methods Environment (FLAME)
-with the Libflame library \cite{hpcs3}. Thus, it offers a framework to
-develop dense linear solvers using algorithmic skeletons \cite{hpcs4}
+with the Libflame library\cite{hpcs3}. Thus, it offers a framework to
+develop dense linear solvers using algorithmic skeletons\cite{hpcs4}
 and an API which is more user-friendly than LAPACK, giving
 satisfactory performance results. A more generic approach is
 the one followed in recent years by \cpp libraries built around
-expression templates \cite{hpcs5} or other generative programming \cite{hpcs6}
+expression templates\cite{hpcs5} or other generative programming\cite{hpcs6}
 principles. In this paper, we will focus on such an approach.
 To show the interest of this approach, we consider as
 example the matrix-vector multiplication kernel (gemv) which
@@ -102,7 +102,7 @@ from Generic Programming.
   Metaprogramming as code generation principles
 }
 
-Metaprogramming \cite{hpcs7} is about the design and the
+Metaprogramming\cite{hpcs7} is about the design and the
 implementation of programs whose input and output
 are themselves programs. This term encompasses a large
 body of idioms, some language dependent, which can be used
@@ -111,10 +111,10 @@ One typical usage of metaprogramming is the design of
 libraries which expose a user API with an arbitrary high
 abstraction level while being able to get compiled to a very
 ”close to the metal” implementation, often rivaling with a
-handwritten expert code on a given machine \cite{hpcs8}.
+handwritten expert code on a given machine\cite{hpcs8}.
 If metaprogramming is used in languages as different as
-\cpp \cite{hpcs9},D \cite{hpcs10}, OCaml \cite{hpcs11}
-or Haskell \cite{hpcs12}, a subset of
+\cpp\cite{hpcs9},D\cite{hpcs10}, OCaml\cite{hpcs11}
+or Haskell\cite{hpcs12}, a subset of
 basic notions emerges:
 
 \begin{itemize}
@@ -155,20 +155,20 @@ infrastructures based on source-to-source compilers, which
 are actually able to perform the same techniques proposed by
 this paper. Such systems includes:
 
-\item SYCL \cite{hpcs13}:
+\item SYCL\cite{hpcs13}:
 a single-source abstraction over OpenCL
 for heterogeneous systems. By using OpenCL, one can
 effectively write SYCL code for a large selection of
 architectures including SIMD capable CPU.
 
-\item BLIS \cite{hpcs14}:
+\item BLIS\cite{hpcs14}:
 a framework for generating BLAS like oper-
 ations in ISO C99 from a small subset of kernels that can
 be retargeted for different back-end. Its performances are
 on par with open-source solutions like OpenBLAS and
 ATLAS.
 
-\item LGEN \cite{hpcs15}:
+\item LGEN\cite{hpcs15}:
 a compiler that produces performance-optimized
 basic linear algebra computations on matrices
 of fixed sizes with or without structure composed
@@ -305,7 +305,7 @@ Vectorization can be achieved either
 using the specific instructions set of each vendor or
 by relying on auto-vectorization. In our case, to ensure
 homogeneous performances across the different target
-architectures, we relied on the Boost.SIMD \cite{hpcs17} package
+architectures, we relied on the Boost.SIMD\cite{hpcs17} package
 to generates SIMD code for all our architectures.
 Boost.SIMD relies on \cpp metaprogramming to act as
 a zero-cost abstraction over SIMD operations in a large
@@ -495,15 +495,15 @@ algorithms in particular for one sided factorizations such as
 Cholesky, LU, and QR decompositions some techniques are
 used to accumulate several Level 2 BLAS operations when
 possible in order to perform them as one Level 3 BLAS
-operation \cite{hpcs18}. However, for the two-sided factorizations,
+operation\cite{hpcs18}. However, for the two-sided factorizations,
 and despite the use of similar techniques, the fraction of the
 Level 2 BLAS floating point operations is still important. For
 instance, for both the bidiagonal and tridiagonal reductions,
-this fraction is around 50\% \cite{hpcs19}. Thus, having optimized
+this fraction is around 50\%\cite{hpcs19}. Thus, having optimized
 implementations for these routines on different architectures
 remains important to improve the performance of several
 algorithms and applications. Moreover, small-scale BLAS
-kernels are useful for some batched computations \cite{hpcs20}.
+kernels are useful for some batched computations\cite{hpcs20}.
 
 Here, we consider the matrix-vector multiplication routine
 for general dense matrices, gemv, which performs either
@@ -607,7 +607,7 @@ processor architectures: an x86 Intel processor i5-7200 and an
 ARM processor AMD A1100 with Cortex A57. We compare
 the performance of the generated gemv codes to that of the
 gemv kernel of the OpenBLAS library based on GotoBLAS2
-1.13 \cite{hpcs21}. We use gcc7.2 \cite{hpcs22} with maximal
+1.13\cite{hpcs21}. We use gcc7.2\cite{hpcs22} with maximal
 level of optimization.
 
 In the following experiments, we only show results
@@ -698,7 +698,7 @@ appear however. The first one is that the increased number
 of the AVX registers compared to the SSE ones makes the
 effect of register spilling less prevalent. The second one is
 that the code generated for the special $64 \times 64$ elements
-case \cite{hpcs23} in OpenBLAS has a little advantage compared to
+case\cite{hpcs23} in OpenBLAS has a little advantage compared to
 our automatically generated code. Finally, we note the fact
 that, for matrices of size above $512 \times 512$ elements, we stop
 being competitive due to the large amount of registers our
