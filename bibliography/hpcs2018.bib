@@ -120,9 +120,11 @@
               },
 }
 
-% hpcs10:
-% W. Bright, “Templates revisited - d programming language.” [Online].
-% Available: https://dlang.org/articles/templates-revisited.html
+@misc{hpcs10,
+  title = {Templates revisited - d programming language},
+  author = {Walter Bright},
+  url = {https://dlang.org/articles/templates-revisited.html},
+}
 
 % hpcs11:
 % W. Taha, A Gentle Introduction to Multi-stage Programming. Berlin,
@@ -132,32 +134,135 @@
 % T. Sheard and S. P. Jones, “Template metaprogramming for haskell,”
 % SIGPLAN Not., vol. 37, no. 12, pp. 60–75, Dec. 2002.
 
-% hpcs13:
-% R. Keryell, R. Reyes, and L. Howes, “Khronos sycl for opencl: A
-% tutorial,” in Proceedings of the 3rd International Workshop on OpenCL,
-% ser. IWOCL ’15. New York, NY, USA: ACM, 2015, pp. 24:1–24:1.
-% [Online]. Available: http://doi.acm.org/10.1145/2791321.2791345
+@inproceedings{hpcs13,
+  author = {Keryell, Ronan and Reyes, Ruyman and Howes, Lee},
+  title = {Khronos SYCL for OpenCL: A Tutorial},
+  year = {2015},
+  isbn = {9781450334846},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/2791321.2791345},
+  doi = {10.1145/2791321.2791345},
+  abstract = {SYCL ([sikə l] as in sickle) is a royalty-free, cross-platform C++
+              abstraction layer that builds on the underlying concepts,
+              portability and efficiency of OpenCL, while adding the ease-of-use
+              and flexibility of modern C++11. For example, SYCL enables single
+              source development where C++ template functions can contain both
+              host and device code to construct complex algorithms that use
+              OpenCL acceleration, and then re-use them throughout their source
+              code on different types of data.In this tutorial we will introduce
+              the concepts behind OpenCL SYCL, present an implementation of SYCL
+              targeting OpenCL devices with SPIR based on Clang/LLVM and an open
+              source CPU-only implementation based on C++1z, Boost and
+              OpenMP.Attendees of the last session are encouraged to install the
+              open-source CPU-only implementation of SYCL and code along on
+              laptop/tablet.},
+  booktitle = {Proceedings of the 3rd International Workshop on OpenCL},
+  articleno = {24},
+  numpages = {1},
+  location = {Palo Alto, California},
+  series = {IWOCL '15},
+}
 
-% hpcs14:
-% F. G. Van Zee and R. A. van de Geijn, “Blis: A framework for
-% rapidly instantiating blas functionality,” ACM Trans. Math. Softw.,
-% vol. 41, no. 3, pp. 14:1–14:33, Jun. 2015. [Online]. Available:
-% http://doi.acm.org/10.1145/2764454
+@article{hpcs14,
+  author = {Van Zee, Field G. and van de Geijn, Robert A.},
+  title = {BLIS: A Framework for Rapidly Instantiating BLAS Functionality},
+  year = {2015},
+  issue_date = {June 2015},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  volume = {41},
+  number = {3},
+  issn = {0098-3500},
+  url = {https://doi.org/10.1145/2764454},
+  doi = {10.1145/2764454},
+  abstract = {The BLAS-like Library Instantiation Software (BLIS) framework is a
+              new infrastructure for rapidly instantiating Basic Linear Algebra
+              Subprograms (BLAS) functionality. Its fundamental innovation is
+              that virtually all computation within level-2 (matrix-vector) and
+              level-3 (matrix-matrix) BLAS operations can be expressed and
+              optimized in terms of very simple kernels. While others have had
+              similar insights, BLIS reduces the necessary kernels to what we
+              believe is the simplest set that still supports the high
+              performance that the computational science community demands.
+              Higher-level framework code is generalized and implemented in ISO
+              C99 so that it can be reused and/or reparameterized for different
+              operations (and different architectures) with little to no
+              modification. Inserting high-performance kernels into the framework
+              facilitates the immediate optimization of any BLAS-like operations
+              which are cast in terms of these kernels, and thus the framework
+              acts as a productivity multiplier. Users of BLAS-dependent
+              applications are given a choice of using the traditional Fortran-77
+              BLAS interface, a generalized C interface, or any other higher
+              level interface that builds upon this latter API. Preliminary
+              performance of level-2 and level-3 operations is observed to be
+              competitive with two mature open source libraries (OpenBLAS and
+              ATLAS) as well as an established commercial product (Intel MKL).},
+  journal = {ACM Trans. Math. Softw.},
+  month = {jun},
+  articleno = {14},
+  numpages = {33},
+  keywords = {high-performance, Linear algebra, matrix, BLAS, libraries},
+}
 
-% hpcs15:
-% D. G. Spampinato and M. P ̈uschel, “A basic linear algebra compiler for
-% structured matrices,” in International Symposium on Code Generation
-% and Optimization (CGO), 2016, pp. 117–127.
+@inproceedings{hpcs15,
+  author = {Spampinato, Daniele G. and P\"{u}schel, Markus},
+  title = {A Basic Linear Algebra Compiler for Structured Matrices},
+  year = {2016},
+  isbn = {9781450337786},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/2854038.2854060},
+  doi = {10.1145/2854038.2854060},
+  abstract = {Many problems in science and engineering are in practice modeled
+              and solved through matrix computations. Often, the matrices
+              involved have structure such as symmetric or triangular, which
+              reduces the operations count needed to perform the computation. For
+              example, dense linear systems of equations are solved by first
+              converting to triangular form and optimization problems may yield
+              matrices with any kind of structure. The well-known BLAS (basic
+              linear algebra subroutine) interface provides a small set of
+              structured matrix computations, chosen to serve a certain set of
+              higher level functions (LAPACK). However, if a user encounters a
+              computation or structure that is not supported, she loses the
+              benefits of the structure and chooses a generic library. In this
+              paper, we address this problem by providing a compiler that
+              translates a given basic linear algebra computation on structured
+              matrices into optimized C code, optionally vectorized with
+              intrinsics. Our work combines prior work on the Spiral-like LGen
+              compiler with techniques from polyhedral compilation to
+              mathematically capture matrix structures. In the paper we consider
+              upper/lower triangular and symmetric matrices but the approach is
+              extensible to a much larger set including blocked structures. We
+              run experiments on a modern Intel platform against the Intel MKL
+              library and a baseline implementation showing competitive
+              performance results for both BLAS and non-BLAS functionalities.},
+  booktitle = {Proceedings of the 2016 International Symposium on Code
+               Generation and Optimization},
+  pages = {117–127},
+  numpages = {11},
+  keywords = {Program synthesis, DSL, Basic linear algebra, Tiling, Structured
+              matrices, SIMD vectorization},
+  location = {Barcelona, Spain},
+  series = {CGO '16},
+}
 
 % hpcs16:
 % A. Gurtovoy and D. Abrahams, “The boost c++ metaprogramming
 % library,” 2002.
 
-% hpcs17:
-% P. Est ́erie, J. Falcou, M. Gaunard, and J.-T. Laprest ́e, “Boost.simd:
-% Generic programming for portable simdization,” in Proceedings of the
-% 2014 Workshop on Programming Models for SIMD/Vector Processing,
-% ser. WPMVP ’14. New York, NY, USA: ACM, 2014, pp. 1–8.
+@inproceedings{hpcs17,
+  author = {Estérie, Pierre and Gaunard, Mathias and Falcou, Joel and Lapresté,
+            Jean-Thierry and Rozoy, Brigitte},
+  booktitle = {2012 21st International Conference on Parallel Architectures and
+               Compilation Techniques (PACT)},
+  title = {Boost.SIMD: Generic programming for portable SIMDization},
+  year = {2012},
+  volume = {},
+  number = {},
+  pages = {431-432},
+  doi = {},
+}
 
 % hpcs18:
 % E. Anderson, Z. Bai, C. Bischof, L. S. Blackford, J. Demmel, J. J.
@@ -165,17 +270,73 @@
 % and D. Sorensen, LAPACK Users’ Guide (Third Ed.). Philadelphia, PA,
 % USA: Society for Industrial and Applied Mathematics, 1999.
 
-% hpcs19:
-% S. Tomov, R. Nath, and J. Dongarra, “Accelerating the reduction to upper
-% hessenberg, tridiagonal, and bidiagonal forms through hybrid gpu-based
-% computing,” Parallel Computing, vol. 36, no. 12, pp. 645 – 654, 2010.
+@article{hpcs19,
+  author = {Tomov, Stanimire and Nath, Rajib and Dongarra, Jack},
+  title = {Accelerating the Reduction to Upper Hessenberg, Tridiagonal, and
+           Bidiagonal Forms through Hybrid GPU-Based Computing},
+  year = {2010},
+  issue_date = {December, 2010},
+  publisher = {Elsevier Science Publishers B. V.},
+  address = {NLD},
+  volume = {36},
+  number = {12},
+  issn = {0167-8191},
+  url = {https://doi.org/10.1016/j.parco.2010.06.001},
+  doi = {10.1016/j.parco.2010.06.001},
+  abstract = {We present a Hessenberg reduction (HR) algorithm for hybrid
+              systems of homogeneous multicore with GPU accelerators that can
+              exceed 25x the performance of the corresponding LAPACK algorithm
+              running on current homogeneous multicores. This enormous
+              acceleration is due to proper matching of algorithmic requirements
+              to architectural strengths of the system's hybrid components. The
+              results described in this paper are significant because the HR has
+              not been properly accelerated before on homogeneous multicore
+              architectures, and it plays a significant role in solving
+              non-symmetric eigenvalue problems. Moreover, the ideas from the
+              hybrid HR are used to develop a hybrid tridiagonal reduction
+              algorithm (for symmetric eigenvalue problems) and a bidiagonal
+              reduction algorithm (for singular value decomposition problems).
+              Our approach demonstrates a methodology that streamlines the
+              development of a large and important class of algorithms on modern
+              computer architectures of multicore and GPUs. The new algorithms
+              can be directly used in the software stack that relies on LAPACK.},
+  journal = {Parallel Comput.},
+  month = {dec},
+  pages = {645–654},
+  numpages = {10},
+  keywords = {Hybrid computing, Tridiagonalization, Bidiagonalization,
+              Hessenberg reduction, Dense linear algebra, Two-sided
+              factorizations, GPUs},
+}
 
-% hpcs20:
-% T. Dong, A. Haidar, S. Tomov, and J. Dongarra, “Optimizing the
-% svd bidiagonalization process for a batch of small matrices,” Procedia
-% Computer Science, vol. 108, pp. 1008 – 1018, 2017, international
-% Conference on Computational Science, ICCS 2017, 12-14 June 2017,
-% Zurich, Switzerland.
+@article{hpcs20,
+  title = {Optimizing the SVD Bidiagonalization Process for a Batch of Small
+           Matrices},
+  journal = {Procedia Computer Science},
+  volume = {108},
+  pages = {1008-1018},
+  year = {2017},
+  note = {International Conference on Computational Science, ICCS 2017, 12-14
+          June 2017, Zurich, Switzerland},
+  issn = {1877-0509},
+  doi = {https://doi.org/10.1016/j.procs.2017.05.237},
+  url = {https://www.sciencedirect.com/science/article/pii/S1877050917308645},
+  author = {Tingxing Dong and Azzam Haidar and Stanimire Tomov and Jack Dongarra
+            },
+  keywords = {Hardware accelerators, batched, two-sided factorization algorithms
+              , Singular Value Problems},
+  abstract = {A challenging class of problems arising in many GPU applications,
+              called batched problems, involves linear algebra operations on many
+              small-sized matrices. We designed batched BLAS (Basic Linear
+              Algebra Subroutines) routines, and in particular the Level-2 BLAS
+              GEMV and the Level-3 BLAS GEMM routines, to solve them. We proposed
+              device functions and big-tile settings in our batched BLAS design.
+              We adopted auto-tuning to optimize different instances of GEMV
+              routines. We illustrated our batched BLAS approach to optimize
+              batched bi-diagonalization progressively on a K40c GPU. The
+              optimization techniques in this paper are applicable to the other
+              two-sided factorizations as well.},
+}
 
 % hpcs21:
 % [Online]. Available: http://www.openblas.net
@@ -185,9 +346,16 @@
 % Collection: A Gnu Manual For Gcc Version 4.3.3. Paramount, CA:
 % CreateSpace, 2009.
 
-% hpcs23:
-% Q. Wang, X. Zhang, Y. Zhang, and Q. Yi, “Augem: Automatically
-% generate high performance dense linear algebra kernels on x86 cpus,”
-% in Proceedings of the International Conference on High Performance
-% Computing, Networking, Storage and Analysis, ser. SC ’13. New York,
-% NY, USA: ACM, 2013, pp. 25:1–25:12.
+@inproceedings{hpcs23,
+  author = {Wang, Qian and Zhang, Xianyi and Zhang, Yunquan and Yi, Qing},
+  booktitle = {SC '13: Proceedings of the International Conference on High
+               Performance Computing, Networking, Storage and Analysis},
+  title = {AUGEM: Automatically generate high performance Dense Linear Algebra
+           kernels on x86 CPUs},
+  year = {2013},
+  volume = {},
+  number = {},
+  pages = {1-12},
+  doi = {10.1145/2503210.2503219},
+}
+
