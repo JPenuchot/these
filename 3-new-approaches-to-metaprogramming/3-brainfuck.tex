@@ -16,12 +16,63 @@ subsection \ref{lbl:ptr-tree-codegen}.
 }
 
 \subsubsection{
+  AST
+}
+
+The Brainfuck AST is defined in the header shown in appendix \ref{app:bf-ast}.
+The header file also contains helper function definitions to handle AST nodes
+safely, such as \lstinline{visit} which will be used in one of the
+code generation backends.
+
+
+\paragraph{
+  \lstinline{node_interface_t}
+}
+
+...
+
+\paragraph{
+  \lstinline{ast_token_t}
+}
+
+...
+
+\paragraph{
+  \lstinline{ast_block_t}
+}
+
+...
+
+\paragraph{
+  \lstinline{ast_while_t}
+}
+
+...
+
+
+\subsubsection{
   Parser
 }
 
+Th
+
 \subsubsection{
-  AST
+  The code generation backends
 }
+
+\paragraph{Pass-by-generator}
+
+...
+
+\paragraph{Pass-by-generator + ET}
+
+...
+
+\paragraph{FLAT}
+
+...
+
+
 
 \subsubsection{
   Difficulties
@@ -29,8 +80,8 @@ subsection \ref{lbl:ptr-tree-codegen}.
 
 \begin{itemize}
 \item Embedding text from the original string
+\item \lstinline{if constexpr} requiring the definition of a \constexpr variable
 \end{itemize}
-
 
 \subsubsection{
   Implementation complexity
