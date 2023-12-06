@@ -42,11 +42,23 @@
   publisher = {Citeseer},
 }
 
-% hpcs6:
-% K. Czarnecki, K. Østerbye, and M. V ̈olter, “Generative program-
-% ming,” in Object-Oriented Technology ECOOP 2002 Workshop Reader,
-% J. Hern ́andez and A. Moreira, Eds. Berlin, Heidelberg: Springer Berlin
-% Heidelberg, 2002, pp. 15–29.
+@inproceedings{hpcs6,
+  author = {Czarnecki, Krzysztof and {\O}sterbye, Kasper and V{\"o}lter, Markus},
+  editor = {Hern{\'a}ndez, Juan and Moreira, Ana},
+  title = {Generative Programming},
+  booktitle = {Object-Oriented Technology ECOOP 2002 Workshop Reader},
+  year = {2002},
+  publisher = {Springer Berlin Heidelberg},
+  address = {Berlin, Heidelberg},
+  pages = {15--29},
+  abstract = {This report describes the results of a one-day workshop on
+              Generative Programming (GP) at ECOOP'02. The goal of the workshop
+              was to discuss the state-of-the-art of generative techniques, share
+              experience, consolidate successful techniques, and identify open
+              issues for future work. This report gives a summary of the workshop
+              contributions, debates, and the identified future directions.",
+              isbn={978-3-540-36208-1} },
+}
 
 @inproceedings{hpcs7,
   author = {Falcou, Joel and S\'{e}rot, Jocelyn and Pech, Lucien and Laprest\'{e
@@ -126,13 +138,55 @@
   url = {https://dlang.org/articles/templates-revisited.html},
 }
 
-% hpcs11:
-% W. Taha, A Gentle Introduction to Multi-stage Programming. Berlin,
-% Heidelberg: Springer Berlin Heidelberg, 2004, pp. 30–50.
+@inbook{hpcs11,
+  author = {Taha, Walid},
+  editor = {Lengauer, Christian and Batory, Don and Consel, Charles and Odersky,
+            Martin},
+  title = {A Gentle Introduction to Multi-stage Programming},
+  bookTitle = {Domain-Specific Program Generation: International Seminar,
+               Dagstuhl Castle, Germany, March 23-28, 2003. Revised Papers},
+  year = {2004},
+  publisher = {Springer Berlin Heidelberg},
+  address = {Berlin, Heidelberg},
+  pages = {30--50},
+  abstract = {Multi-stage programming (MSP) is a paradigm for developing generic
+              software that does not pay a runtime penalty for this generality.
+              This is achieved through concise, carefully-designed language
+              extensions that support runtime code generation and program
+              execution. Additionally, type systems for MSP languages are
+              designed to statically ensure that dynamically generated programs
+              are type-safe, and therefore require no type checking after they
+              are generated.},
+  isbn = {978-3-540-25935-0},
+  doi = {10.1007/978-3-540-25935-0_3},
+  url = {https://doi.org/10.1007/978-3-540-25935-0_3},
+}
 
-% hpcs12:
-% T. Sheard and S. P. Jones, “Template metaprogramming for haskell,”
-% SIGPLAN Not., vol. 37, no. 12, pp. 60–75, Dec. 2002.
+@inproceedings{hpcs12,
+  author = {Sheard, Tim and Jones, Simon Peyton},
+  title = {Template Meta-Programming for Haskell},
+  year = {2002},
+  isbn = {1581136056},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/581690.581691},
+  doi = {10.1145/581690.581691},
+  abstract = {We propose a new extension to the purely functional programming
+              language Haskell that supports compile-time meta-programming. The
+              purpose of the system is to support the algorithmic construction of
+              programs at compile-time.The ability to generate code at compile
+              time allows the programmer to implement such features as polytypic
+              programs, macro-like expansion, user directed optimization (such as
+              inlining), and the generation of supporting data structures and
+              functions from existing data structures and functions.Our design is
+              being implemented in the Glasgow Haskell Compiler, ghc.},
+  booktitle = {Proceedings of the 2002 ACM SIGPLAN Workshop on Haskell},
+  pages = {1–16},
+  numpages = {16},
+  keywords = {meta programming, templates},
+  location = {Pittsburgh, Pennsylvania},
+  series = {Haskell '02},
+}
 
 @inproceedings{hpcs13,
   author = {Keryell, Ronan and Reyes, Ruyman and Howes, Lee},
@@ -247,9 +301,13 @@
   series = {CGO '16},
 }
 
-% hpcs16:
-% A. Gurtovoy and D. Abrahams, “The boost c++ metaprogramming
-% library,” 2002.
+@article{hpcs16,
+  title = {The Boost C++ metaprogramming library},
+  author = {Gurtovoy, Aleksey and Abrahams, David},
+  journal = {cit. on},
+  pages = {22},
+  year = {2002},
+}
 
 @inproceedings{hpcs17,
   author = {Estérie, Pierre and Gaunard, Mathias and Falcou, Joel and Lapresté,
@@ -264,11 +322,15 @@
   doi = {},
 }
 
-% hpcs18:
-% E. Anderson, Z. Bai, C. Bischof, L. S. Blackford, J. Demmel, J. J.
-% Dongarra, J. Du Croz, S. Hammarling, A. Greenbaum, A. McKenney,
-% and D. Sorensen, LAPACK Users’ Guide (Third Ed.). Philadelphia, PA,
-% USA: Society for Industrial and Applied Mathematics, 1999.
+@book{hpcs18,
+  title = {LAPACK users' guide},
+  author = {Anderson, Edward and Bai, Zhaojun and Bischof, Christian and
+            Blackford, L Susan and Demmel, James and Dongarra, Jack and Du Croz,
+            Jeremy and Greenbaum, Anne and Hammarling, Sven and McKenney, Alan
+            and others},
+  year = {1999},
+  publisher = {SIAM},
+}
 
 @article{hpcs19,
   author = {Tomov, Stanimire and Nath, Rajib and Dongarra, Jack},
@@ -338,13 +400,19 @@
               two-sided factorizations as well.},
 }
 
-% hpcs21:
-% [Online]. Available: http://www.openblas.net
+@misc{hpcs21,
+  title = {OpenBLAS - An optimized BLAS library},
+  author = {Zhang Xianyi and Martin Kroeker},
+  url = {https://www.openblas.net},
+}
 
-% hpcs22:
-% R. M. Stallman and G. DeveloperCommunity, Using The Gnu Compiler
-% Collection: A Gnu Manual For Gcc Version 4.3.3. Paramount, CA:
-% CreateSpace, 2009.
+@book{hpcs22,
+  title = {Using the gnu compiler collection: a gnu manual for gcc version 4.3.
+           3},
+  author = {Stallman, Richard M},
+  year = {2009},
+  publisher = {CreateSpace},
+}
 
 @inproceedings{hpcs23,
   author = {Wang, Qian and Zhang, Xianyi and Zhang, Yunquan and Yi, Qing},
