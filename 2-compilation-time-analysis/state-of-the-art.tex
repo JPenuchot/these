@@ -18,20 +18,54 @@ compilation times, often without being able to explain them.
 Therefore being able to measure compilation times becomes increasingly important
 and being able to profile and explain them as well.
 
-A first generation of tools aimed to tackle this issue with their own specific
-methodologies:
+This need turned into a variety of projects that aim to bring novel techniques
+to analyze the compile time performance of \cpp metaprograms and metaprogramming
+techiniques beyond black box A/B comparisons.
+
+% \subsection{
+%   Build-Bench
+% }
+%
+% Build-Bench\cite{buildbench} measures compiler execution times for basic
+% A-B compile time comparisons in a web browser.
+
+\subsection{
+  Metabench
+}
+
+Metabench\cite{metabench} instantiates variably sized benchmarks using
+embedded Ruby (ERB) templating and plots compiler execution time, allowing
+scaling analyses of metaprograms. Its output is a series of web-based
+interactive graphs.
+
+The ERB templates are used to generate \cpp programs for measuring their
+total compilation time. This approach is compiler-agnostic, it allows to compare
+not just metaprograms but compilers as well.
+
+However Metabench is currently unmaintained, and its design choices make it
+difficult to modify and reuse it for the assessment of metaprogramming
+techniques performance in a scientific context:
 
 \begin{itemize}
-\item Buildbench\cite{buildbench} measures compiler execution times for basic
-      A-B compile time comparisons in a web browser,
+\item
+non-CMake scripts are embedded in CMake strings, making it difficult to modify
+and debug them,
 
-\item Metabench\cite{metabench} instantiates variably sized benchmarks using
-      embedded Ruby (ERB) templating and plots compiler execution time, allowing
-      scaling analyses of metaprograms,
+\item
+benchmarks are not standalone, they are embedded in the Metabench
+project itself,
 
-      \item Templight\cite{templight} adds Clang template instantiation inspection
-      capabilities with debugging and profiling tools.
+\item
+web-based visualizations cannot be embedded in \LaTeX{} documents.
 \end{itemize}
+
+\subsection{
+  Templight
+}
+
+Templight\cite{templight} is the first effort to instrument Clang with a
+profiler. It aims to provide tools to measure resource usage (CPU time,
+memory usage, and file I/O) of template instantiations.
 
 \subsection{
   Clang's built-in profiler
@@ -93,5 +127,18 @@ various formats that are trivially embeddable in documents like research papers,
 web pages, or documentations. Additionally, relying on persistent configuration,
 benchmark declaration and description files provides strong guarantees for
 benchmark reproductibility, as opposed to web tools or interactive profilers.
+
+\subsection{
+  Conclusion
+}
+
+While Metabench could have been a good candidate for assessing the scalability
+of metaprogramming techniques, its design choices make it simpler to write a new
+tool that better fits the needs of scientific assessment of metaprogramming
+techniques.
+
+\ctbench's API and overall concept was largely inspired by this project for its
+simplicity and leverages Clang's profiling capabilities that are similar to
+those introduced by Templight.
 
 \end{document}
