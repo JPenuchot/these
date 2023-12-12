@@ -1,17 +1,199 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
-\subsection{Language constructs of C++ metaprogramming}
+\section{Language constructs of \cpp metaprogramming}
 
-Metaprogramming in \cpp relies on
+In this section I will cover the constructs of \cpp metaprogramming.
+Metaprograms are defined as programs that take code as input and/or output,
+therefore I will categorize metaprogramming constructs as:
+those used for input and output,
+and those that enable compile time computing.
 
-\paragraph{Templates}
+\subsection{Input and output of metaprograms}
 
-\paragraph{Overloading}
+\subsubsection{Templates}
 
-\paragraph{Parameter packs}
+Templates is the main \cpp mechanism to generate structures, functions,
+or even variables with types or values known at compile time.
+They are the cornerstone of the \cpp metaprogramming model.
 
-\paragraph{Constexpr functions and variables}
+\paragraph{Different kinds of templates}
+
+\begin{itemize}
+\item Type templates
+
+\begin{lstlisting}[
+  language=c++,
+  caption=Type template example,
+  label=lst:type-template-example
+]
+/// Generic anotated type
+template <typename T> struct named_value_t {
+  std::string name;
+  T value;
+};
+\end{lstlisting}
+
+\begin{lstlisting}[
+  language=c++,
+  caption=Type alias template example,
+  label=lst:type-alias-template-example
+]
+/// Alias template for nested named value
+template <typename T>
+using nested_named_value_t =
+    named_value_t<named_value_t<T>>;
+\end{lstlisting}
+
+Templates can be used with type aliases too, as shown in
+listing \ref{lst:type-alias-template-example}.
+
+\item Function templates
+
+\begin{lstlisting}[
+  language=c++,
+  caption=Function template example,
+  label=lst:function-template-example
+]
+/// Returns a value annotated with
+/// its string representation
+template <typename T>
+named_value_t<T> make_named_value(T value) {
+  return named_value_t<T>(std::to_string(value),
+                          std::move(value));
+}
+\end{lstlisting}
+
+\item Variable templates
+
+\begin{lstlisting}[
+  language=c++,
+  caption=Variable template example,
+  label=lst:variable-template-example
+]
+/// Returns the default value of T annotated with
+/// its string representation
+template <typename T>
+named_value_t<T> annotated_default_v =
+    make_named_value(T{});
+
+named_value_t<int> val = annotated_default_v<int>;
+\end{lstlisting}
+
+\end{itemize}
+
+\paragraph{Different kinds of parameters}
+
+\begin{itemize}
+\item Type parameters
+\item Non-type template parameters (\nttp)
+\item Parameter packs
+\end{itemize}
+
+\paragraph{Advanced \cpp template mechanisms}
+
+\begin{itemize}
+\item Substitution failure is not an error (\sfinae)
+\item Template specialization
+\end{itemize}
+
+\subsubsection{Overloading}
+
+\subsection{Compile time computing}
+
+\subsubsection{\Tmp and constant evaluation}
+
+\begin{itemize}
+\item Computation using types
+\item Computation using values
+\end{itemize}
+
+\subsubsection{Constexpr functions}
+
+\begin{itemize}
+\item \constexpr functions
+\item \constexpr memory allocation
+\end{itemize}
+
+The use of \constexpr functions for compile time programming is preferable
+for many reasons: familiar to most \cpp developers (and therefore more
+maintainable), it allows the use of types to enforce semantics properly
+as opposed to type-based metaprogramming, and it scales much better than \tmp.
+
+% Templates allow types, variables, and functions to be generated from
+% compile time parameters. These parameters used to be only types,
+% but over time \cpp evolved to allow developers to use typed values
+% and parameter packs.
+%
+% Function overloading allows several functions to bear the same name
+% as long as they cannot be invoked with parameters of the same type.
+% This allows selection of code paths to happen at compile time.
+%
+% Although these two mechanisms are enough to build very capable
+%
+% \subsection{
+%   Templates
+% }
+%
+% \subsubsection{
+%   Different kinds of templates
+% }
+%
+% \paragraph{
+%   Types
+% }
+%
+% An example:
+%
+% \begin{lstlisting}[
+%   language=c++,
+%   caption=Some example
+% ]
+% template<typename T> struct toto_t {};
+% \end{lstlisting}
+%
+% \paragraph{
+%   Functions
+% }
+%
+% An example:
+%
+% \begin{lstlisting}[
+%   language=c++,
+%   caption=Some example
+% ]
+% template<typename T> struct toto_t {};
+% \end{lstlisting}
+%
+% \paragraph{
+%   Variables
+% }
+%
+% An example:
+%
+% \begin{lstlisting}[
+%   language=c++,
+%   caption=Some example
+% ]
+% template<typename T> struct toto_t {};
+% \end{lstlisting}
+%
+%
+% \subsubsection{
+%   Different kinds of parameters
+% }
+%
+% ...
+%
+% \subsection{Overloading}
+%
+% \subsection{Constant evaluation}
+%
+% \subsection{\lstinline{if constexpr}}
+%
+% \subsection{Parameter packs}
+%
+% \subsection{Constexpr functions and variables}
 
 
 \end{document}
