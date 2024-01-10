@@ -1,0 +1,139 @@
+\documentclass[../main]{subfiles}
+
+\begin{document}
+
+\section{
+  ctbench design
+}
+
+\ctbench was designed to be a well maintained, easy to install,
+and easy to use alternative to current compile time benchmarking tools.
+It is developed with decent software quality in mind to offer a robust
+external API, and a well documented internal API to enable the reuse of
+its components.
+
+All these goals are kept in mind to ensure that \ctbench is not just a single
+use tool for this thesis, but a sustainable open-source project that enables
+researchers and developers to automatize
+
+\subsection{
+  CMake API for benchmark and graph target declarations
+}
+\label{lbl:ctbench-cmake-api}
+
+The choice of using CMake as an entry point is to ensure that \ctbench is not
+just a research tool made for a single set of benchmarks, but an easy-to-use
+solution for all \cpp developpers willing to analyze the compile time
+performance of their metaprograms.
+
+The public CMake API of \ctbench is meant to be as stable as reasonable.
+It is relatively simple, and all of it is implemented in
+a single CMake script file. It declares the following:
+
+\begin{itemize}
+
+\item Benchmark declaration functions, for the declaration and instantiation
+of user-defined sizable benchmark cases:
+
+  \begin{itemize}
+
+  \item
+  \lstinline{ctbench_add_benchmark} takes a user-defined benchmark name,
+  a \cpp source file, as well as benchmark range parameters: iteration begin,
+  end, and step parameters, as well as the number of samples per benchmark
+  iteration. Benchmark iteration targets declared using this function are
+  compiled with their sized passed as the \lstinline{BENCHMARK_SIZE} define.
+
+  \item
+  \lstinline{ctbench_add_benchmark_for_range}, similar to
+  \lstinline{ctbench_add_benchmark} except for the fact that benchmark range
+  parameters are taken as a single list. This interface only exists to provide
+  a more compact function call.
+
+  \item
+  \lstinline{ctbench_add_benchmark_for_size_list}, similar to the previous ones,
+  provides a way to define benchmarks for a given size list instead of a range.
+
+  \item
+  And finally, \lstinline{ctbench_add_custom_benchmark} inherits
+  \lstinline{ctbench_add_benchmark}'s interface with an addition:
+  a callback function name must be passed as a parameter. It will be called
+  for each benchmark iteration target definition with the name and size of the
+  target. This allows users to set compiler parameters other than \ctbench's
+  preprocessor directive.
+
+  \end{itemize}
+
+\item
+\lstinline{ctbench_add_graph} allows the declaration of a benchmark.
+It takes a user-defined name, a path to a JSON configuration file,
+and a list of benchmark names defined using the functions mentionned above.
+\ctbench expects JSON files to include information relative to the graphs
+themselves: the plotter being used, predicates to filter out time trace events,
+output format, and so on. Each plotter has its own set of parameters.
+
+\item
+\lstinline{ctbench_set_compiler} and \lstinline{ctbench_unset_compiler}
+are a pair of commands that using different compilers for benchmarks.
+CMake does not allow using more than one compiler within a CMake build,
+but \ctbench's compiler launcher can be used through these commands
+to work around that limitation and run benchmarks for compiler performance
+comparisons.
+
+\item
+The \lstinline{ctbench-graph-all} target, which allows to build all the graphs
+declared with \ctbench functions.
+
+\end{itemize}
+
+\subsection{
+  ctbench internals
+}
+
+\subsubsection{
+  grapher
+}
+
+different modules:
+
+\begin{itemize}
+\item data structures
+\item plotter engines
+\item predicate interface
+\item CLI
+\end{itemize}
+
+\subsubsection{
+  compiler-launcher
+}
+
+problem: cmake doesn't allow access to the output file location
+
+\begin{itemize}
+\item find out where json files are located with \lstinline{-ftime-trace}
+\item CLI option parsing
+\item compiler execution time measurement
+\end{itemize}
+
+\subsection{
+  Software quality
+}
+
+\begin{itemize}
+\item Github CI
+\item Automated tests
+\item compiler checks: clang-tidy and clang-format
+\item CI builds and tests on 2 Linux distros: Arch and Ubuntu (and soon Fedora?)
+\item Packages are provided through the AUR and the vcpkg repository
+\item Accepted in JOSS, which puts an emphasis on software quality.
+      the review itself is meant to improve the quality of the software
+      thanks to the reviewers' feedback.
+\end{itemize}
+
+\subsection{
+  Conclusion
+}
+
+\ctbench is a well
+
+\end{document}
