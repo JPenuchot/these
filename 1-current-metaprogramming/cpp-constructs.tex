@@ -9,15 +9,24 @@ therefore I will categorize metaprogramming constructs as:
 those used for input and output,
 and those that enable compile time computing.
 
+This distinction will be important to explain the work presented in
+this thesis, as it focuses a lot on methods to translate
+compile time compute results into \cpp programs.
+
 \subsection{Input and output of metaprograms}
 
 \subsubsection{Templates}
 
-Templates is the main \cpp mechanism to generate structures, functions,
-or even variables with types or values known at compile time.
-They are the cornerstone of the \cpp metaprogramming model.
+Templates are the cornerstone of the \cpp metaprogramming model.
+They are the main \cpp mechanism to generate structures, functions,
+or even variables from types or values known at compile time.
+They were originally meant to be used for implementing generic types,
+but over time the extension of their features made them Turing complete.
 
 \paragraph{Different kinds of templates}
+
+\cpp templates offer ways to output code for both data structures
+and functions.
 
 \begin{itemize}
 \item Type templates
@@ -26,7 +35,7 @@ They are the cornerstone of the \cpp metaprogramming model.
   language=c++,
   caption=Type template example,
   label=lst:type-template-example
-]
+]{}
 /// Generic anotated type
 template <typename T> struct named_value_t {
   std::string name;
@@ -38,7 +47,7 @@ template <typename T> struct named_value_t {
   language=c++,
   caption=Type alias template example,
   label=lst:type-alias-template-example
-]
+]{}
 /// Alias template for nested named value
 template <typename T>
 using nested_named_value_t =
@@ -54,7 +63,7 @@ listing \ref{lst:type-alias-template-example}.
   language=c++,
   caption=Function template example,
   label=lst:function-template-example
-]
+]{}
 /// Returns a value annotated with
 /// its string representation
 template <typename T>
@@ -70,7 +79,7 @@ named_value_t<T> make_named_value(T value) {
   language=c++,
   caption=Variable template example,
   label=lst:variable-template-example
-]
+]{}
 /// Returns the default value of T annotated with
 /// its string representation
 template <typename T>
@@ -99,7 +108,7 @@ named_value_t<int> val = annotated_default_v<int>;
 
 \subsubsection{Overloading}
 
-\subsection{Compile time computing}
+\subsection{Compile time logic}
 
 \subsubsection{\Tmp and constant evaluation}
 

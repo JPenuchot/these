@@ -106,26 +106,45 @@ to be installed and integrated to the build system.
 
 \subsection{High performance computing libraries}
 
-
+There are many \cpp HPC libraries that use metaprogramming to achieve
+high performance while offering high level APIs.
 
 \begin{itemize}
 \item
-Eigen\cite{eigen}
+Eigen\cite{eigen} is the first major \cpp library to implement
+expression templates for the generation of high performance math computing.
+
+
+% TODO: Example
 
 \item
-Blaze\cite{blazelib}
+Blaze\cite{blazelib} is a successor of Eigen that implements so-called
+"Smart Expression Templates" which extends upon the concept of
+expression templates implemented by Eigen. It aims to provide a more performant
+and extensible HPC library. However, Eigen is not set in stone
+and its designed has since been updated.
+
+% TODO: Example
 
 \item
 NT2\cite{nt2}
 
+% TODO: Example
+
 \item
-EVE\cite{eve}
+EVE\cite{eve} provides generic abstractions over SIMD instructions,
+as well as SIMD-optimized generic algorithms.
+
+% TODO: Example
 
 \item
 HPX\cite{hpx}
 
-\item
-Thrust, CUB, etc.
+% TODO: Example
+
+\item Thrust \cite{thrust} and CUB \cite{cub}
+
+% TODO: Example
 
 \end{itemize}
 
