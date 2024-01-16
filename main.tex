@@ -330,14 +330,15 @@ various levels and for various domains.
 }
 
 With libraries like Eigen\cite{eigen}, Blaze\cite{blazelib}, or CTRE\cite{ctre}
-being developed with a large tempalte metaprogrammed implementation, we're seeing
-increasing computing needs at compile time. These needs might grow even larger
-as \cpp embeds more features over time to support and extend this kind of
-practices, like compile time containers\cite{more-constexpr-containers} or static
-reflection\cite{static-reflection}. However, there is still no clear cut methodology
-to compare the performance impact of different metaprogramming strategies. But
-as new \cpp features allow for new techniques with claimed better compile time
-performance, no proper methodology is provided to back up those claims.
+being developed with a large tempalte metaprogrammed implementation,
+we're seeing increasing computing needs at compile time. These needs might grow
+even larger as \cpp embeds more features over time to support and extend this
+kind of practices, like compile time containers\cite{more-constexpr-containers}
+or static reflection\cite{static-reflection}. However, there is still no clear
+cut methodology to compare the performance impact of different metaprogramming
+strategies. But as new \cpp features allow for new techniques with claimed
+better compile time performance, no proper methodology is provided to back up
+those claims.
 
 In this chapter I introduce \ctbench, which is a set of tools for compile time
 benchmarking and analysis in \cpp. It aims to provide developer-friendly tools
@@ -355,7 +356,8 @@ benchmark examples from the poacher\cite{poacher} project, which was briefly
 presented at the Meeting \cpp 2022\cite{meetingcpp22} technical conference.
 
 \subfile{2-compilation-time-analysis/state-of-the-art.tex}
-\subfile{2-compilation-time-analysis/features-and-design.tex}
+% \subfile{2-compilation-time-analysis/features-and-design.tex}
+\subfile{2-compilation-time-analysis/ctbench-design.tex}
 \subfile{2-compilation-time-analysis/ctbench-in-action.tex}
 
 \section{Related projects} % TODO: Rework
