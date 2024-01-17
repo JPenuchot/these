@@ -1,0 +1,250 @@
+\documentclass[../main]{subfiles}
+\begin{document}
+
+% - SotA metaprog (Can't read)
+%   - C++ (Can't read)
+%   - Reflection
+%   - Can't read
+
+In this state of the art I will first give an overview of metaprogramming in
+historic and contemporary languages. Then I will focus on the state of the art
+of \cpp metaprogramming, and notable high performance computing libraries as they
+are essential for the scope of my thesis.
+
+\section{
+  Metaprogramming styles and languages
+}
+
+Metaprogramming is not an old concept. It exists in many forms:
+both the C preprocessor and \cpp templates can be used to take code as input,
+and generate code as well.
+However it is clear that these two mechanisms are completely different.
+The C preprocessor can only read and write tokens with very basic language,
+while \cpp templates can manipulate types and complex \cpp values
+with a much richer semantic.
+
+Our goal in this section will be to cover different languages with their own
+metaprogramming models, as well as HPC-focused libraries that use
+metaprogramming to achieve notable levels of genericity.
+
+\subsection{A short history of metaprogramming}
+
+% TODO
+
+\subsection{Metaprogramming in contemporary languages}
+
+Metaprogramming perpetuates itself in contemporary languages,
+with some being more widespread than others.
+
+\paragraph{MetaOCaml}
+
+MetaOCaml\cite{metaocaml} implements quoting and splicing
+\ie the ability to essentially copy and paste expressions,
+as well as staged compilation to evaluate statements at compile-time.
+This enables code generation to occur both at runtime and at compile-time.
+
+\paragraph{DLang} more or less extends the \cpp Metaprogramming model.
+It leverages templates and compile time function evaluation just like
+its predecessor.
+
+Compile-time evaluation is much more permissive and mixins enable to generate
+code in a more direct way than \cpp. Dlang mixins allow injecting code in
+functions and structures in two ways: using template mixins
+which are pre-parsed constructs that can be injected later,
+as well as string mixins that allow strings containing Dlang code
+to be compiled and inserted directly into programs.
+
+\paragraph{Rust} proposes metaprogramming through macros, generics, and traits.
+
+Rust macros are more powerful than those proposed in C and \cpp.
+They have a
+
+\paragraph{Braid} \cite{braid} is language that implements metaprogramming
+through multi-staged programming (like MetaOCaml) for heterogeneous real-time
+3D graphics. It is however unmaintained.
+
+\paragraph{Julia} \cite{julia} is a dynamic language that uses the LLVM
+
+\paragraph{Terra}
+
+Terra\cite{terra} implements a very explicit metaprogramming model.
+The language is based on LUA, and exploits the dynamic nature of the language
+together with LLVM JIT compilation to allow code generation
+to happen at runtime.
+It implements multi-staged compilation and splicing just like MetaOCaml.
+
+Additionally, Terra can be embedded in other languages through its C API.
+Overall it is a very versatile and experimental take on metaprogramming,
+but the lack of interoperability with \cpp templates makes it hard to justify
+its use for HPC applications.
+
+As we will see in section \ref{lbl:meta-cpp}, GPU computing libraries
+rely heavily on \cpp metaprogramming to provide building blocks for
+portable high performance compute kernels.
+
+\section{
+  Metaprogramming and HPC in C++
+}
+\label{lbl:meta-cpp}
+
+\subsection{Core and application-specific libraries}
+
+As previously said \cpp templates can be seen as a functional language.
+Over time a range of libraries emerged, aiming to provide functionalities
+similar to regular language such as containers and algorithms for use in
+template metaprograms. Notable examples of such libraries are MPL\cite{mpl},
+Brigand\cite{brigand}, and mp11\cite{mp11}.
+
+Libraries for more specific uses were also implemented, such as
+Spirit\cite{spirit} for writing parsers (not for compile time parsing),
+Compile Time Regular Expressions (CTRE)\cite{ctre}
+for compiling regular expressions,
+and Compile Time Parser Generator(CTPG)\cite{ctpg}
+for generating LR1 parsers (also not for compile time parsing).
+
+The benefits of metaprogrammed libraries are:
+
+\begin{itemize}
+
+\item Performance: notably in the case of CTRE.
+Regular expressions are usually interpreted at runtime,
+which adds a measurable overhead to text processing.
+CTRE shows leading performance, on par with Rust's regex library
+which also works by compiling regular expressions.
+
+\item Language integration: since these are \cpp libraries,
+their APIs can take advantage of \cpp operator overloading and lambdas.
+In CTPG, these are used to provide a domain-specific language that is close to
+what parser generators like YACC or Bison provide,
+though it is still regular \cpp code which can be put inside any function body.
+Using a \cpp API makes these libraries easier to learn
+as the syntax is already familiar to their users.
+
+\item Streamlined toolchain: as they only require to be included as headers.
+This avoids complicating compilation toolchains by requiring additional programs
+to be installed and integrated to the build system.
+
+\end{itemize}
+
+\subsection{High performance computing libraries}
+
+There are many \cpp HPC libraries that use metaprogramming to achieve
+high levels of performance while being generic and proposing high level APIs.
+This subsection aims to provide an overview of notable libraries that fit this
+description as well as recent efforts in languages that are still maintained.
+
+\begin{itemize}
+
+\item
+\textbf{Eigen} \cite{eigen} is the first major \cpp library to implement
+Expression templates for the generation of high performance math computing.
+Expression templates is a \cpp design pattern that consists in representing
+math expressions with type template trees. We will discuss them later in
+\ref{lbl:expression-level-metaprogramming}.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+// TODO: Example
+\end{lstlisting}
+
+\item
+\textbf{Blaze} \cite{blazelib} is a successor of Eigen that implements so-called
+"Smart Expression Templates" which extends upon the concept of
+expression templates implemented by Eigen. It aims to provide a more performant
+and extensible HPC library. However, Eigen is not set in stone
+and its designed has since been updated.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+// TODO: Example
+\end{lstlisting}
+
+\item
+\textbf{NT2} \cite{nt2} is a research project that aims to provide a complete
+numerical toolbox that leverages metaprogramming to develop portable HPC
+applications with a Matlab-like interface while still achieving state-of-the-art
+computing performance.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+// TODO: Example
+\end{lstlisting}
+
+\item
+\textbf{EVE} \cite{eve} provides generic abstractions over SIMD instructions
+as well as SIMD-optimized generic algorithms for the development of
+high performance and portable SIMD code \cite{hpcs2018-matvec}.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+// TODO: Example
+\end{lstlisting}
+
+\item
+\textbf{HPX} \cite{hpx} is a \cpp parallel and distributed runtime library.
+It can execute small parallel tasks efficiently and distribute
+larger distributed tasks with a work following data execution model.
+Its parallel and distributed APIs as well as its parallel implementation of
+the standard library (based on its own parallel runtime) use metaprogramming
+for algorithmic genericity.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+// TODO: Example
+\end{lstlisting}
+
+\item
+\textbf{Thrust} \cite{thrust} implements GPU-accelerated equivalents
+of the Standard Library's algorithms, while CUB \cite{cub} provides
+GPU-optimized algorithm skeletons for generic programming on NVIDIA GPUs.
+AMD and Intel implement their equivalents for their own platforms, respectively
+ROCm and OneAPI.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+// TODO: Example
+\end{lstlisting}
+
+\item
+\textbf{faer} \cite{faer}
+
+\begin{lstlisting}[
+  language=c++
+]{}
+// TODO: Example
+\end{lstlisting}
+
+\end{itemize}
+
+\section{
+  Conclusion
+}
+
+All these examples show that metaprogramming is not just a gimmick.
+There is enough interest in leveraging metaprogramming
+for generic HPC programming that many frameworks, libraries, or languages
+have been developed around this paradigm and maintained sometimes
+for more than a decade. Its adoption in languages like Braid, Julia, Terra,
+Rust, or Dlang shows that it is not limited to \cpp.
+
+However, most of generic HPC libraries and frameworks that are developed
+and maintained today are based on \cpp, and \cpp itself is likely to
+evolve to provide more ways to generate programs as shown by the recent
+standard proposal for Scalable Reflection in \cpp \cite{scalable-reflection}.
+
+\begin{itemize}
+\item Metaprogramming isn't a new idea
+
+\item Some languages provide advanced metaprogramming capabilities
+
+\item \cpp has solid metaprogramming constructs, and a complete HPC ecosystem
+(libraries, compilers, etc.)
+\end{itemize}
+
+\end{document}
