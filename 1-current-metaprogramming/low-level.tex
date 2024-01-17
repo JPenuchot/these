@@ -5,7 +5,7 @@ BLAS-level functions are the cornerstone of a large
 subset of applications. If a large body of work surrounding
 efficient and large-scale implementation of some routines such
 as gemv exists, the interest for small-sized, highly-optimized
-versions of those routines emerged. In this paper, we propose
+versions of those routines emerged. In this section, we propose
 to show how a modern \cpp approach based on generative
 programming techniques such as vectorization and loop unrolling
 in the framework of metaprogramming can deliver
@@ -54,7 +54,7 @@ and an API which is more user-friendly than LAPACK, giving
 satisfactory performance results. A more generic approach is
 the one followed in recent years by \cpp libraries built around
 expression templates\cite{hpcs5} or other generative programming\cite{hpcs6}
-principles. In this paper, we will focus on such an approach.
+principles. In this section, we will focus on such an approach.
 To show the interest of this approach, we consider as
 example the matrix-vector multiplication kernel (gemv) which
 is crucial for the performance of both linear solvers and eigen
@@ -64,14 +64,14 @@ challenging as we can see through the current state-of-the-art
 implementation results. Moreover, the different CPU architectures
 bring further challenges for its design and optimization.
 
-In this paper, we describe how we obtained optimized generated
+In this section, we describe how we obtained optimized generated
 \cpp codes for the gemv routine to make it reach its
 peak performance on different target CPU architectures (Intel
-x86 and ARM in this paper). Our gemv \cpp generated kernels
+x86 and ARM in this section). Our gemv \cpp generated kernels
 achieve uniform performances that outperform in the most of
 the cases the peaks of the state-of-the-art OpenBLAS gemv
 kernel for small matrices of sizes ranging from 4 to 128.
-This paper is organized as follows: in Section II, we describe
+This chapter is organized as follows: in Section II, we describe
 various generative programming techniques including metaprogramming
 principles as well as the main strategies to get
 efficient small-scale BLAS functions. In Section III, we show
@@ -156,7 +156,7 @@ Metaprogramming also includes other code generation
 techniques such as domain-specific languages and compilation
 infrastructures based on source-to-source compilers, which
 are actually able to perform the same techniques proposed by
-this paper. Such systems includes:
+this section. Such systems includes:
 
 \item
 SYCL\cite{hpcs13}:
@@ -184,7 +184,7 @@ polyhedral analysis using CLoog, the generated code
 outperforms MKL and Eigen.
 \end{itemize}
 
-In this paper, we will focus on language-based metaprogramming
+In this section, we will focus on language-based metaprogramming
 techniques so that the proposed method can
 be used in various compilers and OS settings as long as the
 compiler follows a given standard.
@@ -535,7 +535,7 @@ Here, we consider the matrix-vector multiplication routine
 for general dense matrices, gemv, which performs either
 $y := \alpha A x + \beta y$ or $y := \alpha A T x + \beta y$,
 where $A$ is an $m \times n$ matrix, $\alpha$ and $\beta$ are scalars,
-and $y$ and $x$ are vectors. In this paper,
+and $y$ and $x$ are vectors. In this section,
 we focus on matrices of small sizes ranging from
 4 to 512 as this range of sizes encompasses the size of
 most L1 cache memory, thus allowing a maximal throughput
@@ -787,7 +787,7 @@ abstraction cost.
   Conclusion
 }
 
-This paper presented the details of generating an optimized
+This chapter presented the details of generating an optimized
 level 2 BLAS routine gemv. As a key difference with respect
 to highly tuned OpenBLAS routine, our generated code
 is designed to give the best performance with a minimum
@@ -795,8 +795,8 @@ programming effort for rather small matrices that fit into the
 L1 cache. Compared to the best open source BLAS library,
 OpenBLAS, the automatically generated gemv codes show
 competitive speedups for most of the matrix sizes tested in
-this paper, that is for sizes ranging from 4 to 512. Therefore
-through this paper and the example of the level 2 BLAS
+this section, that is for sizes ranging from 4 to 512. Therefore
+through this section and the example of the level 2 BLAS
 routine gemv, we showed that it is possible to employ modern
 generative programming techniques for the implementation
 of dense linear algebra routines that are highly optimized for
