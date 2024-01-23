@@ -204,5 +204,73 @@ as opposed to type-based metaprogramming, and it scales much better than \tmp.
 %
 % \subsection{Constexpr functions and variables}
 
+% TODO: Integrate that subsection better
+
+\subsection{
+  Template Metaprogramming
+}
+
+\cpp template metaprogramming \cite{abrahams:2004} is a technique based on the
+use of the template type system of \cpp to perform arbitrary computation at
+compile time. This property of \cpp templates is due to the fact they
+define a Turing-complete sub-language manipulating types and integral constants
+at compile time \cite{unruh:1994}. Due to the fact that template code generation
+is performed at compile time, uses constants and supports pattern-matching and
+recursion thanks to template partial specialization, it can also be looked
+at as a pure functional language \cite{haeri:2012}.
+
+Templates are an interesting technique for generative programming. As they
+are Turing-complete, one can design a set of template metaprograms acting as a
+\dsl compiler run at compile time and generating temporary \cpp code fragment as
+an output. The resulting temporary source code is then merged with the rest of
+the source code and finally processed by the classic compilation process.
+Through this technique, compile time constants, data structures and complete
+functions can be manipulated. The execution of metaprograms by the compiler
+enables the library to implement domain-specific optimizations that lead to a
+complete domain oriented code generation. Such a technique can be hosted by
+several languages featuring metaprogramming features (incidental or by design)
+like D \cite{template:dlang}, Haskell \cite{sheard:2002} and
+OCaml \cite{serot:2008}.
+
+\begin{lstlisting}[
+  language=C++,
+  caption=Example of compile time computation using C++ templates,
+  label=lst:basic-tmp
+]{}
+// Template type accepting an integer
+// as a non-type template parameter
+template <unsigned N> struct fibonacci_t;
+
+// General definition
+template <unsigned N> struct fibonacci_t {
+  static constexpr unsigned value =
+      fibonacci_t<N - 2>::value + fibonacci_t<N - 1>::value;
+};
+
+// Specialization for cases 0 and 1
+template <> struct fibonacci_t<0> {
+  static constexpr unsigned value = 0;
+};
+
+template <> struct fibonacci_t<1> {
+  static constexpr unsigned value = 1;
+};
+
+std::array<int, fibonacci_t<5>::value> some_array;
+\end{lstlisting}
+
+Listing \ref{lst:basic-tmp} shows basic principles of \cpp template
+metaprogramming. The \lstinline{fibonacci_t} type template accepts a
+\textit{Non-Type Template Parameter} (\nttp, \ie a template parameter that is
+a regular value instead of a type) called $N$, and exposes the
+$N\textsuperscript{th}$ element of the Fibonacci series as its
+\lstinline{value} static member. The template has 3 definitions:
+a generic one to calculate elements for $N > 1$,
+and two specializations for elements of ranks $0$ and $1$.
+
+Note that the \lstinline{value} field is specified as \constexpr.
+It indicates that a variable or function can be used in compile time
+expressions.
+We will talk about \constexpr in detail in \ref{lbl:constexpr-programming}.
 
 \end{document}

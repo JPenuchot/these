@@ -14,24 +14,60 @@ template\cite{veldhuizen:1995}, which will be referred to as \et.
 
 Combined with compile-time mechanisms such as function overloading,
 specialization, and operator overloading, expression templates can be used to
-implement expression level \dsels and convert large mathematical expressions
+implement expression level \dsels and convert complex mathematical expressions
 into high performance code.
 
-There are two main libraries that are able to do just this: Eigen\cite{eigen}
-and Blaze\cite{blazelib}.
+There are two main libraries that are able to do just this: Eigen \cite{eigen}
+and Blaze \cite{blazelib}, which were cited in \ref{lbl:meta-libraries}.
+In this section, I will introduce the basics of \cpp template metaprogramming,
 
-How do they work?
+\subsection{
+  Expression templates: a type-based representation for math formulas
+}
 
-Your math expressions aren't represented by structures,
-they're represented by types.
+Expression templates are template trees that represent math formulas.
+They are generated using operator and function overloading from expressions
+that must be known at compile time.
 
-You don't use conditions at runtime but overloading at compile time.
+\begin{lstlisting}[
+  language=c++
+]{}
+template<typename Left, typename Right>
+struct add_t{};
+\end{lstlisting}
+
+
+\subsection{
+  Optimized code generation
+}
 
 Enables a whole range of optimizations:
 
+\subsubsection{
+  Eliminating temporaries with lazy evaluation
+}
+
+\subsubsection{
+  Leveraging BLAS libraries
+}
+
+\subsubsection{
+  Parallelism
+}
+
+SIMD
+
+Multithreading
+
+\subsubsection{
+  GPU support efforts
+}
+
+Lots of rewrite to do
+
+Potentially a job for source rewriting tools
+
 \begin{itemize}
-\item Lazy evaluation
-\item Fused operations using BLAS
 \item Eventually: GPU code generation, although Blaze needs a significant
       rewrite for that. Source rewriting tools might be a good fit for that job.
 \end{itemize}
