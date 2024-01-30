@@ -14,5 +14,7 @@
 *.dvi
 svg-inkscape/
 !main.pdf
+*.glo
+*.ist
 
 scratchpad/
