@@ -95,14 +95,14 @@ named_value_t<int> val = annotated_default_v<int>;
 
 \begin{itemize}
 \item Type parameters
-\item Non-type template parameters (\nttp)
+\item \acrfull{nttp}
 \item Parameter packs
 \end{itemize}
 
 \paragraph{Advanced \cpp template mechanisms}
 
 \begin{itemize}
-\item Substitution failure is not an error (\sfinae)
+\item \acrfull{sfinae}
 \item Template specialization
 \end{itemize}
 
@@ -110,7 +110,7 @@ named_value_t<int> val = annotated_default_v<int>;
 
 \subsection{Compile time logic}
 
-\subsubsection{\Tmp and constant evaluation}
+\subsubsection{\acrlong{tmp} and constant evaluation}
 
 \begin{itemize}
 \item Computation using types
@@ -120,14 +120,15 @@ named_value_t<int> val = annotated_default_v<int>;
 \subsubsection{Constexpr functions}
 
 \begin{itemize}
-\item \constexpr functions
-\item \constexpr memory allocation
+\item \gls{constexpr} functions
+\item \gls{constexpr} memory allocation
 \end{itemize}
 
-The use of \constexpr functions for compile time programming is preferable
+The use of \gls{constexpr} functions for compile time programming is preferable
 for many reasons: familiar to most \cpp developers (and therefore more
 maintainable), it allows the use of types to enforce semantics properly
-as opposed to type-based metaprogramming, and it scales much better than \tmp.
+as opposed to type-based metaprogramming, and it scales much better than
+\acrshort{tmp}.
 
 % Templates allow types, variables, and functions to be generated from
 % compile time parameters. These parameters used to be only types,
@@ -221,16 +222,16 @@ at as a pure functional language \cite{haeri:2012}.
 
 Templates are an interesting technique for generative programming. As they
 are Turing-complete, one can design a set of template metaprograms acting as a
-\dsl compiler run at compile time and generating temporary \cpp code fragment as
-an output. The resulting temporary source code is then merged with the rest of
-the source code and finally processed by the classic compilation process.
-Through this technique, compile time constants, data structures and complete
-functions can be manipulated. The execution of metaprograms by the compiler
-enables the library to implement domain-specific optimizations that lead to a
-complete domain oriented code generation. Such a technique can be hosted by
-several languages featuring metaprogramming features (incidental or by design)
-like D \cite{template:dlang}, Haskell \cite{sheard:2002} and
-OCaml \cite{serot:2008}.
+\acrshort{dsl} compiler run at compile time and generating temporary \cpp code
+fragment as an output. The resulting temporary source code is then merged with
+the rest of the source code and finally processed by the classic
+compilation process. Through this technique, compile time constants,
+data structures and complete functions can be manipulated.
+The execution of metaprograms by the compiler enables the library to implement
+domain-specific optimizations that lead to a complete domain oriented
+code generation. Such a technique can be hosted by several languages featuring
+metaprogramming features (incidental or by design) like D \cite{template:dlang},
+Haskell \cite{sheard:2002} and OCaml \cite{serot:2008}.
 
 \begin{lstlisting}[
   language=C++,
@@ -261,16 +262,15 @@ std::array<int, fibonacci_t<5>::value> some_array;
 
 Listing \ref{lst:basic-tmp} shows basic principles of \cpp template
 metaprogramming. The \lstinline{fibonacci_t} type template accepts a
-\textit{Non-Type Template Parameter} (\nttp, \ie a template parameter that is
-a regular value instead of a type) called $N$, and exposes the
+\acrshort{nttp} called $N$, and exposes the
 $N\textsuperscript{th}$ element of the Fibonacci series as its
 \lstinline{value} static member. The template has 3 definitions:
 a generic one to calculate elements for $N > 1$,
 and two specializations for elements of ranks $0$ and $1$.
 
-Note that the \lstinline{value} field is specified as \constexpr.
+Note that the \lstinline{value} field is specified as \gls{constexpr}.
 It indicates that a variable or function can be used in compile time
 expressions.
-We will talk about \constexpr in detail in \ref{lbl:constexpr-programming}.
+We will talk about \gls{constexpr} in detail in \ref{lbl:constexpr-programming}.
 
 \end{document}

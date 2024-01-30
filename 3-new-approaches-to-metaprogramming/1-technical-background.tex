@@ -5,19 +5,21 @@
 % state of the art section
 
 \section{
-  A technical background of C++ metaprogramming and DSELs
+  A technical background of \cpp DSELs
 }
 
-By definition, a Domain-Specific Language (\dsl) is a computer language
+By definition, a \acrfull{dsl} is a computer language
 specialized to a particular application domain, contrary to a general-purpose
 language, which is broadly applicable across domains, and lacks specialized
-features for a particular domain. Domain Specific Embedded Languages (\dsels)
-are a subclass of \dsl that rely on an existing general-purpose language to host
-it. \dsels then reuse the host language syntax and tool ecosystem to be compiled
+features for a particular domain. \acrfull{dsel}\acrpluralsuffix{}
+are a subclass of \acrshort{dsl} that rely on an existing general-purpose language to host
+it. \acrshort{dsel}\acrpluralsuffix{} then reuse the host language syntax and tool ecosystem to be compiled
 or interpreted.
 
 In \cpp, the compile time process of generating new code is
 \textbf{Template Metaprogramming} to ensure performance and correctness.
+
+% TODO: dig this for references https://youtu.be/q6X9bKpAmnI
 
 \subsection{
   Constexpr programming
@@ -25,58 +27,58 @@ In \cpp, the compile time process of generating new code is
 \label{lbl:constexpr-programming}
 
 Expressions that generate results for use at compile time are called
-constant expressions. In \cpp11, the \constexpr keyword was introduced
+constant expressions. In \cpp11, the \gls{constexpr} keyword was introduced
 to qualify functions or variables that may be used in constant expressions.
 Consequently, regular functions and variables became usable for the evaluation
 of non-type template parameters.
 
-However not all functions and variables can be qualified as \constexpr,
-and not all constant expression results can be used as \nttps.
+However not all functions and variables can be qualified as \gls{constexpr},
+and not all constant expression results can be used as \acrshort{nttp}\acrpluralsuffix{}.
 
-Since the introduction of the \constexpr specifier, the requirements on
-functions for being \constexpr specifiable have constantly been relaxed as new
+Since the introduction of the \gls{constexpr} specifier, the requirements on
+functions for being \gls{constexpr} specifiable have constantly been relaxed as new
 \cpp standards were adopted. In \cpp20, notable changes made dynamic memory
-allocations\cite{constexpr-memory} and virtual \constexpr function
-calls\cite{virtual-constexpr} allowed in compile time \constexpr function
+allocations\cite{constexpr-memory} and virtual \gls{constexpr} function
+calls\cite{virtual-constexpr} allowed in compile time \gls{constexpr} function
 executions.
 
 These two additions make dynamic memory and heritage-based polymorphism
-possible in \constexpr functions. Therefore more regular \cpp code can be
+possible in \gls{constexpr} functions. Therefore more regular \cpp code can be
 executed at compile time, including parsers for arbitrary languages.
 
-\paragraph{\constexpr functions} Functions that are \constexpr qualified can
+\paragraph{\gls{constexpr} functions} Functions that are \gls{constexpr} qualified can
 still be used in other contexts than constant evaluation happening at
-compile time. In non-constant evaluation, \constexpr functions can still call
-non-\constexpr functions. But in constant evaluations, \constexpr functions must
-only call other \constexpr functions. This applies to methods as well.
+compile time. In non-constant evaluation, \gls{constexpr} functions can still call
+non-\gls{constexpr} functions. But in constant evaluations, \gls{constexpr} functions must
+only call other \gls{constexpr} functions. This applies to methods as well.
 In order to make a \cpp class or structure fully usable in constant evaluations,
-its methods ---including the constructors and destructor--- must be \constexpr.
+its methods ---including the constructors and destructor--- must be \gls{constexpr}.
 
-\paragraph{\constexpr variables} Variables that are \constexpr qualified can be
+\paragraph{\gls{constexpr} variables} Variables that are \gls{constexpr} qualified can be
 used in constant expressions. Note that they are different from
-non-\constexpr variables used in \constexpr functions.
-There are more requirements on \constexpr variables.
-Their values must be literal, meaning that memory allocated in \constexpr
-function bodies cannot be stored in \constexpr variables.
+non-\gls{constexpr} variables used in \gls{constexpr} functions.
+There are more requirements on \gls{constexpr} variables.
+Their values must be literal, meaning that memory allocated in \gls{constexpr}
+function bodies cannot be stored in \gls{constexpr} variables.
 
 \paragraph{
-  \constexpr memory allocation
+  \gls{constexpr} memory allocation
 }
 Starting from \cpp20, \lstinline{std::allocate} and \lstinline{std::deallocate}
-are \constexpr functions, allowing memory allocations to happen in
+are \gls{constexpr} functions, allowing memory allocations to happen in
 constant evaluations.
 
-However \constexpr allocated memory is not transient, \ie memory allocated in
-constant expressions cannot be stored in \constexpr variables, and non-type
-template parameters cannot hold pointers to \constexpr allocated memory either.
+However \gls{constexpr} allocated memory is not transient, \ie memory allocated in
+constant expressions cannot be stored in \gls{constexpr} variables, and non-type
+template parameters cannot hold pointers to \gls{constexpr} allocated memory either.
 
-Note that this restriction does not mean that data stored in \constexpr memory
-cannot be passed through. There are techniques to use data in \constexpr
+Note that this restriction does not mean that data stored in \gls{constexpr} memory
+cannot be passed through. There are techniques to use data in \gls{constexpr}
 allocated memory
 
 \begin{lstlisting}[
   language=C++,
-  caption=Illustration of constraints on \constexpr allocated memory,
+  caption=Illustration of constraints on \gls{constexpr} allocated memory,
   label=lst:cx-examples
 ]{}
 // Constexpr function generate returns a non-literal value
@@ -98,29 +100,28 @@ Let's have a closer look at the four assignment cases:
 
 \begin{itemize}
 \item Case \lstinline{a}: \lstinline{generate}'s return value is non-literal
-      and therefore cannot be stored in a \constexpr variable.
+      and therefore cannot be stored in a \gls{constexpr} variable.
 \item Case \lstinline{b}: \lstinline{generate}'s return value is used in a
       constant expression to produce a literal value.
-      Therefore the expression's result can be stored in a \constexpr variable.
+      Therefore the expression's result can be stored in a \gls{constexpr} variable.
 \item Case \lstinline{c}: similarly to case \lstinline{a},
-      \lstinline{generate}'s return value cannot be used as an \nttp because it
+      \lstinline{generate}'s return value cannot be used as an \acrshort{nttp} because it
       is not a literal value.
-\item Case \lstinline{d}: function references are allowed as \nttps.
+\item Case \lstinline{d}: function references are allowed as \acrshort{nttp}\acrpluralsuffix{}.
 \end{itemize}
 
-Notice how the last example works around restrictions of \constexpr allocations
+Notice how the last example works around restrictions of \gls{constexpr} allocations
 by using a generator function instead of passing the non-empty
 \lstinline{std::vector<int>} value directly. This technique along with the
 definition of lambdas can be used to explore more complex structures returned by
-\constexpr functions such as pointer trees.
+\gls{constexpr} functions such as pointer trees.
 
-Moreover, \constexpr allocated memory being non transient does not mean that its
-content cannot be transferred to \nttp compatible data structures.
+Moreover, \gls{constexpr} allocated memory being non transient does not mean that its
+content cannot be transferred to \acrshort{nttp} compatible data structures.
 
 \begin{lstlisting}[
   language=C++,
-  caption=Transfer of data from a dynamic \lstinline{std::vector}
-    to a constexpr static \lstinline{std::array},
+  caption=Transformation from a dynamic vector to a constexpr static array,
   label=lst:cx-vector-to-array
 ]{}
 constexpr auto generate_as_array() {
@@ -137,31 +138,31 @@ constexpr auto f = foo<generate_as_array()>();  // OK
 Listing \ref{lst:cx-vector-to-array} shows how \lstinline{generate}'s result
 can be evaluated into a static array. Static arrays are literal as long
 as the values they hold are literal. Therefore the result of
-\lstinline{generate_as_array} can be stored in a \constexpr variable or used
-directly as an \nttp for code generation.
+\lstinline{generate_as_array} can be stored in a \gls{constexpr} variable or used
+directly as an \acrshort{nttp} for code generation.
 
 \paragraph{
-  \constexpr virtual functions
+  \gls{constexpr} virtual functions
 }
 
 This feature allows calls to virtual functions in constant expressions
-\cite{virtual-constexpr}. This allows heritage-based polymorphism in \constexpr
-programming when used with \constexpr allocation of polymorphic types.
+\cite{virtual-constexpr}. This allows heritage-based polymorphism in \gls{constexpr}
+programming when used with \gls{constexpr} allocation of polymorphic types.
 
 \subsubsection{
-  Cest: standard-like containers for \constexpr programming
+  Cest: standard-like containers for \gls{constexpr} programming
 }
 
 With dynamic memory and virtual functions making their way to
-\constexpr programming, the next logical step is to make standard \cpp
+\gls{constexpr} programming, the next logical step is to make standard \cpp
 containers available in constant evaluations.
 Modifying the \cpp standard to accomodate that need takes time.
 However, implementing standard-like containers that are good enough
-for prototyping and experimenting with \constexpr programs
+for prototyping and experimenting with \gls{constexpr} programs
 can be done fast enough.
 
 The C'est \cite{cest} library was created with this goal in mind, filling the
-gap in the \cpp standard, and accommodating the need for \constexpr compatible
+gap in the \cpp standard, and accommodating the need for \gls{constexpr} compatible
 standard containers.
 As of today most of the containers implemented in C'est are available in
 up-to-date standard libraries, but it is still a useful library for
@@ -172,18 +173,18 @@ It was instrumental for this thesis as the research work I present here started
 a long time before \cpp23 was adopted and standard libraries and compilers
 started implementing it.
 
-I contributed to its development myself by implementing a \constexpr version
+I contributed to its development myself by implementing a \gls{constexpr} version
 of \lstinline{std::unique_ptr}. This collaboration led Joel Falcou and myself to
 meet with its initiator, Paul Keir, in Glasgow and Paris.
 Our collaboration also led to speak together at
 Meeting \cpp 2022 \cite{meetingcpp22} where we talked about C'est and
-its use cases for \constexpr programming research.
+its use cases for \gls{constexpr} programming research.
 
 % \section{C++23 experiments for implementing EDSLs of arbitrary syntaxes}
 
-% We explore two cases of \constexpr parser implementations for small languages
-% that return abstract syntax trees using \constexpr allocated memory through
-% standard containers, and backends that transform the \constexpr function results
+% We explore two cases of \gls{constexpr} parser implementations for small languages
+% that return abstract syntax trees using \gls{constexpr} allocated memory through
+% standard containers, and backends that transform the \gls{constexpr} function results
 % into programs through templates using different techniques. The use cases we
 % consider are:
 %
@@ -193,11 +194,11 @@ its use cases for \constexpr programming research.
 %   \item A basic math language supporting infix operators and function calls.
 % \end{itemize}
 
-% The Poacher project was started to experiment ways to leverage \constexpr
+% The Poacher project was started to experiment ways to leverage \gls{constexpr}
 % programming for the integration of embedded domain specific languages of
-% arbitrary syntaxes. Considering the current restrictions on \constexpr allocated
+% arbitrary syntaxes. Considering the current restrictions on \gls{constexpr} allocated
 % memory, going from a static string representation of a program, mathematical formula, or
-% regular expression to a compiled program using \constexpr programming might not
+% regular expression to a compiled program using \gls{constexpr} programming might not
 % be trivial.
 
 % https://www.cs.rhul.ac.uk/research/languages/csle/lookahead_backtrack.html
@@ -208,7 +209,7 @@ its use cases for \constexpr programming research.
   \cpp Domain Specific Embedded Languages
 }
 
-\dsels in \cpp use template metaprogramming via the \textit{Expression
+\acrshort{dsel}\acrpluralsuffix{} in \cpp use template metaprogramming via the \textit{Expression
 Template} idiom.
 \textbf{Expression Templates} \cite{veldhuizen:1995,vandevoorde:2002} is a
 technique implementing a form of \textbf{delayed evaluation} in
@@ -224,7 +225,7 @@ using Template Metaprograms.
 
 As of today, most \cpp EDSLs rely on \textit{Expression Templates} and therefore
 are limited to the \cpp syntax. New techniques are becoming more popular through
-the use of \constexpr strings to embed arbitray \dsels. One major example is
+the use of \gls{constexpr} strings to embed arbitray \acrshort{dsel}\acrpluralsuffix{}. One major example is
 the Compile-Time Regular Expressions library (CTRE) \cite{ctre} that implements
 most of the Perl Compatible Regular Expression (PCRE) syntax. However, CTRE
 still relies on type-based template metaprogramming to parse regular expressions
