@@ -40,6 +40,7 @@
 \usepackage{booktabs}
 \usepackage{colortbl}
 \usepackage{geometry}
+\usepackage{glossaries}
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{listings}
@@ -71,24 +72,11 @@
 
 % Commandes pour la these de Jules
 
-\providecommand{\BF}{\textit{BF}\xspace}
-\providecommand{\constexpr}{\lstinline{constexpr}\xspace}
 \providecommand{\cpp}{\textsc{C++}\xspace}
 \providecommand{\ctbench}{\textsc{ctbench}\xspace}
-\providecommand{\dsels}{\textit{DSEL}s\xspace}
-\providecommand{\dsel}{\textit{DSEL}\xspace}
-\providecommand{\dsls}{\textit{DSL}s\xspace}
-\providecommand{\dsl}{\textit{DSL}\xspace}
 \providecommand{\eg}{\textit{e.g.}\xspace}
-\providecommand{\ets}{\textit{ET}s\xspace}
-\providecommand{\et}{\textit{ET}\xspace}
 \providecommand{\grapher}{\textsc{grapher}\xspace}
 \providecommand{\ie}{\textit{i.e.}\xspace}
-\providecommand{\nttps}{\textit{NTTP}s\xspace}
-\providecommand{\nttp}{\textit{NTTP}\xspace}
-\providecommand{\sfinae}{\textsc{SFINAE}\xspace}
-\providecommand{\tmp}{template metaprogramming\xspace}
-\providecommand{\Tmp}{Template metaprogramming\xspace}
 
 \hypersetup{
   colorlinks=true, % toujours garder colorlinks=true
@@ -125,6 +113,26 @@
   morecomment=[l]{},
   morestring=[b]"
 }
+
+\makeglossaries
+
+\newglossaryentry{litval}{
+  name=literal value,
+  description=A value that does not hold any pointer to dynamic memory.
+}
+
+\newglossaryentry{constexpr}{
+  name=\lstinline{constexpr},
+  description=A value or function that can be used in a constant expression.
+}
+
+\newacronym{bf}{BF}{Brainfuck}
+\newacronym{dsel}{DSEL}{Domain Specific Embedded Language}
+\newacronym{dsl}{DSL}{Domain Specific Language}
+\newacronym{et}{ET}{Expression Template}
+\newacronym{nttp}{NTTP}{Non-Type Template Parameter}
+\newacronym{sfinae}{SFINAE}{Substitution Failure Is Not An Error}
+\newacronym{tmp}{TMP}{Template Metaprogramming}
 
 % ==============================================================================
 \usepackage{subfiles} % Garder a la fin
@@ -384,9 +392,9 @@ insightful suggestions.
 % \begin{abstract}
 % Design of high performance, high abstraction libraries in \cpp often take
 % advantages of techniques like template metaprogramming or expression templates
-% to design \dsels. However, such techniques are limited by the natural syntax
-% of \cpp. In this paper, we explore the benefits of using \cpp23 compile time
-% computation features to provide compile time string based \dsels that can then
+% to design \acrshort{dsel}\acrpluralsuffix{}. However, such techniques are limited by the natural syntax
+% of \cpp. In this thesis, we explore the benefits of using \cpp23 compile time
+% computation features to provide compile time string based \acrshort{dsel}\acrpluralsuffix{} that can then
 % use arbitrary syntax.
 % \end{abstract}
 
@@ -395,7 +403,7 @@ insightful suggestions.
 \cpp is often touted as a \textit{Zero-Cost Abstraction} langage due to some of
 its design philosophy and its ability to compile abstraction to a very efficient
 binary code. Some more radical techniques can be used to force the compiler to
-interpret \cpp code as a \dsel. Template metaprogramming is such a technique
+interpret \cpp code as a \acrshort{dsel}. Template metaprogramming is such a technique
 and it spawned a large corpus of related idioms from compile time function
 evaluation to lazy evaluation via \textit{Expression Templates}.
 
@@ -405,14 +413,14 @@ Blaze\cite{blazelib,iglberger2012_2}. They all suffer from a major limitation:
 by being tied to the natural \cpp syntax, they can't express nor embed arbitrary
 languages.
 
-In this paper, we try to demonstrate that the new features of \cpp23 related to
-compile time programming are able to help developers designing \dsels with
-arbitrary syntax by leveraging \constexpr computations, compile time dynamic
+In this thesis, we try to demonstrate that the new features of \cpp23 related to
+compile time programming are able to help developers designing \acrshort{dsel}\acrpluralsuffix{} with
+arbitrary syntax by leveraging \gls{constexpr} computations, compile time dynamic
 objects and lazy evaluation through lambda functions. After contextualizing our
-contribution in the general \dsels domain, this paper will explain the core
+contribution in the general \acrshort{dsel}\acrpluralsuffix{} domain, this thesis will explain the core
 new techniques enabled by \cpp23 and how we can apply to build two different
-\dsels with their own non-\cpp syntax. We'll also explore the performances of
-said \dsels in term of compile time to assess their usability in realistic code.
+\acrshort{dsel}\acrpluralsuffix{} with their own non-\cpp syntax. We'll also explore the performances of
+said \acrshort{dsel}\acrpluralsuffix{} in term of compile time to assess their usability in realistic code.
 
 \subfile{3-new-approaches-to-metaprogramming/1-technical-background.tex}
 \subfile{3-new-approaches-to-metaprogramming/2-constexpr-codegen-techniques.tex}
@@ -427,16 +435,16 @@ said \dsels in term of compile time to assess their usability in realistic code.
 % Serializing makes dealing with dynamic memory easier because codegen functions
 % only deal with static memory.
 
-We wanted to demonstrate that using \constexpr code to implement parsers for
-\dsel of arbitrary syntax in \cpp23 is possible despite limitations on
-\constexpr memory allocation, and that doing so is possible with reasonable
+We wanted to demonstrate that using \gls{constexpr} code to implement parsers for
+\acrshort{dsel} of arbitrary syntax in \cpp23 is possible despite limitations on
+\gls{constexpr} memory allocation, and that doing so is possible with reasonable
 impact on compilation times.
 
-We achieved that by implementing a \constexpr parser for the Brainfuck language,
+We achieved that by implementing a \gls{constexpr} parser for the Brainfuck language,
 with code generation backends implementing three different strategies to
-transform \constexpr program representations into code using function
+transform \gls{constexpr} program representations into code using function
 generators, expression templates, and non-type template parameters.
-We also demonstrated the interoperability of these \constexpr parsers by
+We also demonstrated the interoperability of these \gls{constexpr} parsers by
 implementing a parser for mathematical languages that can be used as a frontend
 for existing high performance \cpp computation libraries.
 
@@ -444,13 +452,13 @@ Our benchmarks highlight compilation time scaling issues with pass-by-generator
 and expression template code generation strategies for large programs, and
 excellent scaling capabilities for non-type template parameter based code
 generation strategies. These results can be used to decide which strategy to
-adopt for the implementation of future \dsel based on \constexpr parsers
+adopt for the implementation of future \acrshort{dsel} based on \gls{constexpr} parsers
 based on considerations for compilation times or implementation complexity.
 
-Going forward, \constexpr parser generators could help reduce
-\dsel implementation time and help embed more languages into \cpp23.
+Going forward, \gls{constexpr} parser generators could help reduce
+\acrshort{dsel} implementation time and help embed more languages into \cpp23.
 Further research has to be made to determine the impact of such generators on
-\dsel implementation complexity and compilation times.
+\acrshort{dsel} implementation complexity and compilation times.
 
 % On avait tel objectif X et Y
 % On montre qu'on a fait X et que ca permet Y
@@ -459,6 +467,10 @@ Further research has to be made to determine the impact of such generators on
 
 % TODO: Talk about Cest
 
+\clearpage
+\printglossaries
+
+\clearpage
 \printbibliography
 
 \chapter{Appendix}
