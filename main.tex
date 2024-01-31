@@ -118,6 +118,7 @@
 
 \newglossaryentry{litval}{
   name=literal value,
+  plural=literal values,
   description=A value that does not hold any pointer to dynamic memory.
 }
 
@@ -126,12 +127,28 @@
   description=A value or function that can be used in a constant expression.
 }
 
+\newglossaryentry{consteval}{
+  name=constant evaluation,
+  plural=constant evaluations,
+  description=The evaluation of an expression that is performed at compile time.
+}
+
+\newacronym{ast}{AST}{Abstract Syntax Tree}
 \newacronym{bf}{BF}{Brainfuck}
+\newacronym{cpu}{CPU}{Central Processing Unit}
+\newacronym{ctpg}{CTPG}{Compile Time Parser Generator}
+\newacronym{ctre}{CTRE}{Compile Time Regular Expression}
 \newacronym{dsel}{DSEL}{Domain Specific Embedded Language}
 \newacronym{dsl}{DSL}{Domain Specific Language}
 \newacronym{et}{ET}{Expression Template}
+\newacronym{gpu}{GPU}{Graphical Processing Unit}
+\newacronym{hpc}{HPC}{High Performance Computing}
+\newacronym{jit}{JIT}{Just-In-Time}
 \newacronym{nttp}{NTTP}{Non-Type Template Parameter}
+\newacronym{pbg}{PBG}{pass-by-generator}
+\newacronym{pcre}{PCRE}{Perl Compatible Regular Expression}
 \newacronym{sfinae}{SFINAE}{Substitution Failure Is Not An Error}
+\newacronym{simd}{SIMD}{Single Instruction Multiple Data}
 \newacronym{tmp}{TMP}{Template Metaprogramming}
 
 % ==============================================================================
@@ -293,7 +310,7 @@ parall\'elisme
 % ------------------------------------------------------------------------------
 % These de Jules
 
-\part{Current state of metaprogramming for HPC}
+\part{Current state of metaprogramming for high performance computing}
 
 \chapter{
   Introduction
@@ -301,19 +318,19 @@ parall\'elisme
 
 This thesis is about metaprogramming techniques for parallel code generation.
 It aims to study the boundary between compile-time parsing of
-domain-specific embedded languages and high performance code generation in \cpp.
+\glspl{dsel} and high performance code generation in \cpp.
 
 The main motivation is to provide tools, libraries, and guidelines for embedding
 mathematical languages in \cpp with the hope that it can be useful to build a
-cohesive set of tools to make generic high performance computing more accessible
-to non-specialized audiences. This goal is even more important as new computing
+cohesive set of tools to make generic \gls{hpc} more accessible
+to non-expert audiences. This goal is even more important as new computing
 architectures emerge over time. Developing high performance programs requires
-specialized implementations that can be achieved by either specializing
-implementations, or using libraries that provide specialized abstractions at
-various levels and for various domains.
+tuned implementations that can be achieved by either specializing
+implementations for the target platforms, or using libraries that provide
+specialized abstractions at various levels and for various domains.
 
 \chapter{
-  State of the art of metaprogramming
+  State of the art of Metaprogramming
 }
 
 \subfile{1-current-metaprogramming/metaprog-and-hpc-overview.tex}
@@ -337,8 +354,8 @@ various levels and for various domains.
   Establishing a methodology for compile time benchmarking
 }
 
-With libraries like Eigen\cite{eigen}, Blaze\cite{blazelib}, or CTRE\cite{ctre}
-being developed with a large tempalte metaprogrammed implementation,
+With \gls{tmp} libraries like Eigen\cite{eigen}, Blaze\cite{blazelib},
+or CTRE\cite{ctre} becoming larger and more common,
 we're seeing increasing computing needs at compile time. These needs might grow
 even larger as \cpp embeds more features over time to support and extend this
 kind of practices, like compile time containers\cite{more-constexpr-containers}
@@ -391,10 +408,10 @@ insightful suggestions.
 }
 % \begin{abstract}
 % Design of high performance, high abstraction libraries in \cpp often take
-% advantages of techniques like template metaprogramming or expression templates
-% to design \gls{dsel}\acrpluralsuffix{}. However, such techniques are limited by the natural syntax
+% advantages of techniques like template metaprogramming or \glspl{et}
+% to design \glspl{dsel}. However, such techniques are limited by the natural syntax
 % of \cpp. In this thesis, we explore the benefits of using \cpp23 compile time
-% computation features to provide compile time string based \gls{dsel}\acrpluralsuffix{} that can then
+% computation features to provide compile time string based \glspl{dsel} that can then
 % use arbitrary syntax.
 % \end{abstract}
 
@@ -403,9 +420,9 @@ insightful suggestions.
 \cpp is often touted as a \textit{Zero-Cost Abstraction} langage due to some of
 its design philosophy and its ability to compile abstraction to a very efficient
 binary code. Some more radical techniques can be used to force the compiler to
-interpret \cpp code as a \gls{dsel}. Template metaprogramming is such a technique
+interpret \cpp code as a \gls{dsel}. \Gls{tmp} is such a technique
 and it spawned a large corpus of related idioms from compile time function
-evaluation to lazy evaluation via \textit{Expression Templates}.
+evaluation to lazy evaluation via \glspl{et}.
 
 In the field of High Performance Computing, \cpp users are often driven to use
 libraries built on top of those idioms like Eigen\cite{eigen} or
@@ -414,13 +431,13 @@ by being tied to the natural \cpp syntax, they can't express nor embed arbitrary
 languages.
 
 In this thesis, we try to demonstrate that the new features of \cpp23 related to
-compile time programming are able to help developers designing \gls{dsel}\acrpluralsuffix{} with
+compile time programming are able to help developers designing \glspl{dsel} with
 arbitrary syntax by leveraging \gls{constexpr} computations, compile time dynamic
 objects and lazy evaluation through lambda functions. After contextualizing our
-contribution in the general \gls{dsel}\acrpluralsuffix{} domain, this thesis will explain the core
+contribution in the general \glspl{dsel} domain, this thesis will explain the core
 new techniques enabled by \cpp23 and how we can apply to build two different
-\gls{dsel}\acrpluralsuffix{} with their own non-\cpp syntax. We'll also explore the performances of
-said \gls{dsel}\acrpluralsuffix{} in term of compile time to assess their usability in realistic code.
+\glspl{dsel} with their own non-\cpp syntax. We'll also explore the performances of
+said \glspl{dsel} in term of compile time to assess their usability in realistic code.
 
 \subfile{3-new-approaches-to-metaprogramming/1-technical-background.tex}
 \subfile{3-new-approaches-to-metaprogramming/2-constexpr-codegen-techniques.tex}
@@ -443,13 +460,13 @@ impact on compilation times.
 We achieved that by implementing a \gls{constexpr} parser for the Brainfuck language,
 with code generation backends implementing three different strategies to
 transform \gls{constexpr} program representations into code using function
-generators, expression templates, and non-type template parameters.
+generators, \glspl{et}, and non-type template parameters.
 We also demonstrated the interoperability of these \gls{constexpr} parsers by
 implementing a parser for mathematical languages that can be used as a frontend
 for existing high performance \cpp computation libraries.
 
 Our benchmarks highlight compilation time scaling issues with pass-by-generator
-and expression template code generation strategies for large programs, and
+and \gls{et} code generation strategies for large programs, and
 excellent scaling capabilities for non-type template parameter based code
 generation strategies. These results can be used to decide which strategy to
 adopt for the implementation of future \gls{dsel} based on \gls{constexpr} parsers
@@ -468,6 +485,7 @@ Further research has to be made to determine the impact of such generators on
 % TODO: Talk about Cest
 
 \clearpage
+
 \printglossaries
 
 \clearpage
