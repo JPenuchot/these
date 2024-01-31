@@ -134,8 +134,8 @@ lifetime management gets more difficult when combined with
 \subsubsection{Serializing the AST into a \gls{litval}}
 
 The last technique I will discuss, which is by far the most efficient
-in regard to compilation time, consists in serializing the AST into a
-literal value.
+in regard to compilation time, consists in transforming the AST into a
+literal value that can be used as a \gls{nttp}.
 
 As I've discussed in \ref{lbl:constexpr-programming}, a \gls{constexpr}
 \lstinline{std::vector} return value can be transformed into a static array with

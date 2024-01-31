@@ -8,12 +8,12 @@
   A technical background of \cpp DSELs
 }
 
-By definition, a \acrfull{dsl} is a computer language
+By definition, a \gls{dsl} is a computer language
 specialized to a particular application domain, contrary to a general-purpose
 language, which is broadly applicable across domains, and lacks specialized
-features for a particular domain. \acrfull{dsel}\acrpluralsuffix{}
-are a subclass of \acrshort{dsl} that rely on an existing general-purpose language to host
-it. \acrshort{dsel}\acrpluralsuffix{} then reuse the host language syntax and tool ecosystem to be compiled
+features for a particular domain. \gls{dsel}\acrpluralsuffix{}
+are a subclass of \gls{dsl} that rely on an existing general-purpose language to host
+it. \gls{dsel}\acrpluralsuffix{} then reuse the host language syntax and tool ecosystem to be compiled
 or interpreted.
 
 In \cpp, the compile time process of generating new code is
@@ -33,7 +33,7 @@ Consequently, regular functions and variables became usable for the evaluation
 of non-type template parameters.
 
 However not all functions and variables can be qualified as \gls{constexpr},
-and not all constant expression results can be used as \acrshort{nttp}\acrpluralsuffix{}.
+and not all constant expression results can be used as \gls{nttp}\acrpluralsuffix{}.
 
 Since the introduction of the \gls{constexpr} specifier, the requirements on
 functions for being \gls{constexpr} specifiable have constantly been relaxed as new
@@ -105,9 +105,9 @@ Let's have a closer look at the four assignment cases:
       constant expression to produce a literal value.
       Therefore the expression's result can be stored in a \gls{constexpr} variable.
 \item Case \lstinline{c}: similarly to case \lstinline{a},
-      \lstinline{generate}'s return value cannot be used as an \acrshort{nttp} because it
+      \lstinline{generate}'s return value cannot be used as an \gls{nttp} because it
       is not a literal value.
-\item Case \lstinline{d}: function references are allowed as \acrshort{nttp}\acrpluralsuffix{}.
+\item Case \lstinline{d}: function references are allowed as \gls{nttp}\acrpluralsuffix{}.
 \end{itemize}
 
 Notice how the last example works around restrictions of \gls{constexpr} allocations
@@ -117,7 +117,7 @@ definition of lambdas can be used to explore more complex structures returned by
 \gls{constexpr} functions such as pointer trees.
 
 Moreover, \gls{constexpr} allocated memory being non transient does not mean that its
-content cannot be transferred to \acrshort{nttp} compatible data structures.
+content cannot be transferred to \gls{nttp} compatible data structures.
 
 \begin{lstlisting}[
   language=C++,
@@ -139,7 +139,7 @@ Listing \ref{lst:cx-vector-to-array} shows how \lstinline{generate}'s result
 can be evaluated into a static array. Static arrays are literal as long
 as the values they hold are literal. Therefore the result of
 \lstinline{generate_as_array} can be stored in a \gls{constexpr} variable or used
-directly as an \acrshort{nttp} for code generation.
+directly as an \gls{nttp} for code generation.
 
 \paragraph{
   \gls{constexpr} virtual functions
@@ -209,7 +209,7 @@ its use cases for \gls{constexpr} programming research.
   \cpp Domain Specific Embedded Languages
 }
 
-\acrshort{dsel}\acrpluralsuffix{} in \cpp use template metaprogramming via the \textit{Expression
+\gls{dsel}\acrpluralsuffix{} in \cpp use template metaprogramming via the \textit{Expression
 Template} idiom.
 \textbf{Expression Templates} \cite{veldhuizen:1995,vandevoorde:2002} is a
 technique implementing a form of \textbf{delayed evaluation} in
@@ -225,7 +225,7 @@ using Template Metaprograms.
 
 As of today, most \cpp EDSLs rely on \textit{Expression Templates} and therefore
 are limited to the \cpp syntax. New techniques are becoming more popular through
-the use of \gls{constexpr} strings to embed arbitray \acrshort{dsel}\acrpluralsuffix{}. One major example is
+the use of \gls{constexpr} strings to embed arbitray \gls{dsel}\acrpluralsuffix{}. One major example is
 the Compile-Time Regular Expressions library (CTRE) \cite{ctre} that implements
 most of the Perl Compatible Regular Expression (PCRE) syntax. However, CTRE
 still relies on type-based template metaprogramming to parse regular expressions

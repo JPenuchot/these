@@ -95,14 +95,14 @@ named_value_t<int> val = annotated_default_v<int>;
 
 \begin{itemize}
 \item Type parameters
-\item \acrfull{nttp}
+\item \gls{nttp}
 \item Parameter packs
 \end{itemize}
 
 \paragraph{Advanced \cpp template mechanisms}
 
 \begin{itemize}
-\item \acrfull{sfinae}
+\item \gls{sfinae}
 \item Template specialization
 \end{itemize}
 
@@ -128,7 +128,7 @@ The use of \gls{constexpr} functions for compile time programming is preferable
 for many reasons: familiar to most \cpp developers (and therefore more
 maintainable), it allows the use of types to enforce semantics properly
 as opposed to type-based metaprogramming, and it scales much better than
-\acrshort{tmp}.
+\gls{tmp}.
 
 % Templates allow types, variables, and functions to be generated from
 % compile time parameters. These parameters used to be only types,
@@ -222,7 +222,7 @@ at as a pure functional language \cite{haeri:2012}.
 
 Templates are an interesting technique for generative programming. As they
 are Turing-complete, one can design a set of template metaprograms acting as a
-\acrshort{dsl} compiler run at compile time and generating temporary \cpp code
+\gls{dsl} compiler run at compile time and generating temporary \cpp code
 fragment as an output. The resulting temporary source code is then merged with
 the rest of the source code and finally processed by the classic
 compilation process. Through this technique, compile time constants,
@@ -262,7 +262,7 @@ std::array<int, fibonacci_t<5>::value> some_array;
 
 Listing \ref{lst:basic-tmp} shows basic principles of \cpp template
 metaprogramming. The \lstinline{fibonacci_t} type template accepts a
-\acrshort{nttp} called $N$, and exposes the
+\gls{nttp} called $N$, and exposes the
 $N\textsuperscript{th}$ element of the Fibonacci series as its
 \lstinline{value} static member. The template has 3 definitions:
 a generic one to calculate elements for $N > 1$,
