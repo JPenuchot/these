@@ -12,13 +12,13 @@ expressions at compile time by creating type-based arborescences.
 This type of representation is called an \gls{et} \cite{veldhuizen:1995}.
 
 Combined with compile-time mechanisms such as function overloading,
-specialization, and operator overloading, expression templates can be used to
+specialization, and operator overloading, \gls{et}\acrpluralsuffix{} can be used to
 implement expression level \gls{dsel}\acrpluralsuffix{} and convert complex
 mathematical expressions into high performance code.
 
 There are two main libraries that are able to do just this: Eigen \cite{eigen}
 and Blaze \cite{blazelib}, which were cited in \ref{lbl:meta-libraries}.
-In this section, I will introduce the basics of \cpp template metaprogramming,
+In this section, I will introduce the basics of \cpp \gls{tmp},
 
 \subsection{
   Expression templates: a type-based representation for math formulas
@@ -59,7 +59,7 @@ SIMD
 Multithreading
 
 \subsubsection{
-  GPU support efforts
+  \acrlong{gpu} support efforts
 }
 
 Lots of rewrite to do
@@ -67,11 +67,11 @@ Lots of rewrite to do
 Potentially a job for source rewriting tools
 
 \begin{itemize}
-\item Eventually: GPU code generation, although Blaze needs a significant
+\item Eventually: \gls{gpu} code generation, although Blaze needs a significant
       rewrite for that. Source rewriting tools might be a good fit for that job.
 \end{itemize}
 
-Expression templates can provide expression level APIs for HPC libraries.
+Expression templates can provide expression level APIs for \gls{hpc} libraries.
 
 Still two limitations:
 

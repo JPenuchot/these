@@ -24,7 +24,7 @@ while \cpp templates can manipulate types and complex \cpp values
 with a much richer semantic.
 
 Our goal in this section will be to cover different languages with their own
-metaprogramming models, as well as HPC-focused libraries that use
+metaprogramming models, as well as \gls{hpc}-focused libraries that use
 metaprogramming to achieve notable levels of genericity.
 
 \subsection{A short history of metaprogramming}
@@ -69,21 +69,21 @@ through multi-staged programming (like MetaOCaml) for heterogeneous real-time
 
 Terra\cite{terra} implements a very explicit metaprogramming model.
 The language is based on LUA, and exploits the dynamic nature of the language
-together with LLVM JIT compilation to allow code generation
+together with LLVM \gls{jit} compilation to allow code generation
 to happen at runtime.
 It implements multi-staged compilation and splicing just like MetaOCaml.
 
 Additionally, Terra can be embedded in other languages through its C API.
 Overall it is a very versatile and experimental take on metaprogramming,
 but the lack of interoperability with \cpp templates makes it hard to justify
-its use for HPC applications.
+its use for \gls{hpc} applications.
 
-As we will see in section \ref{lbl:meta-cpp}, GPU computing libraries
+As we will see in section \ref{lbl:meta-cpp}, \gls{gpu} computing libraries
 rely heavily on \cpp metaprogramming to provide building blocks for
 portable high performance compute kernels.
 
 \section{
-  Metarpogramming and HPC libraries
+  Metarpogramming and \gls{hpc} libraries
 }
 \label{lbl:meta-libraries}
 
@@ -97,24 +97,23 @@ Brigand\cite{brigand}, and mp11\cite{mp11}.
 
 Libraries for more specific uses were also implemented, such as
 Spirit\cite{spirit} for writing parsers (not for compile time parsing),
-Compile Time Regular Expressions (CTRE)\cite{ctre}
-for compiling regular expressions,
-and Compile Time Parser Generator(CTPG)\cite{ctpg}
-for generating LR1 parsers (also not for compile time parsing).
+\gls{ctre} \cite{ctre} for compiling regular expressions,
+and \gls{ctpg} \cite{ctpg} for generating LR1 parsers
+(also not for compile time parsing).
 
 The benefits of metaprogrammed libraries are:
 
 \begin{itemize}
 
-\item Performance: notably in the case of CTRE.
+\item Performance: notably in the case of \gls{ctre}.
 Regular expressions are usually interpreted at runtime,
 which adds a measurable overhead to text processing.
-CTRE shows leading performance, on par with Rust's regex library
+\gls{ctre} shows leading performance, on par with Rust's regex library
 which also works by compiling regular expressions.
 
 \item Language integration: since these are \cpp libraries,
 their APIs can take advantage of \cpp operator overloading and lambdas.
-In CTPG, these are used to provide a domain-specific language that is close to
+In \gls{ctpg}, these are used to provide a domain-specific language that is close to
 what parser generators like YACC or Bison provide,
 though it is still regular \cpp code which can be put inside any function body.
 Using a \cpp API makes these libraries easier to learn
@@ -128,7 +127,7 @@ to be installed and integrated to the build system.
 
 \subsection{High performance computing libraries}
 
-There are many \cpp HPC libraries that use metaprogramming to achieve
+There are many \cpp \gls{hpc} libraries that use metaprogramming to achieve
 high levels of performance while being generic and proposing high level APIs.
 This subsection aims to provide an overview of notable libraries that fit this
 description as well as recent efforts that are still under development.
@@ -166,7 +165,7 @@ int main() {
 \textbf{Blaze} \cite{blazelib} is a successor of Eigen that implements so-called
 "Smart Expression Templates" which extends upon the concept of
 expression templates implemented by Eigen. It aims to provide a more performant
-and extensible HPC library. However, Eigen is not set in stone
+and extensible \gls{hpc} library. However, Eigen is not set in stone
 and its designed has since been updated.
 
 \begin{lstlisting}[
@@ -194,7 +193,7 @@ int main() {
 
 \item
 \textbf{NT2} \cite{nt2} is a research project that aims to provide a complete
-numerical toolbox that leverages metaprogramming to develop portable HPC
+numerical toolbox that leverages metaprogramming to develop portable \gls{hpc}
 applications with a Matlab-like interface while still achieving state-of-the-art
 computing performance.
 
@@ -267,9 +266,9 @@ std::uint64_t fibonacci(std::uint64_t n) {
 \end{lstlisting}
 
 \item
-\textbf{Thrust} \cite{thrust} implements GPU-accelerated equivalents
+\textbf{Thrust} \cite{thrust} implements \acrshort{gpu}-accelerated equivalents
 of the Standard Library's algorithms, while CUB \cite{cub} provides
-GPU-optimized algorithm skeletons for generic programming on NVIDIA GPUs.
+\acrshort{gpu}-optimized algorithm skeletons for generic programming on NVIDIA \gls{gpu}\acrpluralsuffix{}.
 AMD and Intel implement their equivalents for their own platforms, respectively
 ROCm and OneAPI.
 
@@ -335,12 +334,12 @@ let qr_decomposition = m3.qr();
 
 All these examples show that metaprogramming is not just a gimmick.
 There is enough interest in leveraging metaprogramming
-for generic HPC programming that many frameworks, libraries, or languages
+for generic \gls{hpc} programming that many frameworks, libraries, or languages
 have been developed around this paradigm and maintained sometimes
 for more than a decade. Its adoption in languages like Braid, Julia, Terra,
 Rust, or Dlang shows that it is not limited to \cpp.
 
-However, most of generic HPC libraries and frameworks that are developed
+However, most of generic \gls{hpc} libraries and frameworks that are developed
 and maintained today are based on \cpp, and \cpp itself is likely to
 evolve to provide more ways to generate programs as shown by the recent
 standard proposal for Scalable Reflection in \cpp \cite{scalable-reflection}.
@@ -350,7 +349,7 @@ standard proposal for Scalable Reflection in \cpp \cite{scalable-reflection}.
 
 \item Some languages provide advanced metaprogramming capabilities
 
-\item \cpp has solid metaprogramming constructs, and a complete HPC ecosystem
+\item \cpp has solid metaprogramming constructs, and a complete \gls{hpc} ecosystem
 (libraries, compilers, etc.)
 \end{itemize}
 
