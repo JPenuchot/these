@@ -102,11 +102,11 @@ This is a common way to represent trees in \cpp, but the limits mentioned in
 The techniques we will use to pass the result as a template parameter are:
 
 \begin{itemize}
-\item passing functions that return nodes as non-type template parameters,
+\item passing functions that return nodes as \glspl{nttp},
 \item converting the tree into an expression template representation,
 \item serializing the tree into a dynamically allocated array,
       then converting the dynamic array into a static array that can be used as
-      a non-type template parameter,
+      a \gls{nttp},
 \end{itemize}
 
 The compilation performance measurements in \ref{lbl:compile-time-eval} will
@@ -124,7 +124,7 @@ One way to use dynamically allocated data structures as template parameters
 is to pass their generator functions instead of their values.
 You may have noted in listing \ref{lst:cx-examples} that depsite
 \lstinline{generate}'s return value being non-literal, the function itself
-can be passed as a non-type template argument.
+can be passed as a \gls{nttp}.
 
 Its result can be used to produce literal \gls{constexpr} results,
 and the function itself can be used in generator lambda functions
@@ -170,7 +170,7 @@ to pass the subnodes' values, and used to generate code.
 
 This technique is fairly simple to implement as it does not require any
 transformation into an ad hoc data structure to pass the tree as a type
-or non-type template parameter.
+or \gls{nttp}.
 
 The downside of using this value passing technique is that the
 number of calls of the generator function is proportional to the
@@ -260,8 +260,7 @@ template <tree_generator auto Fun> constexpr auto codegen() {
 
 To overcome the performance issues of the previously introduced techniques,
 we can try a different approach. Instead of passing trees as they are,
-they can be transformed into static arrays which can be used as non-type
-template parameters.
+they can be transformed into static arrays which can be used as \glspl{nttp}.
 
 \begin{lstlisting}[language=C++, label=lst:flat_struct_def]{}
 /// Serialized representation of a constant
@@ -371,10 +370,10 @@ function that takes a \gls{constexpr} tree generator function as an input,
 serializes the result, and returns it as a static array.
 
 Static arrays are not dynamically allocated, therefore they can be used as
-non-type template parameters if their values do not hold pointers to
+\glspl{nttp} if their values do not hold pointers to
 \gls{constexpr} allocated memory either.
 In our case, the elements only hold integers, so a \lstinline{std::array} of
-\lstinline{flat_node_t} elements can be used as a non-type template parameters.
+\lstinline{flat_node_t} elements can be used as a \glspl{nttp}.
 
 \begin{lstlisting}[
   language=C++,
@@ -595,7 +594,7 @@ The presented code snippets already allow us to draw a few observations.
 \item
 Code generation from \gls{constexpr} dynamic structures is not a trivial process.
 It still requires advanced \cpp knowledge to understand the limits of what
-is or isn't possible to do with \gls{nttp}\glspluralsuffix{} and \gls{constexpr} functions.
+is or isn't possible to do with \glspl{nttp} and \gls{constexpr} functions.
 
 While the examples show working examples for code generation from \gls{constexpr}
 function results with \gls{constexpr} allocated memory, they do not show the time
@@ -607,7 +606,7 @@ stored in a \gls{constexpr} variable if the result is evaluated from an temporar
 object that contains \gls{constexpr} allocated memory.
 
 \item
-The easiest way to get around \gls{nttp} constraints, \ie the pass-by-generator
+The easiest way to get around \gls{nttp} constraints, \ie the \gls{pbg}
 technique, is very costly in terms of compilation times.
 
 Section \ref{lbl:compile-time-eval} covers that scaling issue in more detail.
@@ -647,7 +646,7 @@ function results with dynamic memory is still not accessible to all \cpp
 programmers.
 
 An effort on the language itself would be needed to allow easier data passing
-from \gls{constexpr} allocated memory to non-type template parameters.
+from \gls{constexpr} allocated memory to \gls{nttp}.
 
 Alternatively, the language could allow code generation
 

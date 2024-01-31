@@ -17,7 +17,7 @@ it. \gls{dsel}\acrpluralsuffix{} then reuse the host language syntax and tool ec
 or interpreted.
 
 In \cpp, the compile time process of generating new code is
-\textbf{Template Metaprogramming} to ensure performance and correctness.
+\gls{tmp} to ensure performance and correctness.
 
 % TODO: dig this for references https://youtu.be/q6X9bKpAmnI
 
@@ -30,7 +30,7 @@ Expressions that generate results for use at compile time are called
 constant expressions. In \cpp11, the \gls{constexpr} keyword was introduced
 to qualify functions or variables that may be used in constant expressions.
 Consequently, regular functions and variables became usable for the evaluation
-of non-type template parameters.
+of \glspl{nttp}.
 
 However not all functions and variables can be qualified as \gls{constexpr},
 and not all constant expression results can be used as \gls{nttp}\acrpluralsuffix{}.
@@ -69,8 +69,8 @@ are \gls{constexpr} functions, allowing memory allocations to happen in
 constant evaluations.
 
 However \gls{constexpr} allocated memory is not transient, \ie memory allocated in
-constant expressions cannot be stored in \gls{constexpr} variables, and non-type
-template parameters cannot hold pointers to \gls{constexpr} allocated memory either.
+constant expressions cannot be stored in \gls{constexpr} variables, and \glspl{nttp}
+cannot hold pointers to \gls{constexpr} allocated memory either.
 
 Note that this restriction does not mean that data stored in \gls{constexpr} memory
 cannot be passed through. There are techniques to use data in \gls{constexpr}
@@ -183,7 +183,7 @@ its use cases for \gls{constexpr} programming research.
 % \section{C++23 experiments for implementing EDSLs of arbitrary syntaxes}
 
 % We explore two cases of \gls{constexpr} parser implementations for small languages
-% that return abstract syntax trees using \gls{constexpr} allocated memory through
+% that return \gls{ast}\acrpluralsuffix{} using \gls{constexpr} allocated memory through
 % standard containers, and backends that transform the \gls{constexpr} function results
 % into programs through templates using different techniques. The use cases we
 % consider are:
@@ -209,27 +209,27 @@ its use cases for \gls{constexpr} programming research.
   \cpp Domain Specific Embedded Languages
 }
 
-\gls{dsel}\acrpluralsuffix{} in \cpp use template metaprogramming via the \textit{Expression
+\gls{dsel}\acrpluralsuffix{} in \cpp use \gls{tmp} via the \textit{Expression
 Template} idiom.
 \textbf{Expression Templates} \cite{veldhuizen:1995,vandevoorde:2002} is a
 technique implementing a form of \textbf{delayed evaluation} in
 \cpp \cite{spinellis:2001}. Expression Templates are built around the
 \textit{recursive type composition} idiom \cite{jarvi:1998} that allows the
-construction, at compile time, of a type representing the abstract syntax tree
+construction, at compile time, of a type representing the \gls{ast}
 of an arbitrary statement. This is done by overloading functions and operators
 on those types so they return a lightweight object.
-The object encodes the current operation in the Abstract Syntax Tree
-(AST) being built in its type instead of performing any kind of computation.
-Once reconstructed, this AST can be transformed into arbitrary code fragments
+The object encodes the current operation in the \gls{ast}
+being built in its type instead of performing any kind of computation.
+Once reconstructed, this \gls{ast} can be transformed into arbitrary code fragments
 using Template Metaprograms.
 
 As of today, most \cpp EDSLs rely on \textit{Expression Templates} and therefore
 are limited to the \cpp syntax. New techniques are becoming more popular through
-the use of \gls{constexpr} strings to embed arbitray \gls{dsel}\acrpluralsuffix{}. One major example is
-the Compile-Time Regular Expressions library (CTRE) \cite{ctre} that implements
-most of the Perl Compatible Regular Expression (PCRE) syntax. However, CTRE
-still relies on type-based template metaprogramming to parse regular expressions
-and transform them into regular expression evaluators.
+the use of \gls{constexpr} strings to embed arbitray
+\gls{dsel}\acrpluralsuffix{}. One major example is the \gls{ctre} \cite{ctre}
+that implements most of the \gls{pcre} syntax.
+However, \gls{ctre} still relies on type-based \gls{tmp} to parse
+regular expressions and transform them into regular expression evaluators.
 
 % TODO: Expose the issue clearly!!
 
