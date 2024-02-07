@@ -67,8 +67,8 @@ constexpr auto visit(F f, ast_node_ptr_t const &p) {
 
 The \lstinline{visit} function implementation also looks like a regular \cpp
 function as shown in listing \ref{lst:bf-ast-visit-def}.
-It is a higher order function that allows recursive operations on the \gls{ast} to be
-carried in a type-safe manner.
+It is a higher order function that allows recursive operations on the \gls{ast}
+to be carried in a type-safe manner.
 
 \subsubsection{
   Parser
@@ -201,12 +201,13 @@ Note that the serialized \gls{ast} can be stored either as a
 which can then be transformed into a \lstinline{fixed_flat_ast_t<N>}
 to be passed as a \gls{nttp}.
 
-In order
+To serialize the AST, we will rely on a function called \lstinline{block_gen}
+which visits the AST recursively and generates serializes the AST progressively.
 
 \begin{lstlisting}[
   language=c++,
-  caption={\lstinline{block_gen} implementation},
-  label=lst:flat-block_gen-impl
+  caption=\lstinline{block_gen_state_t} definition,
+  label={lst:flat-block_gen_state_t}
 ]{}
 /// Support structure for generate_blocks function
 struct block_gen_state_t {
@@ -219,12 +220,42 @@ struct block_gen_state_t {
   /// Keeping track of the size of the AST
   size_t total_size = 0;
 };
+\end{lstlisting}
 
+In listing \ref{lst:flat-block_gen_state_t} we begin by defining a structure
+called \lstinline{block_gen_state_t} that contains the intermediate result.
+
+\begin{lstlisting}[
+  language=c++,
+  caption=Generic \lstinline{block_gen} implementation,
+  label=lst:flat-block_gen-generic
+]{}
 /// Extracts an AST into a vector of blocks of
 /// contiguous operations
 constexpr void block_gen(ast_node_ptr_t const &,
                          block_gen_state_t &);
 
+// Node-specific overloads...
+
+constexpr void block_gen(ast_node_ptr_t const &p,
+                         block_gen_state_t &s) {
+  visit([&s](auto const &v) { block_gen(v, s); }, p);
+}
+\end{lstlisting}
+
+Listing \ref{lst:flat-block_gen-generic} shows the implementation of the generic
+version of \lstinline{block_gen}. It consists in a forward declaration
+followed by node-specific implementations which call the generic version
+recursively. The generic version relies on the \lstinline{visit} function,
+and for that reason overloads for derivatives of \lstinline{node_interface_t}
+must be declared first. To make it simpler, I chose to define them as well
+to avoid unnecessary forward declarations.
+
+\begin{lstlisting}[
+  language=c++,
+  caption=\lstinline{block_gen} implementation,
+  label={lst:flat-block_gen-impl}
+]{}
 /// block_gen for a single AST token. Basically just a
 /// push_back.
 constexpr void block_gen(ast_token_t const &tok,
@@ -269,85 +300,93 @@ constexpr void block_gen(ast_while_t const &whi,
       flat_while_t{s.blocks.size()});
   block_gen(whi.block, s);
 }
-
-constexpr void block_gen(ast_node_ptr_t const &p,
-                         block_gen_state_t &s) {
-  visit([&s](auto const &v) { block_gen(v, s); }, p);
-}
 \end{lstlisting}
 
-Listing \ref{lst:flat-block_gen-impl} shows the implementation of the
-\lstinline{block_gen} function. It is the first step of the overall
-serialization process which transforms \lstinline{ast_block_t} values into
-blocks of type \lstinline{flat_ast_t}.
+Listing \ref{lst:flat-block_gen-impl} shows the implementation of
+\lstinline{block_gen} overloads for all types derived from
+\lstinline{node_interface_t}.
+
+The most important one is the implementation for \lstinline{ast_block_t}.
+This is the overload that generates new blocks in the \lstinline{blocks} vector
+of the \lstinline{block_gen_state_t} structure.
+
+It works by simply allocating a new block in the \lstinline{block_gen_state_t}
+structure, and traverse each node by calling \lstinline{block_gen} recursively.
+This ensures the elements contained in AST block nodes remain contiguous
+which is instrumental to make code generation easier later on.
 
 The elements contained in these blocks have their indexes pointing to
-the block indexes inside the \lstinline{blocks} member of the
-\lstinline{block_gen_state_t} structure.
+the elements of the \lstinline{blocks} vector
+of the \lstinline{block_gen_state_t} structure, but the expected result is a
+single \lstinline{std::vector} containing all AST nodes.
+
+The \lstinline{flatten} function is responsible for transforming the
+contents of \lstinline{block_gen_state_t} into such a representation.
 
 \begin{lstlisting}[
   language=c++,
-  caption={\lstinline{flatten} function implementation},
-  label=lst:flat-flatten-impl
+  caption=\lstinline{flatten} implementation,
+  label={lst:flat-flatten-impl}
 ]{}
 constexpr flat_ast_t
-flatten(ast_node_ptr_t const &p) {
-  flat_ast_t result;
+flatten(ast_node_ptr_t const &parser_input) {
+  flat_ast_t serialized_ast;
 
   // Extracting as vector of blocks
-  block_gen_state_t block_gen_result;
-  block_gen(p, block_gen_result);
+  block_gen_state_t bg_result;
+  block_gen(parser_input, bg_result);
 
-  std::vector<flat_ast_t> const &semi_res =
-      block_gen_result.blocks;
-  result.reserve(block_gen_result.total_size);
+  // Small optimization to avoid reallcations
+  serialized_ast.reserve(bg_result.total_size);
 
+  // block_map[i] gives the index of
+  // bg_result.blocks[i] in the serialized
+  // representation
   std::vector<size_t> block_map;
-  block_map.reserve(semi_res.size());
+  block_map.reserve(bg_result.blocks.size());
 
   // Step 1: flattening
-
-  for (flat_ast_t const &block : semi_res) {
+  for (flat_ast_t const &block : bg_result.blocks) {
     // Updating block_map
-    block_map.push_back(result.size());
+    block_map.push_back(serialized_ast.size());
 
-    // Flattening instructions
-    std::copy(block.begin(), block.end(),
-              std::back_inserter(result));
+    // Appending instructions
+    std::ranges::copy(
+        block, std::back_inserter(serialized_ast));
   }
 
   // Step 2: linking
-
-  for (flat_node_t &current_node : result) {
-    if (std::holds_alternative<flat_while_t>(
-            current_node)) {
+  for (flat_node_t &node : serialized_ast) {
+    if (std::holds_alternative<flat_while_t>(node)) {
       flat_while_t &w_ref =
-          std::get<flat_while_t>(current_node);
+          std::get<flat_while_t>(node);
       w_ref.block_begin =
           block_map[w_ref.block_begin];
     }
   }
 
-  return result;
+  return serialized_ast;
 }
 \end{lstlisting}
 
-The rest of the work consists in concatenate those blocks and replacing the
-indexes to the blocks from the previous structure with indexes to the block
-beginnings in its concatenated form. This work is carried out by the
-function called \lstinline{flatten}, which is shown in listing
-\ref{lst:flat-flatten-impl}.
+Listing \ref{lst:flat-flatten-impl} shows the implementation of
+\lstinline{flatten}, which simply calls \lstinline{block_gen},
+chains the blocks together, and translates block indexes to account for
+the new layout.
 
-Note that using \gls{constexpr} metaprogramming enables the use
-of imperative programming, which is not possible using pure \gls{tmp} which
-does not have mutable values.
-Once we have parsing and serialization figured out, we only need to transform
-the end result into a static array.
+The postfix serialization layout (ie. the fact that blocks are laid out
+one after the other, and not one inside the other) ensures that
+traversing the \gls{ast} remains trivial. Note that derializing the blocks
+into an infix representation would essentially get us back to the
+unparsed representation of Brainfuck programs.
+
+From there, the only thing that needs to be done is to evaluate this
+dynamic array into a static one to make it usable as an \gls{nttp}.
 
 \begin{lstlisting}[
   language=c++,
-  caption={\lstinline{parse_to_fixed_flat_ast} implementation},
-  label=flat-parse_to_fixed_flat_ast-implementation
+  caption=\lstinline{parse_to_fixed_flat_ast} implementation,
+  label={lst:flat-parse-to-fixed-flat-ast-implementation}
 ]{}
 /// Parses a BF program into a fixed_flat_ast_t value.
 template <auto const &ProgramString>
@@ -367,14 +406,15 @@ constexpr auto parse_to_fixed_flat_ast() {
 }
 \end{lstlisting}
 
-Listing \ref{flat-parse_to_fixed_flat_ast-implementation} shows the
+Listing \ref{lst:flat-parse-to-fixed-flat-ast-implementation} shows the
 implementation of the final function that takes a string as a program
-and transforms it into a \lstinline{fixed_flat_ast_t}, which can be used
-directly as a \gls{nttp} and traversed trivially for code generation.
+and transforms it into a \lstinline{fixed_flat_ast_t}.
 
 So far, this is the only function that takes a template parameter as an input,
 and thus where the distinction between \gls{constexpr} programming and \gls{tmp}
 begins.
+
+
 
 \subsubsection{
   Difficulties
