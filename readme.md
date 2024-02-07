@@ -21,7 +21,7 @@ and compiler execution time analysis.
 
 My PhD advisor, C++ nerds, or anyone else interested in metaprogramming or HPC.
 
-## A few thesis pro-tips for myself and others)
+## A few thesis pro-tips for myself and others
 
 - Set up you environment right. If you're familiar with LSP,
   use [TexLab](https://github.com/latex-lsp/texlab/).
