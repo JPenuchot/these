@@ -51,3 +51,64 @@ My PhD advisor, C++ nerds, or anyone else interested in metaprogramming or HPC.
 
   The trainling `{}` after the parameter block helps
   syntax highlighting with code editors such as Kate.
+
+- Kate TexLab LSP config for Zathura forwarding:
+
+  ```json
+  {
+      "servers": {
+          "latex": {
+              "command": [
+                  "texlab",
+                  "--log-file",
+                  "/tmp/texlog.txt"
+              ],
+              "settings": {
+                  "diagnostics": {
+                      "ignoredPatterns": [
+                          ".*hbox.*"
+                      ]
+                  },
+                  "build": {
+                      "executable": "latexmk",
+                      "args": [
+                          "-pdf",
+                          "-interaction=nonstopmode",
+                          "-synctex=1",
+                          "--shell-escape",
+                          "%f"
+                      ],
+                      "onSave": true,
+                      "forwardSearchAfter": true
+                  },
+                  "forwardSearch": {
+                      "executable": "zathura",
+                      "args": [
+                          "%p",
+                          "--synctex-forward=%l:1:%f"
+                      ]
+                  },
+                  "chktex": {
+                      "onOpenAndSave": false,
+                      "onEdit": false
+                  },
+                  "diagnosticsDelay": 300,
+                  "formatterLineLength": 80,
+                  "bibtexFormatter": "texlab",
+                  "latexFormatter": "texlab",
+                  "latexindent": {
+                      "local": null,
+                      "modifyLineBreaks": true
+                  }
+              }
+          }
+      }
+  }
+  ```
+
+  `.config/zathura/zathurarc` file for reverse search:
+
+  ```
+  set synctex true
+  set synctex-editor-command "kate %{input}:%{line}"
+  ```
