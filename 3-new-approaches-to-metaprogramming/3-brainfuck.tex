@@ -656,7 +656,7 @@ constexpr auto codegen() {
 Listing \ref{lst:icx-codegen} shows the \lstinline{if constexpr} based
 code generation implementation. Note that bits of code were cut to make
 the listing shorter, but they are the same as the overloaded \lstinline{codegen}
-overload function bodies. This \lstlinline{codegen} implementation remains
+overload function bodies. This \lstinline{codegen} implementation remains
 functionally identical to the previous one.
 
 \end{itemize}
@@ -738,7 +738,7 @@ verifying their output.
 \hline
 Backend             & Hello World & Hello World x2  & Mandelbrot \\
 \hline
-Flat (Overloadde)   & ???         & ???             & ??? \\
+Flat (Overloaded)   & ???         & ???             & ??? \\
 Flat (Monolithic)   & ???         & ???             & ??? \\
 Pass-by-generator   & ???         & ???             & Failure (timeout) \\
 Expression template & ???         & ???             & Failure (timeout) \\
@@ -749,7 +749,42 @@ Expression template & ???         & ???             & Failure (timeout) \\
 \end{figure}
 
 The measurements in figure \ref{fig:BF-compile-times} help us better understand
-how various metacompiling techniques behave at scale. The "Flat" backend shows
+how various metacompiling techniques behave at scale.
+
+\begin{itemize}
+\item
+\textbf{Flat backends}:
+they are not the easiest to implement due to the additional intermediate
+representation and serialization step that need to be implemented.
+
+However, they present clear benefits when it comes to compilation times.
+So far they are the only ones that can be used at scale.
+The Mandelbrot example is supposed to illustrate an extreme case where
+\glsplural{dsel} are used to integrate large programs (approximately 11'000
+\gls{ast} nodes), and yet both "flat" implementations manage to keep compilation
+times well under a minute.
+
+\item
+\textbf{PBG}:
+The pass-by-generator backend has the shortest implementation.
+However, it might not be the least difficult to implement.
+
+The code examples do not reflect the time spent debugging \gls{constexpr}
+allocated memory errors. While the pass-by-generator may be a decent route for
+rapid prototyping to compile simple embedded expressions or programs,
+it is not fast enough for
+
+\item
+\textbf{ET}:
+This backend was originally meant to be a demonstrator for the interoperability
+of \gls{constexpr} memory and \glsplural{et}. It shows no particular advantage
+compared to the two other backends: it is slower than the PBG backend while
+requiring additional effort to implement the \gls{et}
+intermediate representation.
+
+\end{itemize}
+
+The "Flat" backend shows
 very good performance on all examples, including the Mandelbrot example that is
 about 100 times larger than the Hello World example. However the other cases
 highlight severe scaling issues and tend to confirm our previous hypothesis
