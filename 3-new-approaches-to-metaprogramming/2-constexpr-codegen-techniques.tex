@@ -431,6 +431,7 @@ depending on the complexity of the original tree structure.
 \subsection{
   Using algorithms with serialized outputs
 }
+\label{lbl:codegen-from-rpn}
 
 Parsing algorithms may output serialized data. In this case, the serialization
 step described in \ref{lbl:flat-technique} is not needed, and the result
@@ -440,7 +441,6 @@ transformation is needed, while still scaling decently as we will see in
 \ref{lbl:compile-time-eval} where we will be using a
 Shunting Yard parser \cite{shunting-yard} to parse math formulae to a
 \gls{rpn}, which is its postfix notation.
-\\
 
 Once converted into its postfix notation,
 a formula can be read using the following method:
