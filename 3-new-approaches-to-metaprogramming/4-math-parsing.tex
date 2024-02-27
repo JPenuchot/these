@@ -1,6 +1,8 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
+% NOTE: The RPN notation was already introduced
+
 \section{
   Math parsing and high performance code generation
 }
@@ -11,36 +13,7 @@ Now that we have a good overview of what to
   The Shunting-Yard algorithm
 }
 
-The Shunting Yard algorithm \cite{shunting-yard} is a simple slgorithm
-that transforms mathematical formulas from common notation (\ie infix notation)
-to a postfix notation, also known as the \gls{rpn}. It is a representation where
-operators are put not between but after operands, for example the following
-formula \lstinline{1 + (2 * 3)} becomes \lstinline{1 2 3 * +}.
-
-Postfix notation is known for being trivially parsable.
-The parsing algorithm consists in reading a formula symbol by symbol.
-If the symbol is a constant, it is pushed on the top of a stack.
-If the symbol is an operator, the constants on top of the stack are consumed
-by the operation and replaced by the result.
-
-\begin{figure}
-\centering
-\begin{tabular}{| c | l | l |}
-\hline
-Token & Operation         & Stack \\
-\hline
-1     & Stack 1           & 1 \\
-2     & Stack 2           & 1, 2 \\
-3     & Stack 3           & 1, 2, 3 \\
-*     & Multiply 2 and 3  & 1, 6 \\
-+     & Add 1 and 6       & 7 \\
-\hline
-\end{tabular}
-\caption{\gls{rpn} parsing sequence example}
-\label{fig:rpn-parsing-example}
-\end{figure}
-
-Figure \ref{fig:rpn-reading-example}
+As seen in \gls{rpn}
 
 \subsection{
   Code generation from a postfix math notation
