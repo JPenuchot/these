@@ -15,20 +15,221 @@ Now that we have a good overview of what to
 
 As seen in \ref{lbl:codegen-from-rpn}, generating code from \gls{rpn} formulas
 is a rather easy task, and converting formulas from an infix notation to a
-postfix notation can be done using the Shunting Yard algorithm \cite{shunting-yard}.
+postfix notation can be done using the Shunting Yard
+algorithm \cite{shunting-yard}.
 
-\subsection{
-  Code generation from a postfix math notation
-}
+As parsing algorithms and \gls{constexpr} dynamic data representations were
+already covered in \ref{lbl:bf-parsing-and-codegen}, the implementation of
+the Shunting Yard algorithm will not be covered in detail here.
+A thoroughly commented \gls{constexpr} implementation is available in appendix
+\ref{app:shunting-yard-impl}. It features the algorithm itself, as well as
+data structures it relies on, and higher order helper functions
+for code generation.
+
+The working principle of the algorithm is rather simple:
+an operator and an operand stack are read in order and moved
+from the input list to the output queue and the operator stack.
+
+% TODO: High level description of the algorithm
+
+Once again, code generation from postfix notation formulas was already covered
+in \ref{lbl:codegen-from-rpn}, so we will skip straight to the use of Blaze
+to generate high performance code from \gls{constexpr} formulas.
 
 \subsection{
   Using Blaze for high performance code generation
 }
 
-% NOTE: refer to previous chapters for Blaze introduction and examples
+All the technical aspects of high performance code generation from
+\gls{constexpr} \glsplural{dsel} in \cpp23 have been covered and implemented
+individually so far:
+
+\begin{itemize}
+\item a \gls{constexpr} Shunting Yard parser for math formulas,
+\item a code generator for \gls{rpn} formulas,
+\item and an optimizing library for math computation (the Blaze library).
+\end{itemize}
+
+I will now demonstrate that all these layers can work together
+as a complete high performance compilation chain for a math \glsplural{dsel}.
+
+I will start by introducing a simple demonstrator language: \gls{tml}.
+It is a very basic language for simple math that can read math formulas
+containing integers, \lstinline{x} and \lstinline{y} variables,
+\lstinline{sin} and \lstinline{max} functions, a small set of infix operators
+(\lstinline{+}, \lstinline{-}, \lstinline{*}, \lstinline{/}, and\lstinline{^}),
+as well as \lstinline|{}| and \lstinline{()} as parenthesis pairs.
+
+\begin{lstlisting}[
+  language=c++,
+  caption=\gls{tml} parser implementation,
+  label=lst:tml-parser
+]{}
+/// Parses a TML formula to RPN.
+constexpr shunting_yard::parse_result_t
+parse(std::string_view const &formula) {
+  namespace sy = shunting_yard;
+
+  // Defining various tokens
+  sy::token_specification_t tiny_math_language_spec{
+      .variables =
+          {
+              sy::variable_t("x"),
+              sy::variable_t("y"),
+          },
+      .functions =
+          {
+              sy::function_t("sin"),
+              sy::function_t("max"),
+          },
+      .operators =
+          {
+              sy::operator_t("+", sy::left_v, 10),
+              sy::operator_t("-", sy::left_v, 10),
+              sy::operator_t("*", sy::left_v, 20),
+              sy::operator_t("/", sy::left_v, 20),
+              sy::operator_t("^", sy::right_v, 30),
+          },
+      .lparens = {sy::lparen_t("("),
+                  sy::lparen_t("{")},
+      .rparens = {sy::rparen_t(")"),
+                  sy::rparen_t("}")}};
+
+  // Running the Shunting yard algorithm
+  // with the TML language specification
+  return parse_to_rpn(formula,
+                      tiny_math_language_spec);
+}
+\end{lstlisting}
+
+Using the Sunting Yard implementation from
+appendix \ref{app:shunting-yard-impl}, we can specify variable identifiers,
+function identifiers, infix operators (with precendence), and parenthesis
+as shown in listing \ref{lst:tml-parser} to define a simple math language
+that can be parsed by a \gls{constexpr} function.
+
+We will now oversee the code generation implementation.
+As a quick reminder, generating code from a \gls{rpn} formula
+consists in reading tokens one by one, stacking operands, and consuming
+them as needed. The stack is implemented with a \lstinline{kumi::tuple} object,
+which is an enhanced version of \lstinline{std::tuple}.
+
+\begin{lstlisting}[
+  language=c++,
+  caption=\gls{tml} operand examples,
+  label=lst:tml-operands
+]{}
+/// Operand representing the 42 constant
+auto forty_two = [](auto const &, auto const &) {
+  return 42;
+};
+
+/// Operand representing the x variable
+auto x = [](auto const &input_x,
+            auto const &) -> auto const & {
+  return input_x;
+};
+
+// Note: We assume operand_a and operand_b
+// are operands we consumed from the stack.
+
+/// Operand representing the plus operator
+auto plus = [operand_a,
+             operand_b](auto const &input_x,
+                        auto const &input_y) {
+  return operand_a(input_x, input_y) +
+         operand_b(input_x, input_y);
+};
+\end{lstlisting}
+
+Each operand in the tuple is a function that takes \lstinline{x} and
+\lstinline{y} parameters and returns an arbitrary value.
+As such, operands have a form similar to the function
+objects shown in listing \ref{lst:tml-operands}.
+The parameters are not used by the \lstinline{forty_two} operand,
+the \lstinline{x} operand simply forwards the first parameter,
+and the \lstinline{plus} operand forwards the parameters to its sub-operands.
+
+The result of the code generation is a function that takes two elements of
+arbitrary type as an input, and performs the operations on them.
+
+\begin{lstlisting}[
+  language=c++,
+  caption=\gls{tml} usage example,
+  label=lst:tml-usage
+]{}
+int main() {
+  namespace tml = tiny_math_language;
+
+  static constexpr auto formula =
+      "sin((x + 3) / 3 * y ^ 2)";
+
+  // Input vectors
+  constexpr std::size_t vec_size = 16;
+  blaze::DynamicVector<float> vector_x(vec_size, 1.);
+  blaze::DynamicVector<float> vector_y(vec_size, 12.);
+
+  // Generating code from the formula
+  auto function = tml::codegen<formula>();
+
+  // Running the generated code
+  blaze::DynamicVector<float> result =
+      function(vector_x, vector_y);
+
+  // Printing the result
+  for (float const &element : result) {
+    fmt::println("{}", element);
+  }
+}
+\end{lstlisting}
+
+Listing \ref{lst:tml-usage} shows how to generate code from a formula
+and use the generated function to perform operations on Blaze vectors.
+
+\begin{lstlisting}[
+  language=c++,
+  caption=Result type checking for generated function output
+]{}
+using namespace blaze;
+
+using expected_type = DVecMapExpr<
+    DVecScalarMultExpr<
+        DVecDVecMultExpr<
+            DVecMapExpr<
+                DynamicVector<
+                    float, false,
+                    AlignedAllocator<float>,
+                    GroupTag<0>>,
+                Bind2nd<Add, float>, false>,
+            DVecMapExpr<
+                DynamicVector<
+                    float, false,
+                    AlignedAllocator<float>,
+                    GroupTag<0>>,
+                Bind2nd<Pow, float>, false>,
+            false>,
+        float, false>,
+    Sin, false>;
+
+static_assert(std::is_same<
+              expected_type,
+              decltype(function(
+                  vector_x, vector_y))>::value);
+\end{lstlisting}
+
+We can verify that the output of \lstinline{function(vector_x, vector_y)}
+is a Blaze expression template by compiling the code:
 
 \subsection{
-  Conclusion: a complete toolchain for \acrlong{hpc} code generation from math formulas
+  Studying the compilation time overhead of parsing
+  for high performance code generation
 }
+
+\subsection{
+  Conclusion: a complete toolchain for high performance code generation
+  from math formulas
+}
+
+
 
 \end{document}
