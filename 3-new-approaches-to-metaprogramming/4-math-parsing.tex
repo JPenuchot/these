@@ -164,31 +164,42 @@ int main() {
   static constexpr auto formula =
       "sin((x + 3) / 3 * y ^ 2)";
 
+  // Runtime parsing prints parsing steps
+  // for debugging
+  tml::parse(formula);
+
   // Input vectors
   constexpr std::size_t vec_size = 16;
-  blaze::DynamicVector<float> vector_x(vec_size, 1.);
-  blaze::DynamicVector<float> vector_y(vec_size, 12.);
+  blaze::DynamicVector<double> vector_x(vec_size, 1.),
+      vector_y(vec_size, 12.);
 
   // Generating code from the formula
   auto function = tml::codegen<formula>();
 
   // Running the generated code
-  blaze::DynamicVector<float> result =
+  blaze::DynamicVector<double> result =
       function(vector_x, vector_y);
 
-  // Printing the result
-  for (float const &element : result) {
+  // Printing and verifying the result
+  double const expected_value =
+      std::sin((1. + 3.) / 3. * std::pow(12., 2.));
+  for (double const &element : result) {
     fmt::println("{}", element);
+    if (std::abs(element - expected_value) > 0.01) {
+      throw;
+    }
   }
 }
 \end{lstlisting}
 
 Listing \ref{lst:tml-usage} shows how to generate code from a formula
 and use the generated function to perform operations on Blaze vectors.
+We use this code to verify the validity of the result.
 
 \begin{lstlisting}[
   language=c++,
-  caption=Result type checking for generated function output
+  caption=Result type checking for generated function output,
+  label=lst:tml-blaze-typecheck
 ]{}
 using namespace blaze;
 
@@ -217,13 +228,35 @@ static_assert(std::is_same<
                   vector_x, vector_y))>::value);
 \end{lstlisting}
 
-We can verify that the output of \lstinline{function(vector_x, vector_y)}
-is a Blaze expression template by compiling the code:
+We also verify that the expression \lstinline{function(vector_x, vector_y)}
+generates the right Blaze expression template by compiling the code in
+listing \ref{lst:tml-blaze-typecheck}. The \lstinline{static_assert}
+expression will not compile if the generated type is not the same as
+\lstinline{expected_type}.
 
 \subsection{
   Studying the compilation time overhead of parsing
   for high performance code generation
 }
+
+A question remains about the use of compile time math parsing
+for high performance code generation: what is the compilation time impact?
+To answer that question, I will again measure compilation times for benchmarks
+representing what would be a "realistic" use case, and simpler synthetic
+benchmarks to study the scaling of the performance overhead as math formula
+sizes increase.
+
+\subsubsection{
+  A "realistic" use case
+}
+
+...
+
+\subsubsection{
+  Synthetic benchmarks
+}
+
+....
 
 \subsection{
   Conclusion: a complete toolchain for high performance code generation
