@@ -2,59 +2,36 @@
 \begin{document}
 
 \section{
-  Language constructs of \cpp metaprogramming
+  \cpp language constructs for metaprogramming
 }
-
-In this section I will cover the constructs of \cpp metaprogramming.
-Metaprograms are defined as programs that take code as input and/or output,
-therefore I will categorize metaprogramming constructs as:
-those used for input and output,
-and those that enable compile time computing.
-
-This distinction will be important to explain the work presented in
-this thesis, as it focuses a lot on methods to translate
-compile time compute results into \cpp programs.
-
-\subsection{
-  Input and output of metaprograms
-}
-
-\subsubsection{
-  Template metaprogramming
-}
-
-\cpp template metaprogramming \cite{abrahams:2004} is a technique based on the
-use of the template type system of \cpp to perform arbitrary computation at
-compile time. This property of \cpp templates is due to the fact they
-define a Turing-complete sub-language manipulating types and integral constants
-at compile time \cite{unruh:1994}. Due to the fact that template code generation
-is performed at compile time, uses constants and supports pattern-matching and
-recursion thanks to template partial specialization, it can also be looked
-at as a pure functional language \cite{haeri:2012}.
 
 Templates are an interesting technique for generative programming. As they
-are Turing-complete, one can design a set of template metaprograms acting as a
-\gls{dsl} compiler run at compile time and generating temporary \cpp code
-fragment as an output. The resulting temporary source code is then merged with
-the rest of the source code and finally processed by the classic
-compilation process. Through this technique, compile time constants,
-data structures and complete functions can be manipulated.
-The execution of metaprograms by the compiler enables the library to implement
-domain-specific optimizations that lead to a complete domain oriented
-code generation. Such a technique can be hosted by several languages featuring
-metaprogramming features (incidental or by design) like D \cite{template:dlang},
-Haskell \cite{sheard:2002} and OCaml \cite{serot:2008}.
+are Turing-complete \cite{unruh:1994}, one can design a set of
+\textbf{template metaprograms} \cite{abrahams:2004} allowing the compiler
+to perform arbitrary computation at compile time and generating temporary
+\cpp code fragment as an output.
+The resulting temporary source code is then
+merged with the rest of the source code and finally processed by the classic
+compilation process.
+\\
+
+Listing \ref{lst:basic-tmp} shows basic principles of \cpp template
+metaprogramming. The \lstinline{fibonacci_t} type template accepts an
+integer called $N$, and exposes the $N\textsuperscript{th}$ element
+of the Fibonacci series as its \lstinline{value} static member.
+The template has 3 definitions:
+a generic one to calculate elements for $N > 1$,
+and two specializations for elements of ranks $0$ and $1$.
+
+\clearpage
 
 \begin{lstlisting}[
   language=C++,
   caption=Example of compile time computation using C++ templates,
   label=lst:basic-tmp
 ]{}
-// Template type accepting an integer
-// as a non-type template parameter
 template <unsigned N> struct fibonacci_t;
 
-// General definition
 template <unsigned N> struct fibonacci_t {
   static constexpr unsigned value =
       fibonacci_t<N - 2>::value + fibonacci_t<N - 1>::value;
@@ -72,55 +49,47 @@ template <> struct fibonacci_t<1> {
 std::array<int, fibonacci_t<5>::value> some_array;
 \end{lstlisting}
 
-Listing \ref{lst:basic-tmp} shows basic principles of \cpp template
-metaprogramming. The \lstinline{fibonacci_t} type template accepts a
-\gls{nttp} called $N$, and exposes the
-$N\textsuperscript{th}$ element of the Fibonacci series as its
-\lstinline{value} static member. The template has 3 definitions:
-a generic one to calculate elements for $N > 1$,
-and two specializations for elements of ranks $0$ and $1$.
+Due to the fact that template code generation is performed at compile time,
+it is limited to the use of constants and supports pattern-matching and
+recursion thanks to template partial specialization. It can then be looked
+at as a pure functional language \cite{haeri:2012}.
+The execution of metaprograms by the compiler enables libraries to implement
+domain-specific optimizations.
+\\
 
-\paragraph{Different kinds of templates}
+Metaprograms can be seen as programs that take code as input and/or output.
+This distinction will be important to explain the work presented in
+this thesis, as it focuses a lot on methods to translate
+compile time compute results into \cpp programs.
+
+\subsection{
+  Different kinds of templates
+}
 
 \cpp templates offer ways to output code for both data structures
 and functions.
 
 \begin{itemize}
-\item Type templates
+\item \textbf{Type templates}, ... % TODO: petite description...
 
-\begin{lstlisting}[
-  language=c++,
-  caption=Type template example,
-  label=lst:type-template-example
-]{}
-/// Generic anotated type
+\begin{lstlisting}[language=c++]{}
 template <typename T> struct named_value_t {
   std::string name;
   T value;
 };
 \end{lstlisting}
 
-\begin{lstlisting}[
-  language=c++,
-  caption=Type alias template example,
-  label=lst:type-alias-template-example
-]{}
-/// Alias template for nested named value
+\item \textbf{Type aliases}, ... % TODO: petite description...
+
+\begin{lstlisting}[language=c++]{}
 template <typename T>
 using nested_named_value_t =
     named_value_t<named_value_t<T>>;
 \end{lstlisting}
 
-Templates can be used with type aliases too, as shown in
-listing \ref{lst:type-alias-template-example}.
+\item \textbf{Function templates}, ... % TODO: petite description...
 
-\item Function templates
-
-\begin{lstlisting}[
-  language=c++,
-  caption=Function template example,
-  label=lst:function-template-example
-]{}
+\begin{lstlisting}[language=c++]{}
 /// Returns a value annotated with
 /// its string representation
 template <typename T>
@@ -130,13 +99,9 @@ named_value_t<T> make_named_value(T value) {
 }
 \end{lstlisting}
 
-\item Variable templates
+\item \textbf{Variable templates}, ... % TODO: petite description...
 
-\begin{lstlisting}[
-  language=c++,
-  caption=Variable template example,
-  label=lst:variable-template-example
-]{}
+\begin{lstlisting}[language=c++]{}
 /// Returns the default value of T annotated with
 /// its string representation
 template <typename T>
@@ -148,7 +113,9 @@ named_value_t<int> val = annotated_default_v<int>;
 
 \end{itemize}
 
-\paragraph{Different kinds of parameters}
+\subsection{
+  Different kinds of parameters
+}
 
 \begin{itemize}
 \item Type parameters
@@ -156,38 +123,25 @@ named_value_t<int> val = annotated_default_v<int>;
 \item Parameter packs
 \end{itemize}
 
-\paragraph{Advanced \cpp template mechanisms}
+\subsection{
+  Advanced \cpp template mechanisms
+}
 
 \begin{itemize}
 \item \gls{sfinae}
 \item Template specialization
-\item Parameter packs
+\item Parameter pack expansion
 \end{itemize}
-
-\subsubsection{
-  Overloading
-}
 
 \subsection{
   Compile time logic
 }
 
-\subsubsection{
-  \acrlong{tmp} and constant evaluation
-}
-
 \begin{itemize}
-\item Computation using types
-\item Computation using values
-\end{itemize}
-
-\subsubsection{
-  Constexpr functions
-}
-
-\begin{itemize}
-\item \gls{constexpr} functions
-\item \gls{constexpr} memory allocation
+\item Computation using types % TODO: Remplir
+\item Computation using values % TODO: Remplir
+\item \gls{constexpr} functions % TODO: Remplir
+\item \gls{constexpr} memory allocation % TODO: Remplir
 \end{itemize}
 
 The use of \gls{constexpr} functions for compile time programming is preferable
@@ -196,92 +150,265 @@ maintainable), it allows the use of types to enforce semantics properly
 as opposed to type-based metaprogramming, and it scales much better than
 \gls{tmp}.
 
-% Templates allow types, variables, and functions to be generated from
-% compile time parameters. These parameters used to be only types,
-% but over time \cpp evolved to allow developers to use typed values
-% and parameter packs.
-%
-% Function overloading allows several functions to bear the same name
-% as long as they cannot be invoked with parameters of the same type.
-% This allows selection of code paths to happen at compile time.
-%
-% Although these two mechanisms are enough to build very capable
-%
-% \subsection{
-%   Templates
-% }
-%
-% \subsubsection{
-%   Different kinds of templates
-% }
-%
-% \paragraph{
-%   Types
-% }
-%
-% An example:
-%
-% \begin{lstlisting}[
-%   language=c++,
-%   caption=Some example
-% ]
-% template<typename T> struct toto_t {};
-% \end{lstlisting}
-%
-% \paragraph{
-%   Functions
-% }
-%
-% An example:
-%
-% \begin{lstlisting}[
-%   language=c++,
-%   caption=Some example
-% ]
-% template<typename T> struct toto_t {};
-% \end{lstlisting}
-%
-% \paragraph{
-%   Variables
-% }
-%
-% An example:
-%
-% \begin{lstlisting}[
-%   language=c++,
-%   caption=Some example
-% ]
-% template<typename T> struct toto_t {};
-% \end{lstlisting}
-%
-%
-% \subsubsection{
+\section{
+  Metaprogramming libraries
+}
+\label{lbl:meta-libraries}
 
+As previously said \cpp templates can be seen as a functional language.
+Over time a range of libraries emerged, aiming to provide functionalities
+similar to regular language such as containers and algorithms for use in
+template metaprograms. Notable examples of such libraries are MPL\cite{mpl},
+Brigand\cite{brigand}, and mp11 \cite{mp11}.
 
-%   Different kinds of parameters
-% }
-%
-% ...
-%
-% \subsection{
-%   Overloading
-% }
-%
-% \subsection{
-%   Constant evaluation
-% }
-%
-% \subsection{
-%   \lstinline{if constexpr}
-% }
-%
-% \subsection{
-%   Parameter packs
-% }
-%
-% \subsection{
-%   Constexpr functions and variables
-% }
+% TODO: Ajouter un exemple type qui se fait avec les 3 biblios
 
+Libraries for more specific uses were also implemented, such as
+Spirit\cite{spirit} for writing parsers (not for compile time parsing),
+\gls{ctre} \cite{ctre} for compiling regular expressions,
+and \gls{ctpg} \cite{ctpg} for generating LR1 parsers
+(also not for compile time parsing).
+
+% TODO: Des p'tits exemples
+
+The benefits of metaprogrammed libraries are:
+
+\begin{itemize}
+
+\item \textbf{Performance}: notably in the case of \gls{ctre}.
+Regular expressions are usually interpreted at runtime,
+which adds a measurable overhead to text processing.
+\gls{ctre} shows leading performance, on par with Rust's regex library
+which also works by compiling regular expressions.
+
+\item \textbf{Language integration}: since these are \cpp libraries,
+their APIs can take advantage of \cpp operator overloading and lambdas.
+In \gls{ctpg}, these are used to provide a domain-specific language that is close to
+what parser generators like YACC or Bison provide,
+though it is still regular \cpp code which can be put inside any function body.
+Using a \cpp API makes these libraries easier to learn
+as the syntax is already familiar to their users.
+
+\item \textbf{Streamlined toolchain}: as they only require to be included as headers.
+This avoids complicating compilation toolchains by requiring additional programs
+to be installed and integrated to the build system.
+
+\end{itemize}
+
+All these examples show that metaprogramming is not just a gimmick.
+There is enough interest in leveraging metaprogramming
+for generic programming that many frameworks, libraries, or languages
+have been developed around this paradigm and maintained sometimes
+for more than a decade. Its adoption in languages like Braid, Julia, Terra,
+Rust, or Dlang shows that it is not limited to \cpp.
+
+However, most of generic libraries and frameworks that are developed
+and maintained today are based on \cpp, and \cpp itself is likely to
+evolve to provide more ways to generate programs as shown by the recent
+standard proposal for Scalable Reflection in \cpp \cite{scalable-reflection}.
+\section{
+  Applications of metaprogramming for HPC
+}
+
+There are many \cpp \gls{hpc} libraries that use metaprogramming to achieve
+high levels of performance while being generic and proposing high level APIs.
+This subsection aims to provide an overview of notable libraries that fit this
+description as well as recent efforts that are still under development.
+
+\begin{itemize}
+
+\item
+\textbf{Eigen} \cite{eigen} is the first major \cpp library to implement
+Expression templates for the generation of high performance math computing.
+Expression templates is a \cpp design pattern that consists in representing
+math expressions with type template trees. We will discuss them later
+in \ref{lbl:expression-level-metaprogramming}.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+#include <Eigen/Dense>
+#include <iostream>
+
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+
+int main() {
+  MatrixXd m = MatrixXd::Random(3, 3);
+  m = (m + MatrixXd::Constant(3, 3, 1.2)) * 50;
+  std::cout << "m =" << std::endl << m << std::endl;
+  VectorXd v(3);
+  v << 1, 2, 3;
+  std::cout << "m * v =" << std::endl
+            << m * v << std::endl;
+}
+\end{lstlisting}
+
+\item
+\textbf{Blaze} \cite{blazelib} is a successor of Eigen that implements so-called
+"Smart Expression Templates" which extends upon the concept of
+expression templates implemented by Eigen. It aims to provide a more performant
+and extensible \gls{hpc} library. However, Eigen is not set in stone
+and its designed has since been updated.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+#include <blaze/Math.h>
+#include <iostream>
+
+using blaze::DynamicVector;
+using blaze::StaticVector;
+
+int main() {
+  StaticVector<int, 3UL> a{4, -2, 5};
+  DynamicVector<int> b(3UL);
+
+  b[0] = 2;
+  b[1] = 5;
+  b[2] = -3;
+
+  DynamicVector<int> c = a + b;
+
+  std::cout << "c =\n" << c << "\n";
+}
+\end{lstlisting}
+
+\item
+\textbf{NT2} \cite{nt2} is a research project that aims to provide a complete
+numerical toolbox that leverages metaprogramming to develop portable \gls{hpc}
+applications with a Matlab-like interface while still achieving state-of-the-art
+computing performance.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+#include <nt2/include/functions/ones.hpp>
+#include <nt2/table.hpp>
+
+using namespace nt2;
+
+int main() {
+  table<double> x;
+  table<double> y = ones(4, 4);
+
+  x = 40.0 * y + 2.0;
+
+  NT2_DISPLAY(x);
+
+  return 0;
+}
+\end{lstlisting}
+
+\item
+\textbf{EVE} \cite{eve} provides generic abstractions over SIMD instructions
+as well as SIMD-optimized generic algorithms for the development of
+high performance and portable SIMD code \cite{hpcs2018-matvec}.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+#include <eve/module/core.hpp>
+#include <eve/wide.hpp>
+#include <iostream>
+
+int main() {
+  eve::wide<float> x(
+      [](auto i, auto) { return 1.f + i; });
+  std::cout << "x     = " << x << "\n";
+  std::cout << "2*x   = " << x + x << "\n";
+  std::cout << "x^0.5 = " << eve::sqrt(x) << "\n";
+
+  return 0;
+}
+\end{lstlisting}
+
+\item
+\textbf{HPX} \cite{hpx} is a \cpp parallel and distributed runtime library.
+It can execute small parallel tasks efficiently and distribute
+larger distributed tasks with a work following data execution model.
+Its parallel and distributed APIs as well as its parallel implementation of
+the standard library (based on its own parallel runtime) use metaprogramming
+for algorithmic genericity.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+std::uint64_t fibonacci(std::uint64_t n) {
+  if (n < 2)
+    return n;
+
+  hpx::future<std::uint64_t> n1 =
+      hpx::async(fibonacci, n - 1);
+  hpx::future<std::uint64_t> n2 =
+      hpx::async(fibonacci, n - 2);
+
+  // wait for the futures to return their values
+  return n1.get() + n2.get();
+}
+\end{lstlisting}
+
+\item
+\textbf{Thrust} \cite{thrust} implements \acrshort{gpu}-accelerated equivalents
+of the Standard Library's algorithms, while CUB \cite{cub} provides
+\acrshort{gpu}-optimized algorithm skeletons for generic programming on NVIDIA \gls{gpu}\acrpluralsuffix{}.
+AMD and Intel implement their equivalents for their own platforms, respectively
+ROCm and OneAPI.
+
+\begin{lstlisting}[
+  language=c++
+]{}
+#include <algorithm>
+#include <thrust/device_vector.h>
+#include <thrust/functional.h>
+#include <thrust/generate.h>
+#include <thrust/host_vector.h>
+#include <thrust/reduce.h>
+
+int main(void) {
+  // generate random data serially
+  thrust::host_vector<int> h_vec(100);
+  std::generate(h_vec.begin(), h_vec.end(), rand);
+
+  // transfer to device and compute sum
+  thrust::device_vector<int> d_vec = h_vec;
+  int x = thrust::reduce(d_vec.begin(), d_vec.end(),
+                         0, thrust::plus<int>());
+  return 0;
+}
+\end{lstlisting}
+
+\item
+\textbf{faer} \cite{faer}
+
+\begin{lstlisting}[
+  language=c++
+]{}
+use faer::{mat, Mat, prelude::*};
+
+// empty 0x0 matrix
+let m0: Mat<f64> = Mat::new();
+
+// zeroed 4x3 matrix
+let m1: Mat<f64> = Mat::zeros(4, 3);
+
+// 3x3 identity matrix
+let m2 = Mat::from_fn(
+  3, 3,
+  |i, j| if i == j { 1.0 } else { 0.0 });
+
+// 4x2 matrix with custom data
+let m3 = mat![
+    [4.93, 2.41],
+    [5.43, 4.33],
+    [9.83, 1.59],
+    [7.13, 5.02_f64],
+];
+
+// compute the qr decomposition of a matrix
+let qr_decomposition = m3.qr();
+\end{lstlisting}
+
+\end{itemize}
 
 \end{document}
