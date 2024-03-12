@@ -123,7 +123,7 @@
 }
 
 \newglossaryentry{constexpr}{
-  name=\lstinline{constexpr},
+  name=constexpr,
   description=A value or function that can be used in a constant expression.
 }
 
@@ -251,6 +251,12 @@ Titre, Affiliation   &   \\
 
 \end{titlepage}
 
+Remerciements
+
+% TODO Merci les collegues et les parents
+% TODO Merci les rapporteureuses et aux membres du jury
+% TODO Merci les potes
+
 % page des résumés à garder en 2ème page.
 % Si les résumés sont trop longs pour tenir sur une seule et même page,
 % on peut mettre un résumé par page
@@ -331,9 +337,25 @@ tuned implementations that can be achieved by either specializing
 implementations for the target platforms, or using libraries that provide
 specialized abstractions at various levels and for various domains.
 
+% TODO:
+% - Loi de Moore etc...
+% - Qu'est-ce que le parallelisme (la fin du free lunch -> on parallelise)
+% - Qu'est-ce que la generation de code/metaprog
+% - Quels sont les grands outils (citer les rapporteureuses)?
+% - Objectifs de la these
+%   - C'est complique la programmation parallele (3 vendeurs de GPUs???)
+%     du coup on fait des outils qui generent du code parallele
+%   - Exposer la problematique des methodes de bench pour la meta + la repro
+% - Detail du plan
+
 \chapter{
-  State of the art of Metaprogramming
+  Metaprogramming
 }
+
+In this chapter, I will first give an overview of metaprogramming in
+various languages. Then I will focus on the state of the art
+of \cpp metaprogramming, and finally give examples of applications
+of such techniques being used in the context of \gls{hpc} libraries.
 
 \subfile{1-current-metaprogramming/metaprog-and-hpc-overview.tex}
 \subfile{1-current-metaprogramming/cpp-constructs.tex}
@@ -487,7 +509,6 @@ Further research has to be made to determine the impact of such generators on
 % TODO: Talk about Cest
 
 \clearpage
-
 \printglossaries
 
 \clearpage
