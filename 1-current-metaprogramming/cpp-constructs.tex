@@ -66,11 +66,15 @@ compile time compute results into \cpp programs.
   Different kinds of templates
 }
 
-\cpp templates offer ways to output code for both data structures
-and functions.
+\cpp templates offer ways to output code for data structures, values,
+and functions. Ultimately, these kinds outputs constitute what metaprograms
+can or cannot generate.
 
 \begin{itemize}
-\item \textbf{Type templates}, ... % TODO: petite description...
+
+  \item
+
+\textbf{Type templates} to generate data structures.
 
 \begin{lstlisting}[language=c++]{}
 template <typename T> struct named_value_t {
@@ -79,7 +83,10 @@ template <typename T> struct named_value_t {
 };
 \end{lstlisting}
 
-\item \textbf{Type aliases}, ... % TODO: petite description...
+  \item
+
+\textbf{Type alias templates} which can be used as abstractions on top of
+template types.
 
 \begin{lstlisting}[language=c++]{}
 template <typename T>
@@ -87,7 +94,9 @@ using nested_named_value_t =
     named_value_t<named_value_t<T>>;
 \end{lstlisting}
 
-\item \textbf{Function templates}, ... % TODO: petite description...
+  \item
+
+\textbf{Function templates} to create generic functions.
 
 \begin{lstlisting}[language=c++]{}
 /// Returns a value annotated with
@@ -99,7 +108,9 @@ named_value_t<T> make_named_value(T value) {
 }
 \end{lstlisting}
 
-\item \textbf{Variable templates}, ... % TODO: petite description...
+  \item
+
+\textbf{Variable templates} to map template parameters to values.
 
 \begin{lstlisting}[language=c++]{}
 /// Returns the default value of T annotated with
@@ -117,10 +128,39 @@ named_value_t<int> val = annotated_default_v<int>;
   Different kinds of parameters
 }
 
+Metaprograms can take many kinds of \cpp constructs as inputs.
+
 \begin{itemize}
-\item Type parameters
-\item \gls{nttp}
-\item Parameter packs
+
+  \item
+
+\textbf{Type parameters} are the primary kind of parameter used in \gls{tmp}
+in which types are used to represent everything from enumerations, arrays,
+or even functions.
+
+  \item
+
+\textbf{\glspl{nttp}} are complementary with type parameters.
+They can be used to wrap values within types, which can be particularly useful
+in the context of \gls{tmp}. For example a type template definition like
+\lstinline|template<int I> integer_t{};| allows integers to be stored as types.
+
+  \item
+
+\textbf{Parameter packs} make it possible for templates to have an
+arbitrary number of parameters, as long as types and values
+are not mixed together. Parameter packs also exist for function parameters,
+which can be useful for template parameter deduction.
+
+For example a type template definition like
+\lstinline|template<typename ... Ts> tuple_t{};| can be used to store an
+arbitrary list of types as a single type.
+
+  \item
+
+\textbf{\gls{constexpr} function parameters}, even though not all of them can be
+used as \glspl{nttp}, they can be used to produce \gls{nttp} compatible values.
+
 \end{itemize}
 
 \subsection{
@@ -128,27 +168,69 @@ named_value_t<int> val = annotated_default_v<int>;
 }
 
 \begin{itemize}
-\item \gls{sfinae}
-\item Template specialization
-\item Parameter pack expansion
+  \item
+
+\textbf{Template specialization} allows specializing a template for a given
+set of type or value parameters. A template that has a single boolean parameter
+can, for example, expose two different implementations depending on the
+parameter's value.
+
+  \item
+
+\textbf{Template parameter deduction} works as a form of pattern matching
+for function template parameters, types and values alike. It can filter
+parameter patterns, and deduce nested template parameters in those patterns.
+
+  \item
+
+\textbf{\gls{sfinae}} is a \cpp principle that consists in not triggering a
+compilation error when a type substitution cannot be done in a template
+instantiation. Instead the type, function, or variable will simply be disabled
+and the next candidate will be instantiated.
+
+  \item
+
+\textbf{Parameter pack expansion} allows mapping operations and performing
+reductions on parameter packs.
+
 \end{itemize}
 
 \subsection{
   Compile time logic
 }
 
+Compile time logic can be achieved in many \cpp constructs.
+
 \begin{itemize}
-\item Computation using types % TODO: Remplir
-\item Computation using values % TODO: Remplir
-\item \gls{constexpr} functions % TODO: Remplir
-\item \gls{constexpr} memory allocation % TODO: Remplir
+
+  \item
+
+\textbf{Computation using types}, also known as type-based metaprogramming.
+Types can be used to represent scalar values, arrays, and many more
+kinds of data structures including expression trees. They can also
+
+  \item
+
+\textbf{Computation using values} thanks to \glspl{nttp}.
+They allow a slightly more explicit way to write metaprograms,
+as values are represented by values instead of types.
+Not all values are accepted as \gls{nttp}.
+Until \cpp20, only integral values (\ie integers, booleans, etc.)
+could be used as \gls{nttp}.
+
+  \item
+
+\textbf{Computation using \gls{constexpr} functions} since \cpp11,
+although only a limited subset of \cpp can run in \glspl{consteval}.
+Memory allocations have been allowed in this context only since \cpp20.
+
 \end{itemize}
 
-The use of \gls{constexpr} functions for compile time programming is preferable
-for many reasons: familiar to most \cpp developers (and therefore more
-maintainable), it allows the use of types to enforce semantics properly
-as opposed to type-based metaprogramming, and it scales much better than
-\gls{tmp}.
+The use of \gls{constexpr} functions for compile time programming might be
+preferable for many reasons: they are familiar to all \cpp developers
+(and, as such, are more maintainable), they allow the use of types to enforce
+semantics properly as opposed to type-based metaprogramming, and they allow
+compile time programs to run much faster than pure \gls{tmp} does.
 
 \section{
   Metaprogramming libraries
@@ -175,13 +257,17 @@ The benefits of metaprogrammed libraries are:
 
 \begin{itemize}
 
-\item \textbf{Performance}: notably in the case of \gls{ctre}.
+  \item
+
+\textbf{Performance}: notably in the case of \gls{ctre}.
 Regular expressions are usually interpreted at runtime,
 which adds a measurable overhead to text processing.
 \gls{ctre} shows leading performance, on par with Rust's regex library
 which also works by compiling regular expressions.
 
-\item \textbf{Language integration}: since these are \cpp libraries,
+  \item
+
+\textbf{Language integration}: since these are \cpp libraries,
 their APIs can take advantage of \cpp operator overloading and lambdas.
 In \gls{ctpg}, these are used to provide a domain-specific language that is close to
 what parser generators like YACC or Bison provide,
@@ -189,7 +275,9 @@ though it is still regular \cpp code which can be put inside any function body.
 Using a \cpp API makes these libraries easier to learn
 as the syntax is already familiar to their users.
 
-\item \textbf{Streamlined toolchain}: as they only require to be included as headers.
+  \item
+
+\textbf{Streamlined toolchain}: as they only require to be included as headers.
 This avoids complicating compilation toolchains by requiring additional programs
 to be installed and integrated to the build system.
 
@@ -217,7 +305,8 @@ description as well as recent efforts that are still under development.
 
 \begin{itemize}
 
-\item
+  \item
+
 \textbf{Eigen} \cite{eigen} is the first major \cpp library to implement
 Expression templates for the generation of high performance math computing.
 Expression templates is a \cpp design pattern that consists in representing
@@ -244,7 +333,8 @@ int main() {
 }
 \end{lstlisting}
 
-\item
+  \item
+
 \textbf{Blaze} \cite{blazelib} is a successor of Eigen that implements so-called
 "Smart Expression Templates" which extends upon the concept of
 expression templates implemented by Eigen. It aims to provide a more performant
@@ -274,7 +364,8 @@ int main() {
 }
 \end{lstlisting}
 
-\item
+  \item
+
 \textbf{NT2} \cite{nt2} is a research project that aims to provide a complete
 numerical toolbox that leverages metaprogramming to develop portable \gls{hpc}
 applications with a Matlab-like interface while still achieving state-of-the-art
@@ -300,7 +391,8 @@ int main() {
 }
 \end{lstlisting}
 
-\item
+  \item
+
 \textbf{EVE} \cite{eve} provides generic abstractions over SIMD instructions
 as well as SIMD-optimized generic algorithms for the development of
 high performance and portable SIMD code \cite{hpcs2018-matvec}.
@@ -323,7 +415,8 @@ int main() {
 }
 \end{lstlisting}
 
-\item
+  \item
+
 \textbf{HPX} \cite{hpx} is a \cpp parallel and distributed runtime library.
 It can execute small parallel tasks efficiently and distribute
 larger distributed tasks with a work following data execution model.
@@ -348,7 +441,8 @@ std::uint64_t fibonacci(std::uint64_t n) {
 }
 \end{lstlisting}
 
-\item
+  \item
+
 \textbf{Thrust} \cite{thrust} implements \acrshort{gpu}-accelerated equivalents
 of the Standard Library's algorithms, while CUB \cite{cub} provides
 \acrshort{gpu}-optimized algorithm skeletons for generic programming on NVIDIA \gls{gpu}\acrpluralsuffix{}.
@@ -378,7 +472,8 @@ int main(void) {
 }
 \end{lstlisting}
 
-\item
+  \item
+
 \textbf{faer} \cite{faer}
 
 \begin{lstlisting}[
