@@ -11,9 +11,9 @@
 By definition, a \gls{dsl} is a computer language
 specialized to a particular application domain, contrary to a general-purpose
 language, which is broadly applicable across domains, and lacks specialized
-features for a particular domain. \gls{dsel}\acrpluralsuffix{}
+features for a particular domain. \glspl{dsel}
 are a subclass of \gls{dsl} that rely on an existing general-purpose language to host
-it. \gls{dsel}\acrpluralsuffix{} then reuse the host language syntax and tool ecosystem to be compiled
+it. \glspl{dsel} then reuse the host language syntax and tool ecosystem to be compiled
 or interpreted.
 
 In \cpp, the compile time process of generating new code is
@@ -33,7 +33,7 @@ Consequently, regular functions and variables became usable for the evaluation
 of \glspl{nttp}.
 
 However not all functions and variables can be qualified as \gls{constexpr},
-and not all constant expression results can be used as \gls{nttp}\acrpluralsuffix{}.
+and not all constant expression results can be used as \glspl{nttp}.
 
 Since the introduction of the \gls{constexpr} specifier, the requirements on
 functions for being \gls{constexpr} specifiable have constantly been relaxed as new
@@ -107,7 +107,7 @@ Let's have a closer look at the four assignment cases:
 \item Case \lstinline{c}: similarly to case \lstinline{a},
       \lstinline{generate}'s return value cannot be used as an \gls{nttp} because it
       is not a literal value.
-\item Case \lstinline{d}: function references are allowed as \gls{nttp}\acrpluralsuffix{}.
+\item Case \lstinline{d}: function references are allowed as \glspl{nttp}.
 \end{itemize}
 
 Notice how the last example works around restrictions of \gls{constexpr} allocations
@@ -183,7 +183,7 @@ its use cases for \gls{constexpr} programming research.
 % \section{C++23 experiments for implementing EDSLs of arbitrary syntaxes}
 
 % We explore two cases of \gls{constexpr} parser implementations for small languages
-% that return \gls{ast}\acrpluralsuffix{} using \gls{constexpr} allocated memory through
+% that return \glspl{ast} using \gls{constexpr} allocated memory through
 % standard containers, and backends that transform the \gls{constexpr} function results
 % into programs through templates using different techniques. The use cases we
 % consider are:
@@ -209,7 +209,7 @@ its use cases for \gls{constexpr} programming research.
   \cpp Domain Specific Embedded Languages
 }
 
-\gls{dsel}\acrpluralsuffix{} in \cpp use \gls{tmp} via the \textit{Expression
+\glspl{dsel} in \cpp use \gls{tmp} via the \textit{Expression
 Template} idiom.
 \textbf{Expression Templates} \cite{veldhuizen:1995,vandevoorde:2002} is a
 technique implementing a form of \textbf{delayed evaluation} in
@@ -226,7 +226,7 @@ using Template Metaprograms.
 As of today, most \cpp EDSLs rely on \textit{Expression Templates} and therefore
 are limited to the \cpp syntax. New techniques are becoming more popular through
 the use of \gls{constexpr} strings to embed arbitray
-\gls{dsel}\acrpluralsuffix{}. One major example is the \gls{ctre} \cite{ctre}
+\glspl{dsel}. One major example is the \gls{ctre} \cite{ctre}
 that implements most of the \gls{pcre} syntax.
 However, \gls{ctre} still relies on type-based \gls{tmp} to parse
 regular expressions and transform them into regular expression evaluators.
