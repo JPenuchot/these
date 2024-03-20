@@ -242,21 +242,79 @@ expression will not compile if the generated type is not the same as
 A question remains about the use of compile time math parsing
 for high performance code generation: what is the compilation time impact?
 To answer that question, I will again measure compilation times for benchmarks
-representing what would be a "realistic" use case, and simpler synthetic
-benchmarks to study the scaling of the performance overhead as math formula
-sizes increase.
+representing what would be a "realistic" use case in terms of size,
+and simpler synthetic benchmarks to study the scaling of the
+performance overhead as math formula sizes increase.
 
-\subsubsection{
-  A "realistic" use case
+% A "realistic" use case
+
+For the "realistic" use case, we will simply consider the formula from
+listing \ref{lst:tml-usage} and measure the compiler execution time
+with and without compile time parsing to generate a Blaze expression.
+In one measurement where we compile a \gls{tml} formula into its evaluation
+via Blaze, we observe a compilation time of 5.94 seconds.
+In another one where we compile the same formula using the Blaze API directly
+and without including the \gls{tml} header, the measured compilation time is
+5.62 seconds.
+
+These initial measurements show that a 6\% compile time overhead when using
+the \gls{tml} parser on top of Blaze.
+However a larger sample might
+
+\begin{lstlisting}[
+  language=c++,
+  caption=Benchmark case: Blaze with \gls{tml} parsing,
+  label=lst:blaze-bench-with-tml
+]{}
+#include <boost/preprocessor/repetition/repeat.hpp>
+#include <blaze/Blaze.h>
+#include <tiny_math_language.hpp>
+
+// Generating a series of additions
+#define REPEAT_STRING(z, n, str) str
+static constexpr const char *program_string =
+    BOOST_PP_REPEAT(BENCHMARK_SIZE, REPEAT_STRING,
+                    "x + y + ") "x";
+
+/// Benchmark entry point.
+template <typename T = void> inline auto bench_me() {
+  blaze::DynamicVector<unsigned int> vector_a(32, 12);
+  blaze::DynamicVector<unsigned int> vector_b(32, 12);
+
+  blaze::DynamicVector<unsigned int> res =
+      tiny_math_language::codegen<program_string>()(
+          vector_a, vector_b);
+
+  return res;
 }
 
-...
+void foo() { bench_me(); }
+\end{lstlisting}
 
-\subsubsection{
-  Synthetic benchmarks
+\begin{lstlisting}[
+  language=c++,
+  caption=Benchmark case: Blaze without \gls{tml} parsing,
+  label=lst:blaze-bench-without-tml
+]{}
+template <typename T = void> inline auto bench_me() {
+  blaze::DynamicVector<unsigned int> vector_a(32, 12);
+  blaze::DynamicVector<unsigned int> vector_b(32, 12);
+
+  blaze::DynamicVector<unsigned int> res =
+      BOOST_PP_REPEAT(BENCHMARK_SIZE, REPEAT_STRING,
+                      vector_a + vector_b +) vector_a;
+
+  return res;
 }
+\end{lstlisting}
 
-....
+Listing \ref{lst:blaze-bench-without-tml}
+
+\begin{figure}[h]
+% \fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{images/shunting-yard.addition-series}
+\caption{Code generation parsing benchmarks}
+\end{figure}
 
 \subsection{
   Conclusion: a complete toolchain for high performance code generation
