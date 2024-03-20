@@ -1,0 +1,89 @@
+\documentclass[main]{subfiles}
+\begin{document}
+
+This thesis is about metaprogramming techniques for parallel code generation.
+It aims to study the boundary between compile-time parsing of
+\glspl{dsel} and high performance code generation in \cpp.
+
+The main motivation is to provide tools, libraries, and guidelines for embedding
+mathematical languages in \cpp with the hope that it can be useful to build a
+cohesive set of tools to make generic \gls{hpc} more accessible
+to non-expert audiences. This goal is even more important as new computing
+architectures emerge over time. Developing high performance programs requires
+tuned implementations that can be achieved by either specializing
+implementations for the target platforms, or using libraries that provide
+specialized abstractions at various levels and for various domains.
+
+% TODO - Loi de Moore etc...
+
+Years after its introduction, Moore's law is still doing alive and well:
+transistor count is still doubling every year despite people claiming
+it is not alive anymore. This is due to a common confusion between
+transistor count and computing power. While transistor count has been steadily
+rising, the throughput computing performance of single \gls{cpu} cores has not.
+
+% TODO - Qu'est-ce que le parallelisme (la fin du free lunch -> on parallelise)
+
+The need for more parallel software is driven by the fact that processors have
+become increasingly parallel \cite{concurrency-revolution} in order to
+compensate for the lack of serial execution performance improvements.
+
+% TODO - Qu'est-ce que la generation de code/metaprog
+
+% TODO: Flynn citation
+Flynn's taxonomy describes four ways in which computers can perform operations
+concurrently or not:
+
+\begin{itemize}
+\item
+\textbf{\gls{mimd}}, which consists in having several processors or cores
+executing different proccesses. This category of parallelism itself has several
+sub-categories depending on the memory topology:
+
+  \begin{itemize}
+  \item \textbf{Shared memory}, where processing units share a single
+  pool of memory. Multi-threading is an example of such a topology as
+  CPU cores share the same pool of RAM.
+  \item \textbf{Distributed memory}, where processing units have their own
+  memories and cannot access other memory pools.
+  \item \textbf{Distributed shared memory}, where processing units have their
+  own memory pools and can access other memory pools indirectly.
+  \end{itemize}
+
+\item
+\textbf{\gls{misd}}, which is primarily used for fault tolerance by having
+execution redundancy.
+
+\item
+\textbf{\gls{simd}}, which is a parallelism that can be implemented inside
+a single \gls{cpu} core by having vector registers. These registers can hold
+several values, and single instructions can operate on the vectors themselves.
+
+\item
+\textbf{\gls{sisd}}, where a computer only has a single processor with no
+vector registers.
+
+\end{itemize}
+
+Note that these categories are not always mutually exclusive.
+Modern \glspl{cpu} in personal computers nowadays have multiple cores,
+each one of them having vector registers. Therefore, modern \glspl{cpu}
+leverage a mix of SIMD and MIMD computing to achieve higher throughput.
+
+\glspl{gpu}
+
+% TODO - Quels sont les grands outils (citer les rapporteureuses)?
+
+% TODO - Objectifs de la these
+
+The objective of this thesis is to develop and assess new ways to write
+\cpp metaprograms that enable better compile time performance, as well as
+better maintainability by using
+
+
+% TODO   - C'est complique la programmation parallele (3 vendeurs de \glspl{gpu}???)
+% TODO     du coup on fait des outils qui generent du code parallele
+% TODO   - Exposer la problematique des methodes de bench pour la meta + la repro
+% TODO - Detail du plan
+
+\end{document}

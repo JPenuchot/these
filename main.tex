@@ -67,6 +67,7 @@
 \addbibresource{bibliography/hpcs2018.bib}
 \addbibresource{bibliography/metalanguages.bib}
 \addbibresource{bibliography/metalibraries.bib}
+\addbibresource{bibliography/parallelism.bib}
 \addbibresource{bibliography/poacher.bib}
 \addbibresource{bibliography/simd.bib}
 
@@ -135,13 +136,11 @@
 
 \newacronym{ast}{AST}{Abstract Syntax Tree}
 \newacronym{bf}{BF}{Brainfuck}
-\newacronym{cpu}{CPU}{Central Processing Unit}
 \newacronym{ctpg}{CTPG}{Compile Time Parser Generator}
 \newacronym{ctre}{CTRE}{Compile Time Regular Expression}
 \newacronym{dsel}{DSEL}{Domain Specific Embedded Language}
 \newacronym{dsl}{DSL}{Domain Specific Language}
 \newacronym{et}{ET}{Expression Template}
-\newacronym{gpu}{GPU}{Graphical Processing Unit}
 \newacronym{hpc}{HPC}{High Performance Computing}
 \newacronym{jit}{JIT}{Just-In-Time}
 \newacronym{nttp}{NTTP}{Non-Type Template Parameter}
@@ -149,9 +148,16 @@
 \newacronym{pcre}{PCRE}{Perl Compatible Regular Expression}
 \newacronym{rpn}{RPN}{Reverse Polish Notation}
 \newacronym{sfinae}{SFINAE}{Substitution Failure Is Not An Error}
-\newacronym{simd}{SIMD}{Single Instruction Multiple Data}
 \newacronym{tml}{TML}{Tiny Math Language}
 \newacronym{tmp}{TMP}{Template Metaprogramming}
+
+\newacronym{cpu}{CPU}{Central Processing Unit}
+\newacronym{gpu}{GPU}{Graphical Processing Unit}
+
+\newacronym{mimd}{SIMD}{Multiple Instruction Multiple Data stream}
+\newacronym{misd}{SIMD}{Multiple Instruction Single Data stream}
+\newacronym{simd}{SIMD}{Single Instruction Multiple Data stream}
+\newacronym{sisd}{SIMD}{Single Instruction Single Data stream}
 
 % ==============================================================================
 \usepackage{subfiles} % Garder a la fin
@@ -324,29 +330,7 @@ parall\'elisme
   Introduction
 }
 
-This thesis is about metaprogramming techniques for parallel code generation.
-It aims to study the boundary between compile-time parsing of
-\glspl{dsel} and high performance code generation in \cpp.
-
-The main motivation is to provide tools, libraries, and guidelines for embedding
-mathematical languages in \cpp with the hope that it can be useful to build a
-cohesive set of tools to make generic \gls{hpc} more accessible
-to non-expert audiences. This goal is even more important as new computing
-architectures emerge over time. Developing high performance programs requires
-tuned implementations that can be achieved by either specializing
-implementations for the target platforms, or using libraries that provide
-specialized abstractions at various levels and for various domains.
-
-% TODO:
-% - Loi de Moore etc...
-% - Qu'est-ce que le parallelisme (la fin du free lunch -> on parallelise)
-% - Qu'est-ce que la generation de code/metaprog
-% - Quels sont les grands outils (citer les rapporteureuses)?
-% - Objectifs de la these
-%   - C'est complique la programmation parallele (3 vendeurs de GPUs???)
-%     du coup on fait des outils qui generent du code parallele
-%   - Exposer la problematique des methodes de bench pour la meta + la repro
-% - Detail du plan
+\subfile{introduction.tex}
 
 \chapter{
   Metaprogramming
