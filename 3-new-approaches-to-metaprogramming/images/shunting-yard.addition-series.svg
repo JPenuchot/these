@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="488.49979"
-   height="480.84015"
-   viewBox="0 0 488.49979 480.84015"
+   width="516.60999"
+   height="505.79675"
+   viewBox="0 0 516.60998 505.79675"
    version="1.1"
-   id="svg76"
-   sodipodi:docname="shunting-yard.addition-series.svg"
+   id="svg86"
+   sodipodi:docname="ExecuteCompiler.svg"
    inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -13,9 +13,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
-     id="defs76" />
+     id="defs86" />
   <sodipodi:namedview
-     id="namedview76"
+     id="namedview86"
      pagecolor="#ffffff"
      bordercolor="#000000"
      borderopacity="0.25"
@@ -23,15 +23,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.3072835"
-     inkscape:cx="451.70005"
-     inkscape:cy="147.63439"
+     inkscape:zoom="0.91464089"
+     inkscape:cx="683.87496"
+     inkscape:cy="217.57173"
      inkscape:window-width="1879"
-     inkscape:window-height="1229"
+     inkscape:window-height="1253"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="g10" />
+     inkscape:current-layer="svg86" />
   <title
      id="title1">Gnuplot</title>
   <desc
@@ -41,11 +41,11 @@
     <rect
        x="0"
        y="0"
-       width="488.49979"
+       width="484.75339"
        height="400"
        fill="none"
        id="rect1"
-       style="display:inline;stroke-width:0.698928" />
+       style="stroke-width:0.696242" />
     <defs
        id="defs2">
       <circle
@@ -202,7 +202,7 @@
        id="g4">
       <path
          stroke="#404040"
-         d="m 110.59,337.9 h -4.5 m 4.5,-19.99 h -2.25 m 2.25,-20 h -4.5 m 4.5,-19.99 h -2.25 m 2.25,-19.99 h -4.5 m 4.5,-20 h -2.25 m 2.25,-19.99 h -4.5 m 4.5,-19.99 h -2.25 m 2.25,-20 h -4.5 m 4.5,-19.99 h -2.25 m 2.25,-19.99 h -4.5 m 4.5,-19.99 h -2.25 m 2.25,-20 h -4.5 m 4.5,-19.99 h -2.25 M 110.59,58 h -4.5 m 4.5,-20 h -2.25 m 2.25,-19.99 h -4.5 m 4.5,319.89 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.6,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.6,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.6,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5"
+         d="m 110.59,337.9 h -4.5 m 4.5,-15.99 h -2.25 m 2.25,-16 h -4.5 m 4.5,-15.99 h -2.25 m 2.25,-16 h -4.5 m 4.5,-15.99 h -2.25 m 2.25,-16 h -4.5 m 4.5,-15.99 h -2.25 m 2.25,-16 h -4.5 m 4.5,-15.99 h -2.25 m 2.25,-16 h -4.5 m 4.5,-15.99 h -2.25 m 2.25,-15.99 h -4.5 m 4.5,-16 h -2.25 m 2.25,-15.99 h -4.5 m 4.5,-16 h -2.25 m 2.25,-15.99 h -4.5 m 4.5,-16 h -2.25 M 110.59,50 h -4.5 m 4.5,-16 h -2.25 m 2.25,-15.99 h -4.5 m 4.5,319.89 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.6,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.6,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.6,-4.5 v 2.25 m 17.59,-2.25 v 4.5 m 17.59,-4.5 v 2.25 m 17.59,-2.25 v 4.5"
          id="path3" />
     </g>
     <g
@@ -240,14 +240,14 @@
          id="g7">
         <path
            stroke="#1b9e77"
-           d="m 128.18,315.8 17.59,-2.42 17.59,-2.6 17.6,-4.06 17.59,-4.6 17.59,-5.79 17.59,-6.98 17.59,-7.75 17.59,-9.79 17.6,-11.69 17.59,-14.02 17.59,-14.69 17.59,-16.69 17.59,-17.39 17.59,-21.49 17.59,-24.12 17.6,-27.86 17.59,-28.93 17.59,-31.56 17.59,-34.68"
+           d="m 128.18,256.28 17.59,-1.23 17.59,-2.14 17.6,-4 17.59,-3.33 17.59,-5.44 17.59,-5.27 17.59,-6.02 17.59,-6.99 17.6,-9.41 17.59,-11.18 17.59,-11.66 17.59,-14.15 17.59,-14.19 17.59,-17.39 17.59,-18.84 17.6,-21.84 17.59,-23.78 17.59,-25 17.59,-28.13"
            id="path6" />
       </g>
     </g>
     <g
        id="gnuplot_plot_2">
       <title
-         id="title7">shunting-yard.addition-series.no-formula-blaze average</title>
+         id="title7">shunting-yard.addition-series.formula-no-blaze average</title>
       <g
          fill="none"
          color="#000000"
@@ -258,31 +258,51 @@
          id="g8">
         <path
            stroke="#d95f02"
-           d="m 128.18,322.54 17.59,-1.54 17.59,-2.19 17.6,-1.57 17.59,-2.38 17.59,-2.62 17.59,-3.1 17.59,-2.48 17.59,-2.63 17.6,-3.73 17.59,-3.14 17.59,-3.18 17.59,-4 17.59,-3.02 17.59,-3.71 17.59,-3.86 17.6,-4.69 17.59,-3.6 17.59,-5.95 17.59,-3.86"
+           d="m 128.18,328.61 17.59,-0.83 17.59,-0.96 17.6,-1.51 17.59,-2.17 17.59,-2.47 17.59,-3.59 17.59,-4.13 17.59,-5.32 17.6,-6.18 17.59,-7.78 17.59,-9.18 17.59,-10.58 17.59,-12.65 17.59,-13.87 17.59,-15.88 17.6,-17.3 17.59,-19.21 17.59,-22.36 17.59,-23.76"
            id="path7" />
+      </g>
+    </g>
+    <g
+       id="gnuplot_plot_3">
+      <title
+         id="title8">shunting-yard.addition-series.no-formula-blaze average</title>
+      <g
+         fill="none"
+         color="#000000"
+         stroke="currentColor"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         id="g9">
+        <path
+           stroke="#7570b3"
+           d="m 128.18,262.19 17.59,-1.66 17.59,-1.42 17.6,-1.64 17.59,-1.73 17.59,-2.18 17.59,-2.57 17.59,-1.93 17.59,-1.96 17.6,-2.13 17.59,-2.76 17.59,-2.81 17.59,-2.78 17.59,-2.57 17.59,-2.82 17.59,-3.21 17.6,-4 17.59,-3.14 17.59,-4.07 17.59,-4.14"
+           id="path8" />
       </g>
     </g>
     <g
        stroke="none"
        shape-rendering="crispEdges"
-       id="g10">
+       id="g11">
       <polygon
          fill="#ffffff"
-         points="479.2,90.01 991.6,90.01 991.6,18.01 479.2,18.01 "
-         id="polygon8"
-         transform="matrix(0.74132581,0,0,1,-333.51931,390.83014)" />
+         points="991.6,18.01 479.2,18.01 479.2,108.01 991.6,108.01 "
+         id="polygon9"
+         transform="translate(-474.99004,397.78676)" />
       <g
-         transform="translate(30.114022,421.74014)"
+         transform="translate(487.59,30.91)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
          font-size="12px"
          text-anchor="start"
-         id="g9">
+         id="g10">
         <text
-           id="text8"><tspan
+           id="text9"
+           x="-474.99005"
+           y="397.78674"><tspan
              font-family="Arial"
-             id="tspan8">Timings</tspan></text>
+             id="tspan9">Timings</tspan></text>
       </g>
     </g>
     <g
@@ -292,32 +312,11 @@
        stroke-width="2"
        stroke-linecap="round"
        stroke-linejoin="round"
-       id="g11" />
+       id="g12" />
     <g
-       id="g15"
-       transform="translate(-457.47598,390.83014)">
+       id="g16">
       <title
-         id="title11">shunting-yard.addition-series.formula-blaze average</title>
-      <g
-         fill="none"
-         color="#000000"
-         stroke="currentColor"
-         stroke-width="2"
-         stroke-linecap="round"
-         stroke-linejoin="round"
-         id="g13">
-        <g
-           transform="translate(538.54,57.91)"
-           stroke="none"
-           fill="#404040"
-           font-family="Arial"
-           font-size="12px"
-           text-anchor="start"
-           id="g12">
-          <text
-             id="text11">shunting-yard.addition-series.formula-blaze average</text>
-        </g>
-      </g>
+         id="title12">shunting-yard.addition-series.formula-blaze average</title>
       <g
          fill="none"
          color="#000000"
@@ -326,35 +325,18 @@
          stroke-linecap="round"
          stroke-linejoin="round"
          id="g14">
-        <path
-           stroke="#1b9e77"
-           d="m 487.59,54.01 h 42.56"
-           id="path13" />
-      </g>
-    </g>
-    <g
-       id="g19"
-       transform="translate(-457.47598,390.83014)">
-      <title
-         id="title15">shunting-yard.addition-series.no-formula-blaze average</title>
-      <g
-         fill="none"
-         color="#000000"
-         stroke="currentColor"
-         stroke-width="2"
-         stroke-linecap="round"
-         stroke-linejoin="round"
-         id="g17">
         <g
-           transform="translate(538.54,75.91)"
+           transform="translate(538.54,57.91)"
            stroke="none"
            fill="#404040"
            font-family="Arial"
            font-size="12px"
            text-anchor="start"
-           id="g16">
+           id="g13">
           <text
-             id="text15">shunting-yard.addition-series.no-formula-blaze average</text>
+             id="text12"
+             x="-474.99005"
+             y="397.78674">shunting-yard.addition-series.formula-blaze average</text>
         </g>
       </g>
       <g
@@ -364,11 +346,91 @@
          stroke-width="2"
          stroke-linecap="round"
          stroke-linejoin="round"
+         id="g15">
+        <path
+           stroke="#1b9e77"
+           d="m 12.599958,451.79676 h 42.56"
+           id="path14" />
+      </g>
+    </g>
+    <g
+       id="g20">
+      <title
+         id="title16">shunting-yard.addition-series.formula-no-blaze average</title>
+      <g
+         fill="none"
+         color="#000000"
+         stroke="currentColor"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
          id="g18">
+        <g
+           transform="translate(538.54,75.91)"
+           stroke="none"
+           fill="#404040"
+           font-family="Arial"
+           font-size="12px"
+           text-anchor="start"
+           id="g17">
+          <text
+             id="text16"
+             x="-474.99005"
+             y="397.78674">shunting-yard.addition-series.formula-no-blaze average</text>
+        </g>
+      </g>
+      <g
+         fill="none"
+         color="#000000"
+         stroke="currentColor"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         id="g19">
         <path
            stroke="#d95f02"
-           d="m 487.59,72.01 h 42.56"
-           id="path17" />
+           d="m 12.599958,469.79676 h 42.56"
+           id="path18" />
+      </g>
+    </g>
+    <g
+       id="g24">
+      <title
+         id="title20">shunting-yard.addition-series.no-formula-blaze average</title>
+      <g
+         fill="none"
+         color="#000000"
+         stroke="currentColor"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         id="g22">
+        <g
+           transform="translate(538.54,93.91)"
+           stroke="none"
+           fill="#404040"
+           font-family="Arial"
+           font-size="12px"
+           text-anchor="start"
+           id="g21">
+          <text
+             id="text20"
+             x="-474.99005"
+             y="397.78674">shunting-yard.addition-series.no-formula-blaze average</text>
+        </g>
+      </g>
+      <g
+         fill="none"
+         color="#000000"
+         stroke="currentColor"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         id="g23">
+        <path
+           stroke="#7570b3"
+           d="m 12.599958,487.79676 h 42.56"
+           id="path22" />
       </g>
     </g>
     <g
@@ -378,11 +440,11 @@
        stroke-width="2"
        stroke-linecap="round"
        stroke-linejoin="round"
-       id="g22">
+       id="g26">
       <path
          stroke="#404040"
          d="m 110.59,337.9 h -4.5"
-         id="path19" />
+         id="path24" />
       <g
          transform="translate(97.7,341.8)"
          stroke="none"
@@ -390,51 +452,11 @@
          font-family="Arial"
          font-size="12px"
          text-anchor="end"
-         id="g21">
-        <text
-           id="text21"><tspan
-             font-family="Arial"
-             id="tspan19">4×10</tspan><tspan
-             font-family="Arial"
-             font-size="9.6px"
-             dy="-6"
-             id="tspan20">6</tspan><tspan
-             font-size="12px"
-             dy="6"
-             id="tspan21" /></text>
-      </g>
-    </g>
-    <g
-       fill="none"
-       color="#000000"
-       stroke="currentColor"
-       stroke-width="2"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       id="g25">
-      <path
-         stroke="#404040"
-         d="m 110.59,317.91 h -2.25 m 2.25,-20 h -4.5"
-         id="path22" />
-      <g
-         transform="translate(97.7,301.81)"
-         stroke="none"
-         fill="#404040"
-         font-family="Arial"
-         font-size="12px"
-         text-anchor="end"
-         id="g24">
+         id="g25">
         <text
            id="text24"><tspan
              font-family="Arial"
-             id="tspan22">6×10</tspan><tspan
-             font-family="Arial"
-             font-size="9.6px"
-             dy="-6"
-             id="tspan23">6</tspan><tspan
-             font-size="12px"
-             dy="6"
-             id="tspan24" /></text>
+             id="tspan24">0</tspan></text>
       </g>
     </g>
     <g
@@ -444,30 +466,30 @@
        stroke-width="2"
        stroke-linecap="round"
        stroke-linejoin="round"
-       id="g28">
+       id="g29">
       <path
          stroke="#404040"
-         d="m 110.59,277.92 h -2.25 m 2.25,-19.99 h -4.5"
-         id="path25" />
+         d="m 110.59,321.91 h -2.25 m 2.25,-16 h -4.5"
+         id="path26" />
       <g
-         transform="translate(97.7,261.83)"
+         transform="translate(97.7,309.81)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
          font-size="12px"
          text-anchor="end"
-         id="g27">
+         id="g28">
         <text
-           id="text27"><tspan
+           id="text28"><tspan
              font-family="Arial"
-             id="tspan25">8×10</tspan><tspan
+             id="tspan26">2×10</tspan><tspan
              font-family="Arial"
              font-size="9.6px"
              dy="-6"
-             id="tspan26">6</tspan><tspan
+             id="tspan27">6</tspan><tspan
              font-size="12px"
              dy="6"
-             id="tspan27" /></text>
+             id="tspan28" /></text>
       </g>
     </g>
     <g
@@ -477,30 +499,30 @@
        stroke-width="2"
        stroke-linecap="round"
        stroke-linejoin="round"
-       id="g31">
+       id="g32">
       <path
          stroke="#404040"
-         d="m 110.59,237.93 h -2.25 m 2.25,-19.99 h -4.5"
-         id="path28" />
+         d="m 110.59,289.92 h -2.25 m 2.25,-16 h -4.5"
+         id="path29" />
       <g
-         transform="translate(97.7,221.84)"
+         transform="translate(97.7,277.82)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
          font-size="12px"
          text-anchor="end"
-         id="g30">
+         id="g31">
         <text
-           id="text30"><tspan
+           id="text31"><tspan
              font-family="Arial"
-             id="tspan28">1×10</tspan><tspan
+             id="tspan29">4×10</tspan><tspan
              font-family="Arial"
              font-size="9.6px"
              dy="-6"
-             id="tspan29">7</tspan><tspan
+             id="tspan30">6</tspan><tspan
              font-size="12px"
              dy="6"
-             id="tspan30" /></text>
+             id="tspan31" /></text>
       </g>
     </g>
     <g
@@ -510,11 +532,77 @@
        stroke-width="2"
        stroke-linecap="round"
        stroke-linejoin="round"
-       id="g34">
+       id="g35">
       <path
          stroke="#404040"
-         d="m 110.59,197.95 h -2.25 m 2.25,-20 h -4.5"
-         id="path31" />
+         d="m 110.59,257.93 h -2.25 m 2.25,-16 h -4.5"
+         id="path32" />
+      <g
+         transform="translate(97.7,245.83)"
+         stroke="none"
+         fill="#404040"
+         font-family="Arial"
+         font-size="12px"
+         text-anchor="end"
+         id="g34">
+        <text
+           id="text34"><tspan
+             font-family="Arial"
+             id="tspan32">6×10</tspan><tspan
+             font-family="Arial"
+             font-size="9.6px"
+             dy="-6"
+             id="tspan33">6</tspan><tspan
+             font-size="12px"
+             dy="6"
+             id="tspan34" /></text>
+      </g>
+    </g>
+    <g
+       fill="none"
+       color="#000000"
+       stroke="currentColor"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="g38">
+      <path
+         stroke="#404040"
+         d="m 110.59,225.94 h -2.25 m 2.25,-16 h -4.5"
+         id="path35" />
+      <g
+         transform="translate(97.7,213.84)"
+         stroke="none"
+         fill="#404040"
+         font-family="Arial"
+         font-size="12px"
+         text-anchor="end"
+         id="g37">
+        <text
+           id="text37"><tspan
+             font-family="Arial"
+             id="tspan35">8×10</tspan><tspan
+             font-family="Arial"
+             font-size="9.6px"
+             dy="-6"
+             id="tspan36">6</tspan><tspan
+             font-size="12px"
+             dy="6"
+             id="tspan37" /></text>
+      </g>
+    </g>
+    <g
+       fill="none"
+       color="#000000"
+       stroke="currentColor"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="g41">
+      <path
+         stroke="#404040"
+         d="m 110.59,193.95 h -2.25 m 2.25,-16 h -4.5"
+         id="path38" />
       <g
          transform="translate(97.7,181.85)"
          stroke="none"
@@ -522,18 +610,18 @@
          font-family="Arial"
          font-size="12px"
          text-anchor="end"
-         id="g33">
+         id="g40">
         <text
-           id="text33"><tspan
+           id="text40"><tspan
              font-family="Arial"
-             id="tspan31">1.2×10</tspan><tspan
+             id="tspan38">1×10</tspan><tspan
              font-family="Arial"
              font-size="9.6px"
              dy="-6"
-             id="tspan32">7</tspan><tspan
+             id="tspan39">7</tspan><tspan
              font-size="12px"
              dy="6"
-             id="tspan33" /></text>
+             id="tspan40" /></text>
       </g>
     </g>
     <g
@@ -543,30 +631,30 @@
        stroke-width="2"
        stroke-linecap="round"
        stroke-linejoin="round"
-       id="g37">
+       id="g44">
       <path
          stroke="#404040"
-         d="m 110.59,157.96 h -2.25 m 2.25,-19.99 h -4.5"
-         id="path34" />
+         d="m 110.59,161.96 h -2.25 m 2.25,-15.99 h -4.5"
+         id="path41" />
       <g
-         transform="translate(97.7,141.87)"
+         transform="translate(97.7,149.87)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
          font-size="12px"
          text-anchor="end"
-         id="g36">
+         id="g43">
         <text
-           id="text36"><tspan
+           id="text43"><tspan
              font-family="Arial"
-             id="tspan34">1.4×10</tspan><tspan
+             id="tspan41">1.2×10</tspan><tspan
              font-family="Arial"
              font-size="9.6px"
              dy="-6"
-             id="tspan35">7</tspan><tspan
+             id="tspan42">7</tspan><tspan
              font-size="12px"
              dy="6"
-             id="tspan36" /></text>
+             id="tspan43" /></text>
       </g>
     </g>
     <g
@@ -576,122 +664,30 @@
        stroke-width="2"
        stroke-linecap="round"
        stroke-linejoin="round"
-       id="g40">
+       id="g47">
       <path
          stroke="#404040"
-         d="m 110.59,117.98 h -2.25 m 2.25,-20 h -4.5"
-         id="path37" />
+         d="m 110.59,129.97 h -2.25 m 2.25,-15.99 h -4.5"
+         id="path44" />
       <g
-         transform="translate(97.7,101.88)"
+         transform="translate(97.7,117.88)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
          font-size="12px"
          text-anchor="end"
-         id="g39">
-        <text
-           id="text39"><tspan
-             font-family="Arial"
-             id="tspan37">1.6×10</tspan><tspan
-             font-family="Arial"
-             font-size="9.6px"
-             dy="-6"
-             id="tspan38">7</tspan><tspan
-             font-size="12px"
-             dy="6"
-             id="tspan39" /></text>
-      </g>
-    </g>
-    <g
-       fill="none"
-       color="#000000"
-       stroke="currentColor"
-       stroke-width="2"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       id="g43">
-      <path
-         stroke="#404040"
-         d="m 110.59,77.99 h -2.25 M 110.59,58 h -4.5"
-         id="path40" />
-      <g
-         transform="translate(97.7,61.9)"
-         stroke="none"
-         fill="#404040"
-         font-family="Arial"
-         font-size="12px"
-         text-anchor="end"
-         id="g42">
-        <text
-           id="text42"><tspan
-             font-family="Arial"
-             id="tspan40">1.8×10</tspan><tspan
-             font-family="Arial"
-             font-size="9.6px"
-             dy="-6"
-             id="tspan41">7</tspan><tspan
-             font-size="12px"
-             dy="6"
-             id="tspan42" /></text>
-      </g>
-    </g>
-    <g
-       fill="none"
-       color="#000000"
-       stroke="currentColor"
-       stroke-width="2"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       id="g46">
-      <path
-         stroke="#404040"
-         d="m 110.59,38 h -2.25 m 2.25,-19.99 h -4.5"
-         id="path43" />
-      <g
-         transform="translate(97.7,21.91)"
-         stroke="none"
-         fill="#404040"
-         font-family="Arial"
-         font-size="12px"
-         text-anchor="end"
-         id="g45">
-        <text
-           id="text45"><tspan
-             font-family="Arial"
-             id="tspan43">2×10</tspan><tspan
-             font-family="Arial"
-             font-size="9.6px"
-             dy="-6"
-             id="tspan44">7</tspan><tspan
-             font-size="12px"
-             dy="6"
-             id="tspan45" /></text>
-      </g>
-    </g>
-    <g
-       fill="none"
-       color="#000000"
-       stroke="currentColor"
-       stroke-width="2"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       id="g48">
-      <path
-         stroke="#404040"
-         d="m 110.59,337.9 v 4.5"
-         id="path46" />
-      <g
-         transform="translate(110.59,364.3)"
-         stroke="none"
-         fill="#404040"
-         font-family="Arial"
-         font-size="12px"
-         text-anchor="middle"
-         id="g47">
+         id="g46">
         <text
            id="text46"><tspan
              font-family="Arial"
-             id="tspan46">0</tspan></text>
+             id="tspan44">1.4×10</tspan><tspan
+             font-family="Arial"
+             font-size="9.6px"
+             dy="-6"
+             id="tspan45">7</tspan><tspan
+             font-size="12px"
+             dy="6"
+             id="tspan46" /></text>
       </g>
     </g>
     <g
@@ -704,20 +700,27 @@
        id="g50">
       <path
          stroke="#404040"
-         d="m 128.18,337.9 v 2.25 m 17.59,-2.25 v 4.5"
-         id="path48" />
+         d="m 110.59,97.98 h -2.25 m 2.25,-15.99 h -4.5"
+         id="path47" />
       <g
-         transform="translate(145.77,364.3)"
+         transform="translate(97.7,85.89)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
          font-size="12px"
-         text-anchor="middle"
+         text-anchor="end"
          id="g49">
         <text
-           id="text48"><tspan
+           id="text49"><tspan
              font-family="Arial"
-             id="tspan48">2</tspan></text>
+             id="tspan47">1.6×10</tspan><tspan
+             font-family="Arial"
+             font-size="9.6px"
+             dy="-6"
+             id="tspan48">7</tspan><tspan
+             font-size="12px"
+             dy="6"
+             id="tspan49" /></text>
       </g>
     </g>
     <g
@@ -727,49 +730,30 @@
        stroke-width="2"
        stroke-linecap="round"
        stroke-linejoin="round"
-       id="g52">
+       id="g53">
       <path
          stroke="#404040"
-         d="m 163.36,337.9 v 2.25 m 17.6,-2.25 v 4.5"
+         d="m 110.59,65.99 h -2.25 M 110.59,50 h -4.5"
          id="path50" />
       <g
-         transform="translate(180.96,364.3)"
+         transform="translate(97.7,53.9)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
          font-size="12px"
-         text-anchor="middle"
-         id="g51">
-        <text
-           id="text50"><tspan
-             font-family="Arial"
-             id="tspan50">4</tspan></text>
-      </g>
-    </g>
-    <g
-       fill="none"
-       color="#000000"
-       stroke="currentColor"
-       stroke-width="2"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       id="g54">
-      <path
-         stroke="#404040"
-         d="m 198.55,337.9 v 2.25 m 17.59,-2.25 v 4.5"
-         id="path52" />
-      <g
-         transform="translate(216.14,364.3)"
-         stroke="none"
-         fill="#404040"
-         font-family="Arial"
-         font-size="12px"
-         text-anchor="middle"
-         id="g53">
+         text-anchor="end"
+         id="g52">
         <text
            id="text52"><tspan
              font-family="Arial"
-             id="tspan52">6</tspan></text>
+             id="tspan50">1.8×10</tspan><tspan
+             font-family="Arial"
+             font-size="9.6px"
+             dy="-6"
+             id="tspan51">7</tspan><tspan
+             font-size="12px"
+             dy="6"
+             id="tspan52" /></text>
       </g>
     </g>
     <g
@@ -782,20 +766,27 @@
        id="g56">
       <path
          stroke="#404040"
-         d="m 233.73,337.9 v 2.25 m 17.59,-2.25 v 4.5"
-         id="path54" />
+         d="m 110.59,34 h -2.25 m 2.25,-15.99 h -4.5"
+         id="path53" />
       <g
-         transform="translate(251.32,364.3)"
+         transform="translate(97.7,21.91)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
          font-size="12px"
-         text-anchor="middle"
+         text-anchor="end"
          id="g55">
         <text
-           id="text54"><tspan
+           id="text55"><tspan
              font-family="Arial"
-             id="tspan54">8</tspan></text>
+             id="tspan53">2×10</tspan><tspan
+             font-family="Arial"
+             font-size="9.6px"
+             dy="-6"
+             id="tspan54">7</tspan><tspan
+             font-size="12px"
+             dy="6"
+             id="tspan55" /></text>
       </g>
     </g>
     <g
@@ -808,10 +799,10 @@
        id="g58">
       <path
          stroke="#404040"
-         d="m 268.91,337.9 v 2.25 m 17.6,-2.25 v 4.5"
+         d="m 110.59,337.9 v 4.5"
          id="path56" />
       <g
-         transform="translate(286.51,364.3)"
+         transform="translate(110.59,364.3)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
@@ -821,7 +812,7 @@
         <text
            id="text56"><tspan
              font-family="Arial"
-             id="tspan56">10</tspan></text>
+             id="tspan56">0</tspan></text>
       </g>
     </g>
     <g
@@ -834,10 +825,10 @@
        id="g60">
       <path
          stroke="#404040"
-         d="m 304.1,337.9 v 2.25 m 17.59,-2.25 v 4.5"
+         d="m 128.18,337.9 v 2.25 m 17.59,-2.25 v 4.5"
          id="path58" />
       <g
-         transform="translate(321.69,364.3)"
+         transform="translate(145.77,364.3)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
@@ -847,7 +838,7 @@
         <text
            id="text58"><tspan
              font-family="Arial"
-             id="tspan58">12</tspan></text>
+             id="tspan58">2</tspan></text>
       </g>
     </g>
     <g
@@ -860,10 +851,10 @@
        id="g62">
       <path
          stroke="#404040"
-         d="m 339.28,337.9 v 2.25 m 17.59,-2.25 v 4.5"
+         d="m 163.36,337.9 v 2.25 m 17.6,-2.25 v 4.5"
          id="path60" />
       <g
-         transform="translate(356.87,364.3)"
+         transform="translate(180.96,364.3)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
@@ -873,7 +864,7 @@
         <text
            id="text60"><tspan
              font-family="Arial"
-             id="tspan60">14</tspan></text>
+             id="tspan60">4</tspan></text>
       </g>
     </g>
     <g
@@ -886,10 +877,10 @@
        id="g64">
       <path
          stroke="#404040"
-         d="m 374.46,337.9 v 2.25 m 17.59,-2.25 v 4.5"
+         d="m 198.55,337.9 v 2.25 m 17.59,-2.25 v 4.5"
          id="path62" />
       <g
-         transform="translate(392.05,364.3)"
+         transform="translate(216.14,364.3)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
@@ -899,7 +890,7 @@
         <text
            id="text62"><tspan
              font-family="Arial"
-             id="tspan62">16</tspan></text>
+             id="tspan62">6</tspan></text>
       </g>
     </g>
     <g
@@ -912,10 +903,10 @@
        id="g66">
       <path
          stroke="#404040"
-         d="m 409.65,337.9 v 2.25 m 17.59,-2.25 v 4.5"
+         d="m 233.73,337.9 v 2.25 m 17.59,-2.25 v 4.5"
          id="path64" />
       <g
-         transform="translate(427.24,364.3)"
+         transform="translate(251.32,364.3)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
@@ -925,7 +916,7 @@
         <text
            id="text64"><tspan
              font-family="Arial"
-             id="tspan64">18</tspan></text>
+             id="tspan64">8</tspan></text>
       </g>
     </g>
     <g
@@ -938,10 +929,10 @@
        id="g68">
       <path
          stroke="#404040"
-         d="m 444.83,337.9 v 2.25 m 17.59,-2.25 v 4.5"
+         d="m 268.91,337.9 v 2.25 m 17.6,-2.25 v 4.5"
          id="path66" />
       <g
-         transform="translate(462.42,364.3)"
+         transform="translate(286.51,364.3)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
@@ -951,7 +942,7 @@
         <text
            id="text66"><tspan
              font-family="Arial"
-             id="tspan66">20</tspan></text>
+             id="tspan66">10</tspan></text>
       </g>
     </g>
     <g
@@ -961,15 +952,25 @@
        stroke-width="2"
        stroke-linecap="round"
        stroke-linejoin="round"
-       id="g69" />
-    <g
-       fill="none"
-       color="#000000"
-       stroke="currentColor"
-       stroke-width="2"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       id="g70" />
+       id="g70">
+      <path
+         stroke="#404040"
+         d="m 304.1,337.9 v 2.25 m 17.59,-2.25 v 4.5"
+         id="path68" />
+      <g
+         transform="translate(321.69,364.3)"
+         stroke="none"
+         fill="#404040"
+         font-family="Arial"
+         font-size="12px"
+         text-anchor="middle"
+         id="g69">
+        <text
+           id="text68"><tspan
+             font-family="Arial"
+             id="tspan68">12</tspan></text>
+      </g>
+    </g>
     <g
        fill="none"
        color="#000000"
@@ -980,10 +981,10 @@
        id="g72">
       <path
          stroke="#404040"
-         d="M 110.59,18.01 V 337.9 h 351.83 m 0,-319.89 m -351.83,0"
+         d="m 339.28,337.9 v 2.25 m 17.59,-2.25 v 4.5"
          id="path70" />
       <g
-         transform="rotate(-90,98.57,79.39)"
+         transform="translate(356.87,364.3)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
@@ -993,7 +994,7 @@
         <text
            id="text70"><tspan
              font-family="Arial"
-             id="tspan70">Time (µs)</tspan></text>
+             id="tspan70">14</tspan></text>
       </g>
     </g>
     <g
@@ -1004,8 +1005,12 @@
        stroke-linecap="round"
        stroke-linejoin="round"
        id="g74">
+      <path
+         stroke="#404040"
+         d="m 374.46,337.9 v 2.25 m 17.59,-2.25 v 4.5"
+         id="path72" />
       <g
-         transform="translate(286.5,391.3)"
+         transform="translate(392.05,364.3)"
          stroke="none"
          fill="#404040"
          font-family="Arial"
@@ -1015,7 +1020,7 @@
         <text
            id="text72"><tspan
              font-family="Arial"
-             id="tspan72">Benchmark size factor</tspan></text>
+             id="tspan72">16</tspan></text>
       </g>
     </g>
     <g
@@ -1025,7 +1030,25 @@
        stroke-width="2"
        stroke-linecap="round"
        stroke-linejoin="round"
-       id="g75" />
+       id="g76">
+      <path
+         stroke="#404040"
+         d="m 409.65,337.9 v 2.25 m 17.59,-2.25 v 4.5"
+         id="path74" />
+      <g
+         transform="translate(427.24,364.3)"
+         stroke="none"
+         fill="#404040"
+         font-family="Arial"
+         font-size="12px"
+         text-anchor="middle"
+         id="g75">
+        <text
+           id="text74"><tspan
+             font-family="Arial"
+             id="tspan74">18</tspan></text>
+      </g>
+    </g>
     <g
        fill="none"
        color="#000000"
@@ -1033,6 +1056,104 @@
        stroke-width="2"
        stroke-linecap="round"
        stroke-linejoin="round"
-       id="g76" />
+       id="g78">
+      <path
+         stroke="#404040"
+         d="m 444.83,337.9 v 2.25 m 17.59,-2.25 v 4.5"
+         id="path76" />
+      <g
+         transform="translate(462.42,364.3)"
+         stroke="none"
+         fill="#404040"
+         font-family="Arial"
+         font-size="12px"
+         text-anchor="middle"
+         id="g77">
+        <text
+           id="text76"><tspan
+             font-family="Arial"
+             id="tspan76">20</tspan></text>
+      </g>
+    </g>
+    <g
+       fill="none"
+       color="#000000"
+       stroke="currentColor"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="g79" />
+    <g
+       fill="none"
+       color="#000000"
+       stroke="currentColor"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="g80" />
+    <g
+       fill="none"
+       color="#000000"
+       stroke="currentColor"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="g82">
+      <path
+         stroke="#404040"
+         d="M 110.59,18.01 V 337.9 h 351.83 m 0,-319.89 m -351.83,0"
+         id="path80" />
+      <g
+         transform="rotate(-90,98.57,79.39)"
+         stroke="none"
+         fill="#404040"
+         font-family="Arial"
+         font-size="12px"
+         text-anchor="middle"
+         id="g81">
+        <text
+           id="text80"><tspan
+             font-family="Arial"
+             id="tspan80">Time (µs)</tspan></text>
+      </g>
+    </g>
+    <g
+       fill="none"
+       color="#000000"
+       stroke="currentColor"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="g84">
+      <g
+         transform="translate(286.5,391.3)"
+         stroke="none"
+         fill="#404040"
+         font-family="Arial"
+         font-size="12px"
+         text-anchor="middle"
+         id="g83">
+        <text
+           id="text82"><tspan
+             font-family="Arial"
+             id="tspan82">Benchmark size factor</tspan></text>
+      </g>
+    </g>
+    <g
+       fill="none"
+       color="#000000"
+       stroke="currentColor"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="g85" />
+    <g
+       fill="none"
+       color="#000000"
+       stroke="currentColor"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="g86" />
   </g>
 </svg>
