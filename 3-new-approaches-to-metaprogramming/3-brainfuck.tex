@@ -16,14 +16,10 @@ subsection \ref{lbl:ptr-tree-codegen}.
   Constexpr Brainfuck parser and AST
 }
 
-\subsubsection{
-  AST
-}
-
-The Brainfuck \gls{ast} is defined in the header shown in appendix \ref{app:bf-ast}.
-The header file also contains helper function definitions to handle \gls{ast} nodes
-safely, such as \lstinline{visit} which will be used in one of the
-code generation backends.
+The Brainfuck \gls{ast} is defined in the header shown in appendix
+\ref{app:bf-ast}. The header file also contains helper function definitions
+to handle \gls{ast} nodes safely, such as \lstinline{visit} which will be used
+in one of the code generation backends.
 
 Here are the main data types:
 
@@ -70,10 +66,7 @@ The \lstinline{visit} function implementation also looks like a regular \cpp
 function as shown in listing \ref{lst:bf-ast-visit-def}.
 It is a higher order function that allows recursive operations on the \gls{ast}
 to be carried in a type-safe manner.
-
-\subsubsection{
-  Parser
-}
+\\
 
 The Brainfuck parser, again, looks like nothing special. For that reason I will
 not get into the implementation details. The function definition is available
@@ -720,6 +713,7 @@ to scale similarly as the \gls{ast} grows wider or deeper.
 \subsubsection{
   Large Brainfuck programs
 }
+\label{lbl:bf-large-program-benches}
 
 The following benchmarks consist in measuring compiler execution times for
 compiling Brainfuck code examples. These example programs are also used to

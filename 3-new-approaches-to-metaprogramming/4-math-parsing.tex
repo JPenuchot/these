@@ -259,7 +259,8 @@ and without including the \gls{tml} header, the measured compilation time is
 
 These initial measurements show that a 6\% compile time overhead when using
 the \gls{tml} parser on top of Blaze.
-However a larger sample might
+However, to better understand the impact of this method at scale,
+we need to run variable size benchmarks to study more than a single use case.
 
 \begin{lstlisting}[
   language=c++,
@@ -291,6 +292,14 @@ template <typename T = void> inline auto bench_me() {
 void foo() { bench_me(); }
 \end{lstlisting}
 
+Listing \ref{lst:blaze-bench-with-tml} introduces a variable size benchmark
+where a \gls{tml} formula is generated from a size factor $N$.
+The formula consists in adding \lstinline{x} and \lstinline{y} terms $N$ times
+to \lstinline{x}. The formula is then parsed to generate a \cpp function.
+
+\lstinline{vector_a} and \lstinline{vector_b} are then fed to the generated
+function to generate a Blaze expression, which is assigned to a Blaze vector.
+
 \begin{lstlisting}[
   language=c++,
   caption=Benchmark case: Blaze without \gls{tml} parsing,
@@ -308,19 +317,77 @@ template <typename T = void> inline auto bench_me() {
 }
 \end{lstlisting}
 
-Listing \ref{lst:blaze-bench-without-tml}
+Listing \ref{lst:blaze-bench-without-tml} shows an equivalent code
+where the parsing part is skipped. This will serve as a baseline to study
+the compile time overhead of \gls{tml} parsing.
+
+Finally, a third benchmark case is added that consists in parsing
+the same \gls{tml} formulas but without using Blaze for code generation.
+Instead, the Blaze vectors are replaced with simple integers.
+
+ctbench is used to instantiate, compile, and plot the compilation times
+of these three benchmark cases with $N$ going from 0 to 20, ie. with formulas
+having from one final term (\lstinline{vector_a} alone), to 41 final terms
+(the subexpression \lstinline{vector_a + vector_b} contains 2 final terms,
+and it is being added up to 20 times to \lstinline{vector_a}).
+
+The benchmark cases are named as follows:
+
+\begin{itemize}
+\item \lstinline{formula-blaze} designates the case where \gls{tml} is parsed
+to generate high performance code with Blaze,
+\item \lstinline{no-formula-blaze} designates the case where Blaze is being used
+to generate high performance directly (\ie without \gls{tml} parsing),
+\item \lstinline{formula-no-blaze} designates the case where \gls{tml} is used
+to generate code without Blaze but with integers instead.
+\end{itemize}
 
 \begin{figure}[h]
 % \fontsize{8}{10}\selectfont
 \includesvg[width=\textwidth]{images/shunting-yard.addition-series}
 \caption{Code generation parsing benchmarks}
+\label{fig:tml-ctbench}
 \end{figure}
 
-\subsection{
-  Conclusion: a complete toolchain for high performance code generation
-  from math formulas
-}
+Looking the results of the benchmarks shown in figure \ref{fig:tml-ctbench},
+we can make the following observations:
 
+\begin{itemize}
 
+\item
+The \lstinline{formula-no-blaze} case seems to have a quadratic complexity,
+although it has the shortest compilation time of all three cases until $N$
+reaches 16 (\ie when the formula contains 33 final terms).
+After this point, the compile time offset of \gls{tml} parsing becomes larger
+than the Blaze code generation itself.
+
+\item
+The \lstinline{no-formula-blaze} case scales almost linearly with pretty low
+scaling factor, but it starts at almost 5 seconds.
+This is to be expected since Blaze has a very large code base.
+To put Blaze's code base in perspective, its package in the Arch Linux
+repositories weighs more than 34MiB, and it only contains \cpp header files.
+
+\item
+The \lstinline{formula-blaze} case looks pretty close to what we would expect:
+it starts slightly above \lstinline{no-formula-blaze} and follows a scaling
+pattern similar to \lstinline{formula-no-blaze}.
+
+\end{itemize}
+
+The compilation times on these benchmark cases remain under 20 seconds
+within the range of our measurements, which covers cases assumably larger
+than most use cases for the Blaze library.
+Moreover, math formulas can be divided in subexpressions in an effort to
+make a program clearer, or simply to mitigate the quadratic complexity
+of \gls{tml} code generation.
+
+Overall, this prototype \gls{dsel} proves the viability of compile time parsing
+for high performance code generation in \cpp23 using as little \gls{tmp}
+as possible.
+However \gls{tml} code generation does not scale as well as Brainfuck
+code generation using the Flat backend, which scaled linearly as shown in
+\ref{lbl:bf-large-program-benches}. A hypothesis for this higher complexity
+is the cost induced by the tuple operations during the code generation step.
 
 \end{document}
