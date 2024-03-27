@@ -394,9 +394,6 @@ in \ref{lbl:expression-level-metaprogramming}.
 \begin{lstlisting}[
   language=c++
 ]{}
-#include <Eigen/Dense>
-#include <iostream>
-
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
@@ -422,9 +419,6 @@ and its designed has since been updated.
 \begin{lstlisting}[
   language=c++
 ]{}
-#include <blaze/Math.h>
-#include <iostream>
-
 using blaze::DynamicVector;
 using blaze::StaticVector;
 
@@ -452,9 +446,6 @@ computing performance.
 \begin{lstlisting}[
   language=c++
 ]{}
-#include <nt2/include/functions/ones.hpp>
-#include <nt2/table.hpp>
-
 using namespace nt2;
 
 int main() {
@@ -464,8 +455,6 @@ int main() {
   x = 40.0 * y + 2.0;
 
   NT2_DISPLAY(x);
-
-  return 0;
 }
 \end{lstlisting}
 
@@ -478,18 +467,12 @@ high performance and portable SIMD code \cite{hpcs2018-matvec}.
 \begin{lstlisting}[
   language=c++
 ]{}
-#include <eve/module/core.hpp>
-#include <eve/wide.hpp>
-#include <iostream>
-
 int main() {
   eve::wide<float> x(
       [](auto i, auto) { return 1.f + i; });
   std::cout << "x     = " << x << "\n";
   std::cout << "2*x   = " << x + x << "\n";
   std::cout << "x^0.5 = " << eve::sqrt(x) << "\n";
-
-  return 0;
 }
 \end{lstlisting}
 
@@ -531,23 +514,15 @@ ROCm and OneAPI.
 \begin{lstlisting}[
   language=c++
 ]{}
-#include <algorithm>
-#include <thrust/device_vector.h>
-#include <thrust/functional.h>
-#include <thrust/generate.h>
-#include <thrust/host_vector.h>
-#include <thrust/reduce.h>
-
-int main(void) {
+int foo() {
   // generate random data serially
   thrust::host_vector<int> h_vec(100);
   std::generate(h_vec.begin(), h_vec.end(), rand);
 
   // transfer to device and compute sum
   thrust::device_vector<int> d_vec = h_vec;
-  int x = thrust::reduce(d_vec.begin(), d_vec.end(),
-                         0, thrust::plus<int>());
-  return 0;
+  return thrust::reduce(d_vec.begin(), d_vec.end(), 0,
+                        thrust::plus<int>());
 }
 \end{lstlisting}
 
