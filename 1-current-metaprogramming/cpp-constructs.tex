@@ -243,17 +243,108 @@ similar to regular language such as containers and algorithms for use in
 template metaprograms. Notable examples of such libraries are MPL\cite{mpl},
 Brigand\cite{brigand}, and mp11 \cite{mp11}.
 
-% TODO: Ajouter un exemple type qui se fait avec les 3 biblios
+\begin{lstlisting}[
+  language=c++,
+  caption=boost.mp11 code example,
+  label=lst:mp11-example
+]{}
+template <int X> struct equals_to {
+  template <typename Y>
+  using apply = mp_bool<X == Y::type::value>;
+};
 
-Libraries for more specific uses were also implemented, such as
-Spirit\cite{spirit} for writing parsers (not for compile time parsing),
+using my_list = mp_list_c<int, 0, 2, 4, 6, 8, 10>;
+
+using pos_of_6 =
+    mp_find_if<my_list, equals_to<6>::apply>; // 3
+\end{lstlisting}
+
+\begin{lstlisting}[
+  language=c++,
+  caption=Brigand code example,
+  label=lst:brigand-example
+]{}
+using my_list =
+    brigand::integral_list<int, 0, 2, 4, 6, 8, 10>;
+
+using pos_of_6 = brigand::size<brigand::find<
+    my_list, std::is_same<brigand::_1,
+                          brigand::integral_constant<
+                              int, 6>>>>; // 3
+\end{lstlisting}
+
+Listings \ref{lst:mp11-example} and \ref{lst:brigand-example} show
+how to use mp11 and Brigand to perform a basic task: finding the index of a
+value in a list at compile time.
+\\
+
+Libraries for more specific uses were also introduced, such as
 \gls{ctre} \cite{ctre} for compiling regular expressions,
 and \gls{ctpg} \cite{ctpg} for generating LR1 parsers
 (also not for compile time parsing).
 
-% TODO: Des p'tits exemples
+\begin{lstlisting}[
+  language=c++,
+  caption=\gls{ctre} code example
+]{}
+auto input = "123,456,768"sv;
 
-The benefits of metaprogrammed libraries are:
+for (auto match : ctre::range<"([0-9]+),?">(input)) {
+  std::cout << std::string_view{match.get<0>()}
+            << "\n";
+}
+\end{lstlisting}
+
+All these libraries either enable \gls{tmp}, or use \gls{tmp} to achieve
+a specific goal. However with the introduction of \gls{constexpr} programming,
+a new range of compile time libraries aim to provide new capabilities
+for this new metaprogramming paradigm.
+
+The C'est\cite{cest} is one such example, as it aims to be a \gls{constexpr}
+compatible replacement for the \cpp standard library. It implements the same
+containers and algorithms, although all of them usable in \glspl{consteval}.
+For example, \lstinline{std::deque} is not usable in \glspl{consteval} whereas
+its C'est equivalent (\lstinline{cest::deque}) is.
+
+\begin{lstlisting}[
+  language=c++,
+  caption=C'est code example,
+  label=lst:cest-example
+]{}
+constexpr std::size_t
+find_pos(int element,
+         cest::vector<int> const &elements) {
+  return cest::find(elements.begin(), elements.end(),
+                    element) -
+         elements.end();
+}
+
+constexpr std::size_t pos_of_6 =
+    find_pos(6, {0, 2, 4, 6, 8, 10});
+\end{lstlisting}
+
+In listing \ref{lst:cest-example} we can see an example compile time program
+equivalent to what was shown for Brigand and mp11. Thanks to new \cpp features,
+metaprogramming can be partially done using \cpp code. This makes
+compile time programs significantly easier to write and understand.
+
+All these examples show that metaprogramming is not just a gimmick.
+There is enough interest in leveraging metaprogramming
+for generic programming that many frameworks, libraries, or languages
+have been developed around this paradigm and maintained sometimes
+for more than a decade. Its adoption in languages like Braid, Julia, Terra,
+Rust, or Dlang shows that it is not limited to \cpp.
+
+However, most of generic libraries and frameworks that are developed
+and maintained today are based on \cpp, and \cpp itself is likely to
+evolve to provide more ways to generate programs as shown by the recent
+standard proposal for Scalable Reflection in \cpp \cite{scalable-reflection}.
+
+\section{
+  Applications of metaprogramming for HPC
+}
+
+Metaprogramming can bring significant benefits to libraries:
 
 \begin{itemize}
 
@@ -283,25 +374,12 @@ to be installed and integrated to the build system.
 
 \end{itemize}
 
-All these examples show that metaprogramming is not just a gimmick.
-There is enough interest in leveraging metaprogramming
-for generic programming that many frameworks, libraries, or languages
-have been developed around this paradigm and maintained sometimes
-for more than a decade. Its adoption in languages like Braid, Julia, Terra,
-Rust, or Dlang shows that it is not limited to \cpp.
+These qualities make metaprogramming a good candidate for the implementation
+of comprehensive \gls{hpc} toolkits that would otherwise have
+slower implementations, or otherwise rely on compiler extensions like OpenMP.
 
-However, most of generic libraries and frameworks that are developed
-and maintained today are based on \cpp, and \cpp itself is likely to
-evolve to provide more ways to generate programs as shown by the recent
-standard proposal for Scalable Reflection in \cpp \cite{scalable-reflection}.
-\section{
-  Applications of metaprogramming for HPC
-}
-
-There are many \cpp \gls{hpc} libraries that use metaprogramming to achieve
-high levels of performance while being generic and proposing high level APIs.
-This subsection aims to provide an overview of notable libraries that fit this
-description as well as recent efforts that are still under development.
+As such, there are many \cpp \gls{hpc} libraries that use metaprogramming
+more or less extensively:
 
 \begin{itemize}
 
@@ -443,9 +521,10 @@ std::uint64_t fibonacci(std::uint64_t n) {
 
   \item
 
-\textbf{Thrust} \cite{thrust} implements \acrshort{gpu}-accelerated equivalents
+\textbf{Thrust} \cite{thrust} implements \gls{gpu}-accelerated equivalents
 of the Standard Library's algorithms, while CUB \cite{cub} provides
-\acrshort{gpu}-optimized algorithm skeletons for generic programming on NVIDIA \gls{gpu}\acrpluralsuffix{}.
+\gls{gpu}-optimized algorithm skeletons for generic programming on NVIDIA
+\glspl{gpu}.
 AMD and Intel implement their equivalents for their own platforms, respectively
 ROCm and OneAPI.
 
@@ -472,38 +551,13 @@ int main(void) {
 }
 \end{lstlisting}
 
-  \item
-
-\textbf{faer} \cite{faer}
-
-\begin{lstlisting}[
-  language=c++
-]{}
-use faer::{mat, Mat, prelude::*};
-
-// empty 0x0 matrix
-let m0: Mat<f64> = Mat::new();
-
-// zeroed 4x3 matrix
-let m1: Mat<f64> = Mat::zeros(4, 3);
-
-// 3x3 identity matrix
-let m2 = Mat::from_fn(
-  3, 3,
-  |i, j| if i == j { 1.0 } else { 0.0 });
-
-// 4x2 matrix with custom data
-let m3 = mat![
-    [4.93, 2.41],
-    [5.43, 4.33],
-    [9.83, 1.59],
-    [7.13, 5.02_f64],
-];
-
-// compute the qr decomposition of a matrix
-let qr_decomposition = m3.qr();
-\end{lstlisting}
-
 \end{itemize}
+
+These libraries operate at many different levels: some of them provide
+high level declarative APIs for math computing, while others provide generic
+building blocks to write generic compute kernels.
+
+In the next chapter, I will focus on the use of Boost.SIMD \cite{bsimd}
+for the generation of BLAS-compatible linear algebra kernels.
 
 \end{document}
