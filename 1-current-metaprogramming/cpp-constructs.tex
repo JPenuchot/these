@@ -301,9 +301,15 @@ a new range of compile time libraries aim to provide new capabilities
 for this new metaprogramming paradigm.
 
 The C'est\cite{cest} is one such example, as it aims to be a \gls{constexpr}
-compatible replacement for the \cpp standard library. It implements the same
-containers and algorithms, although all of them usable in \glspl{consteval}.
-For example, \lstinline{std::deque} is not usable in \glspl{consteval} whereas
+compatible replacement for the \cpp standard library. The development was
+started by Paul Keir, and I contributed by implementing
+\lstinline{cest::unique_ptr} which was needed to implement the Brainfuck parser
+in \ref{lbl:ptr-tree-codegen} before \lstinline{std::unique_ptr} became
+\gls{constexpr} compatible in libstdc++.
+
+It implements the same containers and algorithms as the \cpp standard library,
+although all of them usable in \glspl{consteval}. For example,
+\lstinline{std::deque} is not usable in \glspl{consteval} whereas
 its C'est equivalent (\lstinline{cest::deque}) is.
 
 \begin{lstlisting}[
