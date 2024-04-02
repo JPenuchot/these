@@ -8,6 +8,8 @@
   A technical background of C++ DSELs
 }
 
+% TODO: re-ventiler puisqu'on introduit les DSEL plus haut
+
 By definition, a \gls{dsl} is a computer language
 specialized to a particular application domain, contrary to a general-purpose
 language, which is broadly applicable across domains, and lacks specialized
@@ -204,32 +206,6 @@ its use cases for \gls{constexpr} programming research.
 % https://www.cs.rhul.ac.uk/research/languages/csle/lookahead_backtrack.html
 % https://www.boost.org/doc/libs/1_81_0/libs/spirit/doc/html/spirit/references.html
 % https://github.com/antlr/antlr4
-
-\subsection{
-  \cpp Domain Specific Embedded Languages
-}
-
-\glspl{dsel} in \cpp use \gls{tmp} via the \textit{Expression
-Template} idiom.
-\textbf{Expression Templates} \cite{veldhuizen:1995,vandevoorde:2002} is a
-technique implementing a form of \textbf{delayed evaluation} in
-\cpp \cite{spinellis:2001}. Expression Templates are built around the
-\textit{recursive type composition} idiom \cite{jarvi:1998} that allows the
-construction, at compile time, of a type representing the \gls{ast}
-of an arbitrary statement. This is done by overloading functions and operators
-on those types so they return a lightweight object.
-The object encodes the current operation in the \gls{ast}
-being built in its type instead of performing any kind of computation.
-Once reconstructed, this \gls{ast} can be transformed into arbitrary code fragments
-using Template Metaprograms.
-
-As of today, most \cpp EDSLs rely on \textit{Expression Templates} and therefore
-are limited to the \cpp syntax. New techniques are becoming more popular through
-the use of \gls{constexpr} strings to embed arbitray
-\glspl{dsel}. One major example is the \gls{ctre} \cite{ctre}
-that implements most of the \gls{pcre} syntax.
-However, \gls{ctre} still relies on type-based \gls{tmp} to parse
-regular expressions and transform them into regular expression evaluators.
 
 % TODO: Expose the issue clearly!!
 

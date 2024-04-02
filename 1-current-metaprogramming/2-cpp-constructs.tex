@@ -5,7 +5,7 @@
   \cpp language constructs for metaprogramming
 }
 
-Templates are an interesting technique for generative programming. As they
+Templates are an interesting feature for metaprogramming. As they
 are Turing-complete \cite{unruh:1994}, one can design a set of
 \textbf{template metaprograms} \cite{abrahams:2004} allowing the compiler
 to perform arbitrary computation at compile time and generating temporary
@@ -22,8 +22,6 @@ of the Fibonacci series as its \lstinline{value} static member.
 The template has 3 definitions:
 a generic one to calculate elements for $N > 1$,
 and two specializations for elements of ranks $0$ and $1$.
-
-\clearpage
 
 \begin{lstlisting}[
   language=C++,
@@ -232,10 +230,139 @@ preferable for many reasons: they are familiar to all \cpp developers
 semantics properly as opposed to type-based metaprogramming, and they allow
 compile time programs to run much faster than pure \gls{tmp} does.
 
+% TODO: Faire la liaison pour integrer (voir HDR de Joel)
+\section{
+  Domain specific embedded language
+}
+\label{lbl:expression-level-metaprogramming}
+
+% TODO: Citer un peu boost.proto
+
+% DEBUT
+\glspl{dsel} in \cpp use \gls{tmp} via the \textit{Expression Template} idiom.
+\textbf{Expression Templates} \cite{veldhuizen:1995,vandevoorde:2002} is a
+technique implementing a form of \textbf{delayed evaluation} in
+\cpp \cite{spinellis:2001}. Expression Templates are built around the
+\textit{recursive type composition} idiom \cite{jarvi:1998} that allows the
+construction, at compile time, of a type representing the \gls{ast}
+of an arbitrary statement. This is done by overloading functions and operators
+on those types so they return a lightweight object.
+The object encodes the current operation in the \gls{ast}
+being built in its type instead of performing any kind of computation.
+Once reconstructed, this \gls{ast} can be transformed into arbitrary code fragments
+using Template Metaprograms.
+
+As of today, most \cpp EDSLs rely on \textit{Expression Templates} and therefore
+are limited to the \cpp syntax. New techniques are becoming more popular through
+the use of \gls{constexpr} strings to embed arbitray
+\glspl{dsel}. One major example is the \gls{ctre} \cite{ctre}
+that implements most of the \gls{pcre} syntax.
+However, \gls{ctre} still relies on type-based \gls{tmp} to parse
+regular expressions and transform them into regular expression evaluators.
+% FIN
+
+In this chapter I will cover the use of \gls{tmp} for higher levels
+of abstraction. Templates can be used to represent whole mathematical
+expressions at compile time by creating type-based arborescences.
+This type of representation is called an \gls{et} \cite{veldhuizen:1995}.
+
+Combined with compile-time mechanisms such as function overloading,
+specialization, and operator overloading, \gls{et}\acrpluralsuffix{} can be used to
+implement expression level \gls{dsel}\acrpluralsuffix{} and convert complex
+mathematical expressions into high performance code.
+
+There are two main libraries that are able to do just this: Eigen \cite{eigen}
+and Blaze \cite{blazelib}, which were cited in \ref{lbl:meta-libraries}.
+In this section, I will introduce the basics of \cpp \gls{tmp},
+
+\subsection{
+  Expression templates: a type-based representation of math formulas
+}
+
+Expression templates are template trees that represent math formulas.
+They are generated using operator and function overloading from expressions
+that must be known at compile time.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{images/expressiontemplates}
+\caption{
+  Expression template evaluation illustration,
+  taken from Joel Falcou's HDR thesis \cite{falcou-hdr}
+}
+\label{fig:expression-template-illustration}
+\end{figure}
+
+Figure \ref{fig:expression-template-illustration} shows the basic
+working principle of \glspl{et}: an operation involving matrices generates
+a type hirarchy that represents the operation itself, and the assignment
+of this expression to \lstinline{x} triggers the generation of
+an optimized program that computes the operation.
+
+They enable a whole range of optimizations:
+
+\begin{itemize}
+\item
+\textbf{Lazy evaluation} is easily implemented through the generation
+of single element access operators that calculate single element values.
+
+\item
+\textbf{\gls{blas} functions} can be used on complex operations that
+benefit from highly optimized implementations. For example while
+element-wise operations such as vector additions might better use
+lazy evaluation, more complex operations such as matrix-matrix multiplications
+require more hardware-specific tuning.
+
+\item
+\textbf{Multi-threading} can be implemented via parallel assignment functions.
+
+\item
+\textbf{\gls{simd} optimizations} can be implemented through vector access
+operators to combine the benefits of lazy evaluation and \gls{simd} computing.
+\end{itemize}
+
+\subsubsection{
+  \acrlong{gpu} support efforts
+}
+
+Lots of rewrite to do
+
+Potentially a job for source rewriting tools
+
+\begin{itemize}
+\item Eventually: \gls{gpu} code generation, although Blaze needs a significant
+      rewrite for that. Source rewriting tools might be a good fit for that job.
+\end{itemize}
+
+Expression templates can provide expression level APIs for \gls{hpc} libraries.
+
+Still two limitations:
+
+\begin{itemize}
+\item Slow compilation times
+\item \cpp syntax only
+\end{itemize}
+
+Expression templates are aging (pretty well but still).
+Newer \cpp standards provide metaprogramming features that can fundamentally
+change the way we write metaprograms.
+
+The next part of my thesis will focus on how to leverage these features to
+implement \gls{dsel} of arbitrary syntax, and the study of their impact on
+compilation times.
+
+
 \section{
   Metaprogramming libraries
 }
 \label{lbl:meta-libraries}
+
+\subsection{
+  Type based metaprogramming
+}
+
+% TODO: Pour les exemples de code,
+% mettre les explications avant les bouts de code
+% et etoffer les explications pour donner plus de details
 
 As previously said \cpp templates can be seen as a functional language.
 Over time a range of libraries emerged, aiming to provide functionalities
@@ -248,11 +375,13 @@ Brigand\cite{brigand}, and mp11 \cite{mp11}.
   caption=boost.mp11 code example,
   label=lst:mp11-example
 ]{}
+/// A predicate is implemented as a structure template
 template <int X> struct equals_to {
   template <typename Y>
   using apply = mp_bool<X == Y::type::value>;
 };
 
+/// We store a number list as a type alias called `my`
 using my_list = mp_list_c<int, 0, 2, 4, 6, 8, 10>;
 
 using pos_of_6 =
@@ -276,29 +405,15 @@ using pos_of_6 = brigand::size<brigand::find<
 Listings \ref{lst:mp11-example} and \ref{lst:brigand-example} show
 how to use mp11 and Brigand to perform a basic task: finding the index of a
 value in a list at compile time.
-\\
-
-Libraries for more specific uses were also introduced, such as
-\gls{ctre} \cite{ctre} for compiling regular expressions,
-and \gls{ctpg} \cite{ctpg} for generating LR1 parsers
-(also not for compile time parsing).
-
-\begin{lstlisting}[
-  language=c++,
-  caption=\gls{ctre} code example
-]{}
-auto input = "123,456,768"sv;
-
-for (auto match : ctre::range<"([0-9]+),?">(input)) {
-  std::cout << std::string_view{match.get<0>()}
-            << "\n";
-}
-\end{lstlisting}
 
 All these libraries either enable \gls{tmp}, or use \gls{tmp} to achieve
 a specific goal. However with the introduction of \gls{constexpr} programming,
 a new range of compile time libraries aim to provide new capabilities
 for this new metaprogramming paradigm.
+
+\subsection{
+  Value based metaprogramming
+}
 
 The C'est\cite{cest} is one such example, as it aims to be a \gls{constexpr}
 compatible replacement for the \cpp standard library. The development was
@@ -329,17 +444,31 @@ constexpr std::size_t pos_of_6 =
     find_pos(6, {0, 2, 4, 6, 8, 10});
 \end{lstlisting}
 
+\subsection{
+  Domain specific metaprogramming
+}
+
+Libraries for more specific uses were also introduced, such as
+\gls{ctre} \cite{ctre} for compiling regular expressions,
+and \gls{ctpg} \cite{ctpg} for generating LR1 parsers
+(also not for compile time parsing).
+
+\begin{lstlisting}[
+  language=c++,
+  caption=\gls{ctre} code example
+]{}
+auto input = "123,456,768"sv;
+
+for (auto match : ctre::range<"([0-9]+),?">(input)) {
+  std::cout << std::string_view{match.get<0>()}
+            << "\n";
+}
+\end{lstlisting}
+
 In listing \ref{lst:cest-example} we can see an example compile time program
 equivalent to what was shown for Brigand and mp11. Thanks to new \cpp features,
 metaprogramming can be partially done using \cpp code. This makes
 compile time programs significantly easier to write and understand.
-
-All these examples show that metaprogramming is not just a gimmick.
-There is enough interest in leveraging metaprogramming
-for generic programming that many frameworks, libraries, or languages
-have been developed around this paradigm and maintained sometimes
-for more than a decade. Its adoption in languages like Braid, Julia, Terra,
-Rust, or Dlang shows that it is not limited to \cpp.
 
 However, most of generic libraries and frameworks that are developed
 and maintained today are based on \cpp, and \cpp itself is likely to
@@ -538,7 +667,19 @@ These libraries operate at many different levels: some of them provide
 high level declarative APIs for math computing, while others provide generic
 building blocks to write generic compute kernels.
 
+\section{
+  Conclusion
+}
+
+% TODO: Refondre ce paragraphe pour mieux resumer le chapitre
+All these examples show that metaprogramming is not just a gimmick.
+There is enough interest in leveraging metaprogramming
+for generic programming that many frameworks, libraries, or languages
+have been developed around this paradigm and maintained sometimes
+for more than a decade. Its adoption in languages like Braid, Julia, Terra,
+Rust, or Dlang shows that it is not limited to \cpp.
+
 In the next chapter, I will focus on the use of Boost.SIMD \cite{bsimd}
-for the generation of BLAS-compatible linear algebra kernels.
+for the generation of \gls{blas}-compatible linear algebra kernels.
 
 \end{document}

@@ -103,6 +103,12 @@
   morestring=[b]"
 }
 
+\lstdefinelanguage{rust}{
+  morekeywords={let, mut, expr},
+  morecomment=[l]{//},
+  morestring=[b]"
+}
+
 \lstdefinelanguage{javascript}{
   morekeywords={},
   morecomment=[l]{},
@@ -136,6 +142,7 @@
 
 \newacronym{ast}{AST}{Abstract Syntax Tree}
 \newacronym{bf}{BF}{Brainfuck}
+\newacronym{blas}{BLAS}{Basic Linear Algebra Subprograms}
 \newacronym{ctpg}{CTPG}{Compile Time Parser Generator}
 \newacronym{ctre}{CTRE}{Compile Time Regular Expression}
 \newacronym{dsel}{DSEL}{Domain Specific Embedded Language}
@@ -341,20 +348,14 @@ various languages. Then I will focus on the state of the art
 of \cpp metaprogramming, and finally give examples of applications
 of such techniques being used in the context of \gls{hpc} libraries.
 
-\subfile{1-current-metaprogramming/metaprog-and-hpc-overview.tex}
-\subfile{1-current-metaprogramming/cpp-constructs.tex}
+\subfile{1-current-metaprogramming/1-metaprog-and-hpc-overview.tex}
+\subfile{1-current-metaprogramming/2-cpp-constructs.tex}
 
 \chapter{
   Code generation at low level
 }
 
-\subfile{1-current-metaprogramming/low-level.tex}
-
-\chapter{
-  Code generation at expression level
-}
-
-\subfile{1-current-metaprogramming/expression-level.tex}
+\subfile{1-current-metaprogramming/3-gemv.tex}
 
 \part{C++ metaprogramming beyond templates}
 
@@ -388,10 +389,11 @@ which is the main \cpp technical conference in France. It is being used to
 benchmark examples from the poacher\cite{poacher} project, which was briefly
 presented at the Meeting \cpp 2022\cite{meetingcpp22} technical conference.
 
-\subfile{2-compilation-time-analysis/state-of-the-art.tex}
+\subfile{2-compilation-time-analysis/1-state-of-the-art.tex}
+\subfile{2-compilation-time-analysis/2-ctbench-design.tex}
+\subfile{2-compilation-time-analysis/3-ctbench-in-action.tex}
+
 % \subfile{2-compilation-time-analysis/features-and-design.tex}
-\subfile{2-compilation-time-analysis/ctbench-design.tex}
-\subfile{2-compilation-time-analysis/ctbench-in-action.tex}
 
 \section{Related projects} % TODO: Rework
 

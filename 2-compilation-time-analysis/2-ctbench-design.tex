@@ -93,8 +93,8 @@ declared with \ctbench functions.
 
 \end{itemize}
 
-Now that we have a summary of \ctbench's high level API, it is time to take a
-look at its internals.
+Benchmark data is laid out in folders under the following layout:
+\lstinline{<benchmark target name>/<iteration size>/<repetition number>.json}.
 
 \subsection{
   ctbench internals
@@ -103,6 +103,10 @@ look at its internals.
 Besides the CMake scripts, \ctbench is organized into several components:
 
 \begin{itemize}
+
+\item
+\textbf{A CMake API}: a CMake script file is installed as part of the CMake
+package. It provides an implement of the CMake API previously described.
 
 \item
 \textbf{grapher}: a \cpp library and CLI tool that reads benchmark data
@@ -121,27 +125,102 @@ command implementation.
   grapher: reading and plotting benchmark results
 }
 
-The grapher sub-project provides data structures for reading
+The grapher sub-project provides boilerplate code such as data structures
+for benchmark data representation, and data wrangling functions for reading
+benchmark data. It also serves as a framework for implementing and experimenting
+new data visualization techniques that might be relevant for compile time
+performance analysis.
 
 \begin{itemize}
 \item
-benchmark data structures and algorithms
-\lstinline{<benchmark target name>/<iteration size>/<iteration number>.json}
+
+  It provides a set of data structures is provided to handle profiling data:
+
+  \lstinline{benchmark_instance_t} contains several data file paths to several
+  repetitions of the same benchmark instantiated at the same size, as well
+  as the instantiation size for all the repetition files:
+
+\begin{lstlisting}[
+  language=c++
+]{}
+struct benchmark_instance_t {
+  unsigned size;
+  std::vector<std::filesystem::path> repetitions;
+};
+\end{lstlisting}
+
+  \lstinline{benchmark_case_t} contains several \lstinline{benchmark_instance_t}
+  elements, as well as the name of the benchmark case:
+
+\begin{lstlisting}[
+  language=c++
+]{}
+struct benchmark_case_t {
+  std::string name;
+  std::vector<benchmark_instance_t> instances;
+};
+\end{lstlisting}
+
+  And finally, \lstinline{benchmark_set_t} is used to gather
+  different benchmark cases that will be compared together:
+
+\begin{lstlisting}[
+  language=c++
+]{}
+using benchmark_set_t =
+  std::vector<benchmark_case_t>;
+\end{lstlisting}
+
+  Note that JSON data is not stored directly.
+  This is intentional since a profiling file for a single benchmark repetition
+  can reach volumes up to several hundreds megabytes, therefore data loading
+  is delayed to prevent RAM overcomsumption.
 
 \item
-plotter engines
+
+  Different plotter engines are provided, and they all follow the same
+  abstraction pattern by inheriting \lstinline{plotter_base_t}.
+  Currently only few plotters are considered to be usable
+  (\lstinline{compare}, \lstinline{compare_by}, and \lstinline{stack}).
+  Another one called \lstinline{grouped_histogram} was implemented
+  for experimenting but ended up being dropped.
+
+  The \lstinline{plotter_base_t} abstraction has a simple specification:
+\begin{lstlisting}[
+  language=c++
+]{}
+struct plotter_base_t {
+  virtual ~plotter_base_t() = default;
+  virtual void plot(
+    benchmark_set_t const &bset,
+    std::filesystem::path const &dest,
+    grapher::json_t const &config) const = 0;
+  virtual grapher::json_t get_default_config() const = 0;
+};
+\end{lstlisting}
+
+  To implement a new plotting strategy, one simply needs to create a structure
+  that implements that takes a \lstinline{benchmark_set_t} and a
+  JSON configuration structure as an input.
+
+  This level of modularity is central to the design of ctbench
+  as the goal is not just to provide a benchmarking tool that is easy to use,
+  but also a platform for researchers to experiment new ways to visualize
+  compilation profiling data.
 
 \item
-reusable svg
+
+  A JSON predicate engine is provided by the grapher library.
+  It is able to convert JSON expressions into rich predicates
+  that can be embedded in graph configuration files to target
+  relevant compilation trace events.
 
 \item
-predicate interface
 
-\item
-CLI
-
-\item
-sciplot
+  The CLI interface is part of the grapher project as a supplement
+  to the CMake API. It can be used to generate graphs without using
+  the CMake API, or for other things such as generating default
+  configuration files.
 
 \end{itemize}
 

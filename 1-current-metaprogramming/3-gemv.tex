@@ -1,34 +1,37 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
-BLAS-level functions are the cornerstone of a large
+% TODO: Relire pour pas que ca ressemble a un papier dans une these
+
+\gls{blas} level functions are the cornerstone of a large
 subset of applications. If a large body of work surrounding
 efficient and large-scale implementation of some routines such
 as gemv exists, the interest for small-sized, highly-optimized
-versions of those routines emerged. In this section, we propose
+versions of those routines emerged.
+
+% TODO: Reduire cette phrase beaucoup trop longue
+In this section, we propose
 to show how a modern \cpp approach based on generative
 programming techniques such as vectorization and loop unrolling
 in the framework of metaprogramming can deliver
 efficient automatically generated codes for such routines, that
 are competitive with existing, hand-tuned library kernels with
 a very low programming effort compared to writing assembly
-code. In particular, we analyze the performance of automatically
-generated small-sized gemv kernels for both Intel x86 and ARM
-processors. We show through a performance comparison with
-the OpenBLAS gemv kernel on small matrices of sizes ranging
-from 4 to 32 that our \cpp kernels are very efficient and may
-have a performance that is up to 3 times better than that of
-OpenBLAS gemv.
+code.
+\\
+
+The results of this chapter have been published at % TODO
+\\
 
 \section{
-  Introduction
+  Context
 }
 
-The efforts of optimizing the performance of BLAS routines
+The efforts of optimizing the performance of \gls{blas} routines
 fall into two main directions. The first direction is about
 writing very specific assembly code. This is the case for
 almost all the vendor libraries including Intel MKL\cite{hpcs1},
-AMD ACML\cite{hpcs2} etc. To provide the users with efficient BLAS
+AMD ACML\cite{hpcs2} etc. To provide the users with efficient \gls{blas}
 routines, the vendors usually implement their own routines
 for their own hardware using assembly code with specific
 optimizations which is a low level solution that gives the
@@ -64,58 +67,21 @@ challenging as we can see through the current state-of-the-art
 implementation results. Moreover, the different CPU architectures
 bring further challenges for its design and optimization.
 
-In this section, we describe how we obtained optimized generated
-\cpp codes for the gemv routine to make it reach its
-peak performance on different target CPU architectures (Intel
-x86 and ARM in this section). Our gemv \cpp generated kernels
-achieve uniform performances that outperform in the most of
-the cases the peaks of the state-of-the-art OpenBLAS gemv
-kernel for small matrices of sizes ranging from 4 to 128.
-This chapter is organized as follows: in Section II, we describe
-various generative programming techniques including metaprogramming
-principles as well as the main strategies to get
-efficient small-scale BLAS functions. In Section III, we show
-how to apply these programming techniques and principles
-in order to develop an efficient small-scale gemv kernel that
-will be used to automatically generates efficient \cpp codes for
-different target architectures. Then, we present in Section IV
-performance comparisons on two CPU architectures (Intel
-x86 and ARM) between our generated gemv kernels for
-small matrices and the OpenBLAS gemv. Finally, concluding
-remarks and perspectives are given in Section V.
-
-\section{
-  High-performance generative programming
-}
-
-The quality and performance of BLAS like code require
+The quality and performance of \gls{blas} like code require
 the ability to write tight and highly-optimized code. If the
 raw assembly of low-level C has been the language of choice
 for decades, our position is that the proper use of the zero abstraction
 property of \cpp can lead to the design of a single,
-generic yet efficient code base for many BLAS like functions.
-To do so, we will rely on two main elements: a proper \cpp
-\gls{simd} layer and a set of code generation techniques stemmed
-from Generic Programming.
+generic yet efficient code base for many \gls{blas} like functions.
+To do so, we will rely on two main elements: a set of code generation techniques
+stemmed from metaprogramming and a proper \cpp \gls{simd} layer.
 
-\subsection{
-  Metaprogramming as code generation principles
+\section{
+  Code generation via metaprogramming
 }
 
-Metaprogramming\cite{hpcs7} is about the design and the
-implementation of programs whose input and output
-are themselves programs. This term encompasses a large
-body of idioms, some language dependent, which can be used
-to define, manipulate or introspect arbitrary code fragment.
-One typical usage of metaprogramming is the design of
-libraries which expose a user API with an arbitrary high
-abstraction level while being able to get compiled to a very
-”close to the metal” implementation, often rivaling with a
-handwritten expert code on a given machine\cite{hpcs8}.
-If metaprogramming is used in languages as different as
-\cpp\cite{hpcs9},D\cite{hpcs10}, OCaml\cite{hpcs11}
-or Haskell\cite{hpcs12}, a subset of
-basic notions emerges:
+As we saw earlier, metaprogramming is used in \cpp \cite{hpcs9},D \cite{hpcs10},
+OCaml\cite{hpcs11} or Haskell\cite{hpcs12}. A subset of basic notions emerges:
 
 \begin{itemize}
 \item
@@ -141,70 +107,12 @@ steps can be done either via a special syntax construct,
 like the MetaOCaml code aggregation operator, or can
 use a similar syntax than a regular code.
 
-\item
-Code expansion:
-Once the initial code fragments have
-been processed, the last step is to turn them into an
-actual code. This is often done in an explicit manner by
-using a function or a syntax construct provided by the
-metaprogramming layer to trigger the code generation.
-Note that this code generation can either lead to a code
-ready to be compiled – like in Haskell or \cpp– or a
-code that can be run – like in OCaml– if the generation
-phase is done at runtime.
-Metaprogramming also includes other code generation
-techniques such as domain-specific languages and compilation
-infrastructures based on source-to-source compilers, which
-are actually able to perform the same techniques proposed by
-this section. Such systems includes:
-
-\item
-SYCL\cite{hpcs13}:
-a single-source abstraction over OpenCL
-for heterogeneous systems. By using OpenCL, one can
-effectively write SYCL code for a large selection of
-architectures including \gls{simd} capable CPU.
-
-\item
-BLIS\cite{hpcs14}:
-a framework for generating BLAS like operations
-in ISO C99 from a small subset of kernels that can
-be retargeted for different back-end. Its performances are
-on par with open-source solutions like OpenBLAS and
-ATLAS.
-
-\item
-LGEN\cite{hpcs15}:
-a compiler that produces performance-optimized
-basic linear algebra computations on matrices
-of fixed sizes with or without structure composed
-from matrix multiplication, matrix addition, matrix
-transposition, and scalar multiplication. Based on
-polyhedral analysis using CLoog, the generated code
-outperforms MKL and Eigen.
 \end{itemize}
 
-In this section, we will focus on language-based metaprogramming
+Now let's focus on language-based metaprogramming
 techniques so that the proposed method can
 be used in various compilers and OS settings as long as the
 compiler follows a given standard.
-Classical design of metaprograms in \cpp usually relies
-on complex template types that forced the compiler to follow
-intricate path during type deduction in order to take advantage
-of the Turing completeness of the template definition. By
-using template partial specialization and recursive definition,
-one could implement arbitrary transform on types in order
-to converge towards a code ready to be generated. Code
-fragments were usually static class member function which
-encapsulated the basic code block to be replicated and
-generated. If the efficiency of the code generated was as
-expected, the maintenance cost of the generating code was
-usually high. Template metaprograms were complex to write
-and read as the logic of the code generation was buried
-behind heaps of non-trivial syntax. Some progress was made
-by some infrastructure library like MPL\cite{hpcs16} or Fusion, but
-the learning gap was still high.
-
 With the standard \cpp revision in 2014 and 2017, this
 strategy was renewed with three new \cpp features:
 
@@ -300,11 +208,11 @@ b += 3;
 
 \end{itemize}
 
-\subsection{
-  Application to \acrlong{hpc} code generation
+\section{
+  C++ performance layer
 }
 
-The main strategies to get efficient small-scale BLAS
+The main strategies to get efficient small-scale \gls{blas}
 functions are on one hand the usage of the specific
 instructions set (mainly \gls{simd} instructions set) of the target
 architecture that is vectorization and on the other hand the
@@ -511,28 +419,28 @@ extend and does not rely on non-standard extensions.
 \end{itemize}
 
 \section{
-  The matrix-vector multiplication routine: gemv
+  Application: the GEMV kernel
 }
 
-Level 2 BLAS routines such as gemv have a low
-computational intensity compared to Level 3 BLAS operations
+Level 2 \gls{blas} routines such as gemv have a low
+computational intensity compared to Level 3 \gls{blas} operations
 such as gemm. For that reason, in many dense linear algebra
 algorithms in particular for one sided factorizations such as
 Cholesky, LU, and QR decompositions some techniques are
-used to accumulate several Level 2 BLAS operations when
-possible in order to perform them as one Level 3 BLAS
+used to accumulate several Level 2 \gls{blas} operations when
+possible in order to perform them as one Level 3 \gls{blas}
 operation\cite{hpcs18}. However, for the two-sided factorizations,
 and despite the use of similar techniques, the fraction of the
-Level 2 BLAS floating point operations is still important. For
+Level 2 \gls{blas} floating point operations is still important. For
 instance, for both the bidiagonal and tridiagonal reductions,
 this fraction is around 50\%\cite{hpcs19}. Thus, having optimized
 implementations for these routines on different architectures
 remains important to improve the performance of several
-algorithms and applications. Moreover, small-scale BLAS
+algorithms and applications. Moreover, small-scale \gls{blas}
 kernels are useful for some batched computations\cite{hpcs20}.
 
 Here, we consider the matrix-vector multiplication routine
-for general dense matrices, gemv, which performs either
+for general dense matrices, GEMV, which performs either
 $y := \alpha A x + \beta y$ or $y := \alpha A T x + \beta y$,
 where $A$ is an $m \times n$ matrix, $\alpha$ and $\beta$ are scalars,
 and $y$ and $x$ are vectors. In this section,
@@ -577,7 +485,7 @@ into \gls{simd} registers.
 
 \begin{lstlisting}[
   language=c++,
-  caption=Unrolled gemv kernel,
+  caption=Unrolled GEMV kernel,
   label=lst:gemv-kernel
 ]{}
 template <typename T, std::size_t H,
@@ -637,14 +545,14 @@ in Section II helps us to encapsulate those complex metaprogramming
 cases into an API based on function calls.
 
 \section{
-  Performance results of the generated gemv codes
+  Performance results of the generated GEMV codes
 }
 
 To validate our approach, we consider two main targeted
 processor architectures: an x86 Intel processor i5-7200 and an
 ARM processor AMD A1100 with Cortex A57. We compare
-the performance of the generated gemv codes to that of the
-gemv kernel of the OpenBLAS library based on GotoBLAS2 1.13\cite{hpcs21}.
+the performance of the generated GEMV codes to that of the
+GEMV kernel of the OpenBLAS library based on GotoBLAS2 1.13\cite{hpcs21}.
 We use GCC 7.2\cite{hpcs22} with maximal level of optimization.
 
 In the following experiments, we only show results
@@ -684,18 +592,18 @@ set (SSE-4.2)
 
 In Figure 2, we compare the performance of our implementation
 using the \gls{simd} Extensions set SSE 4.2 and a similarly
-configured OpenBLAS gemv kernel. The obtained results show
+configured OpenBLAS GEMV kernel. The obtained results show
 that the performances of our automatically generated code is
 up to 2 times better for matrices of sizes ranging from $4 \times 4$
 elements to $16 \times 16$ elements. However, for matrices of size
-$32 \times 32$ elements and $64 \times 64$ elements, the OpenBLAS gemv
+$32 \times 32$ elements and $64 \times 64$ elements, the OpenBLAS GEMV
 kernel gives a better performances, especially for the $64 \times 64$
 case. This is because the OpenBLAS library uses a dedicated
-gemv kernel with specific optimizations and prefetching
+GEMV kernel with specific optimizations and prefetching
 strategies that our generic solution can not emulate. Beyond
 this size ($64 \times 64$ elements), the $L1 \rightarrow L2$ cache misses
 cause a performance drop for both our generated code and
-the OpenBLAS gemv kernel. Nevertheless, our generated code
+the OpenBLAS GEMV kernel. Nevertheless, our generated code
 sustains a better throughput for matrices of sizes $128 \times 128$
 elements. For matrices of size $256 \times 256$ elements, the register
 usage starts to cause spill to the stack, showing that our
@@ -723,13 +631,13 @@ Fig. 3. GEMV performance on Intel i5-7200 processor using Advanced Vector
 Extensions (AVX)
 
 In Figure 3, we compare the performance of our generated
-gemv code using Advanced Vector Extensions AVX2 to the
-performance of a similarly configured OpenBLAS gemv kernel.
+GEMV code using Advanced Vector Extensions AVX2 to the
+performance of a similarly configured OpenBLAS GEMV kernel.
 Again, the performances of our implementation are close
 to that of OpenBLAS and are even quite better for matrices of
 small sizes ranging from 4 to 16 elements. For example, for a
 matrix of size 8 elements,the automatically generated code has
-a performance that is 3 times better than the OpenBLAS gemv
+a performance that is 3 times better than the OpenBLAS GEMV
 kernel (15.78 Gflop/s vs 5.06 Gflop/s). Two phenomenons
 appear however. The first one is that the increased number
 of the AVX registers compared to the SSE ones makes the
@@ -752,9 +660,9 @@ a given size on a given architecture.
 }
 
 The comparison between our automatically generated code
-and the ARM OpenBLAS gemv kernel is given in Figure 4.
+and the ARM OpenBLAS GEMV kernel is given in Figure 4.
 Contrary to the x86 Intel processor, we sustain a comparable
-yet slightly better throughput than the OpenBLAS gemv
+yet slightly better throughput than the OpenBLAS GEMV
 kernel. The analysis of the generated assembly code shows
 that our method of guiding the compiler and letting it do
 fine grained optimizations generates a better code than the
@@ -788,16 +696,16 @@ abstraction cost.
 }
 
 This chapter presented the details of generating an optimized
-level 2 BLAS routine gemv. As a key difference with respect
+level 2 \gls{blas} routine GEMV. As a key difference with respect
 to highly tuned OpenBLAS routine, our generated code
 is designed to give the best performance with a minimum
 programming effort for rather small matrices that fit into the
-L1 cache. Compared to the best open source BLAS library,
-OpenBLAS, the automatically generated gemv codes show
+L1 cache. Compared to the best open source \gls{blas} library,
+OpenBLAS, the automatically generated GEMV codes show
 competitive speedups for most of the matrix sizes tested in
 this section, that is for sizes ranging from 4 to 512. Therefore
-through this section and the example of the level 2 BLAS
-routine gemv, we showed that it is possible to employ modern
+through this section and the example of the level 2 \gls{blas}
+routine GEMV, we showed that it is possible to employ modern
 generative programming techniques for the implementation
 of dense linear algebra routines that are highly optimized for
 small matrix sizes.
@@ -805,15 +713,11 @@ small matrix sizes.
 One of our next steps is to provide such metaprogrammed
 code generation process to tackle larger matrix sizes by precomputing
 an optimal tiling availability of prefetch and architecture,
-turning large-scale gemv into an optimized sequence of
-statically sized small-scale gemvs. Such a technique is also naturally
+turning large-scale GEMV into an optimized sequence of
+statically sized small-scale GEMVs. Such a technique is also naturally
 applicable to more complex algorithms, such the matrix-matrix
 multiplication, gemm, where tiling is paramount, or
 LAPACK-level functions where the compile-time optimization
 may lead to an easier to parallelize solvers or decompositions.
-
-Another objective will be to adapt such techniques to cooperate
-with tuning framework, hence providing the required level of
-performance with less input from the user.
 
 \end{document}
