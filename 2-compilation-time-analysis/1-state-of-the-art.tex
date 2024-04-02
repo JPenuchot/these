@@ -34,11 +34,11 @@ techiniques beyond black box A/B comparisons.
 }
 
 Metabench\cite{metabench} instantiates variably sized benchmarks using
-embedded Ruby (ERB) templating and plots compiler execution time, allowing
+\gls{erb} templating and plots compiler execution time, allowing
 scaling analyses of metaprograms. Its output is a series of web-based
 interactive graphs.
 
-The ERB templates are used to generate \cpp programs for measuring their
+The \gls{erb} templates are used to generate \cpp programs for measuring their
 total compilation time. This approach is compiler-agnostic, it allows to compare
 not just metaprograms but compilers as well.
 
@@ -127,10 +127,6 @@ various formats that are trivially embeddable in documents like research papers,
 web pages, or documentations. Additionally, relying on persistent configuration,
 benchmark declaration and description files provides strong guarantees for
 benchmark reproductibility, as opposed to web tools or interactive profilers.
-
-\subsection{
-  Conclusion
-}
 
 While Metabench could have been a good candidate for assessing the scalability
 of metaprogramming techniques, its design choices make it simpler to write a new

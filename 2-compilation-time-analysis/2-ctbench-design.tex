@@ -6,7 +6,7 @@
   ctbench design and features
 }
 
-\ctbench implements a new methodology for the analysis of compilation times:
+ctbench implements a new methodology for the analysis of compilation times:
 it allows users to define \cpp sizable benchmarks to analyze the scaling
 performance of \cpp metaprogramming techniques, and compare techniques
 against each other.
@@ -17,7 +17,7 @@ It is developed with decent software quality in mind to offer a robust
 external API, and a well documented internal API to enable the reuse of
 its components.
 
-All these goals are kept in mind to ensure that \ctbench is not just a single
+All these goals are kept in mind to ensure that ctbench is not just a single
 use tool for this thesis, but a sustainable open-source project that enables
 researchers and developers to automatize the generation of reusable graphs
 and data artifacts.
@@ -27,12 +27,12 @@ and data artifacts.
 }
 \label{lbl:ctbench-cmake-api}
 
-The choice of using CMake as an entry point is to ensure that \ctbench is not
+The choice of using CMake as an entry point is to ensure that ctbench is not
 just a research tool made for a single set of benchmarks, but an easy-to-use
 solution for all \cpp developers willing to analyze the compile time
 performance of their metaprograms.
 
-The public CMake API of \ctbench is meant to be as stable as reasonable.
+The public CMake API of ctbench is meant to be as stable as reasonable.
 It is relatively simple, and all of it is implemented in
 a single CMake script file. It declares the following:
 
@@ -65,7 +65,7 @@ of user-defined sizable benchmark cases:
   \lstinline{ctbench_add_benchmark}'s interface with an addition:
   a callback function name must be passed as a parameter. It will be called
   for each benchmark iteration target definition with the name and size of the
-  target. This allows users to set compiler parameters other than \ctbench's
+  target. This allows users to set compiler parameters other than ctbench's
   preprocessor directive.
 
   \end{itemize}
@@ -74,7 +74,7 @@ of user-defined sizable benchmark cases:
 \lstinline{ctbench_add_graph} allows the declaration of a benchmark.
 It takes a user-defined name, a path to a JSON configuration file,
 an output destination, and a list of benchmark names defined using the
-functions mentioned above. \ctbench expects JSON files to include information
+functions mentioned above. ctbench expects JSON files to include information
 relative to the graphs themselves: the plotter being used, predicates
 to filter out time trace events, output format, and so on.
 Each plotter has its own set of parameters.
@@ -83,13 +83,13 @@ Each plotter has its own set of parameters.
 \lstinline{ctbench_set_compiler} and \lstinline{ctbench_unset_compiler}
 are a pair of commands that using different compilers for benchmarks.
 CMake does not allow using more than one compiler within a CMake build,
-but \ctbench's compiler launcher can be used through these commands
+but ctbench's compiler launcher can be used through these commands
 to work around that limitation and run benchmarks for compiler performance
 comparisons.
 
 \item
 The \lstinline{ctbench-graph-all} target, which allows to build all the graphs
-declared with \ctbench functions.
+declared with ctbench functions.
 
 \end{itemize}
 
@@ -100,7 +100,7 @@ Benchmark data is laid out in folders under the following layout:
   ctbench internals
 }
 
-Besides the CMake scripts, \ctbench is organized into several components:
+Besides the CMake scripts, ctbench is organized into several components:
 
 \begin{itemize}
 
@@ -228,7 +228,7 @@ struct plotter_base_t {
   compiler-launcher: working around CMake's limitations
 }
 
-CMake has its own limitations that would make the implementation of \ctbench
+CMake has its own limitations that would make the implementation of ctbench
 impractical, or even impossible without a compiler launcher. Thankfully, CMake
 does support compiler launchers through the
 \lstinline{CMAKE_CXX_COMPILER_LAUNCHER} target property,
@@ -239,28 +239,26 @@ a CMake interface to retrieve the path of the binaries it generates (which is
 needed to locate JSON trace files), and the lack of a Clang option to set
 the output path of time trace files until Clang 16.
 
-The functionality of the wrapper was since extended to support more use cases.
-
-\begin{itemize}
-\item find out where json files are located with \lstinline{-ftime-trace}
-\item CLI option parsing
-\item compiler execution time measurement
-\end{itemize}
+The functionality of the wrapper was since extended to implement other features
+such as compilation time measurement for GCC or compiler permutation
+to enable the use of several \cpp compilers inside a single CMake build.
 
 \subsection{
-  Software quality
+  Software quality and journal publication
 }
 
 An emphasis was put on software quality since the beginning of the project.
 As mentioned, the goal was not just to develop a plotting tool for a single
 compilation time analysis, but to provide a methodology along with a robust
-implementation to improve compilation time analysis as a whole.
+implementation to improve compilation time performance analysis as a whole.
 
 \begin{itemize}
 
 \item
-The use of common \cpp development tools for the project facilitates
-makes it easier for users to contribute to the project.
+The choice of CMake for the API and \cpp for the library code is intentional.
+The project is aimed at \cpp software developers and researchers, therefore
+using \cpp centric languages and tools lowers barriers to entry to those
+who might want to contribute to it.
 
 \item
 The use of a GitHub CI for building and testing the project guarantees that
@@ -270,21 +268,16 @@ and Arch Linux. The test environment is fully reproducible as well thanks to
 the use of Docker for its setup.
 
 \item
-compiler checks: clang-tidy and clang-format
-
-\item
-Packages are provided through the AUR and the vcpkg repository
-
-\item
-Accepted in JOSS, which puts an emphasis on software quality.
-the review itself is meant to improve the quality of the software
-thanks to the reviewers' feedback.
+The software is installable through the source code and software packages
+available in the Arch User Repository and vcpkg.
 \end{itemize}
 
-\subsection{
-  Conclusion
-}
-
-\ctbench is a well
-
+The quality of ctbench as a research software project has been peer-reviewed,
+and a paper for ctbench itself was published at the
+Journal of Open-Source Science \cite{Penuchot2023}:
+Jules P\'enuchot, Joel Falcou, (2023).
+\textit{ctbench - compile-time benchmarking and analysis.}
+Journal of Open Source Software, 8(88), 5165,
+\url{https://doi.org/10.21105/joss.05165}.
+z
 \end{document}
