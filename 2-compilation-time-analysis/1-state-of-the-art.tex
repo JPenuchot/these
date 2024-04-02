@@ -3,7 +3,7 @@
 \begin{document}
 
 \section{
-  Compile time benchmarking: state of the art
+  State of the art
 }
 
 \cpp \gls{tmp} raised interest for allowing computing libraries
@@ -13,8 +13,9 @@ interpretation, they are built at compile time to be transformed directly into
 programs.
 
 As metaprogramming became easier with \cpp11 and \cpp17,
-it became more frequent. Consequently developers now have to bear with longer
-compilation times, often without being able to explain them.
+it became more frequently used.
+Consequently, developers now have to bear with longer
+compilation times, often without being able to explain and improve them.
 Therefore being able to measure compilation times becomes increasingly important
 and being able to profile and explain them as well.
 
@@ -37,12 +38,12 @@ Metabench\cite{metabench} instantiates variably sized benchmarks using
 \gls{erb} templating and plots compiler execution time, allowing
 scaling analyses of metaprograms. Its output is a series of web-based
 interactive graphs.
-
 The \gls{erb} templates are used to generate \cpp programs for measuring their
 total compilation time. This approach is compiler-agnostic, it allows to compare
 not just metaprograms but compilers as well.
+\\
 
-However Metabench is currently unmaintained, and its design choices make it
+However, Metabench is inactive since 2019, and its design makes it
 difficult to modify and reuse it for the assessment of metaprogramming
 techniques performance in a scientific context:
 
@@ -56,22 +57,27 @@ benchmarks are not standalone, they are embedded in the Metabench
 project itself,
 
 \item
-web-based visualizations cannot be embedded in \LaTeX{} documents.
+web-based visualizations cannot be embedded in scientific publications.
+
 \end{itemize}
+
+For all these reasons, Metabench cannot fit our needs properly.
 
 \subsection{
   Templight
 }
 
-Templight\cite{templight} is the first effort to instrument Clang with a
+Templight \cite{templight} is the first effort to instrument Clang with a
 profiler. It aims to provide tools to measure resource usage (CPU time,
 memory usage, and file I/O) of template instantiations.
+
+% TODO: completer et expliquer pourquoi c'est pas ce qu''il nous faut
 
 \subsection{
   Clang's built-in profiler
 }
 
-Additionally, Clang has a built-in profiler\cite{time-trace} that provides
+Clang provides a built-in profiler \cite{time-trace} that generates
 in-depth time measurements of various compilation steps, which can be enabled by
 passing the \lstinline{-ftime-trace} flag. Its output contains data that can be
 directly linked to symbols in the source code, making it easier to study the
@@ -82,6 +88,7 @@ symbol or the file related to an event. The profiling data can then be
 visualized using tools such as Google's Perfetto UI as shown in figure
 \ref{fig:perfetto-time-trace-ui}.
 
+% TODO: Passer en paysage sur sa propre page
 \begin{figure}[h]
 \includegraphics[scale=0.264]{images/perfetto-ui.png}
 \caption{Clang time trace file in Perfetto UI}
@@ -133,8 +140,7 @@ of metaprogramming techniques, its design choices make it simpler to write a new
 tool that better fits the needs of scientific assessment of metaprogramming
 techniques.
 
-\ctbench's API and overall concept was largely inspired by this project for its
-simplicity and leverages Clang's profiling capabilities that are similar to
-those introduced by Templight.
+The goal of ctbench is to remain as simple as Metabench while providing
+the same analysis depth as Templight.
 
 \end{document}

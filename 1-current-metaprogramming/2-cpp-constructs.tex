@@ -415,6 +415,38 @@ for this new metaprogramming paradigm.
   Value based metaprogramming
 }
 
+% TODO: revoir l'integration du bloc
+
+With dynamic memory and virtual functions making their way to
+\gls{constexpr} programming, the next logical step is to make standard \cpp
+containers available in constant evaluations.
+Modifying the \cpp standard to accomodate that need takes time.
+However, implementing standard-like containers that are good enough
+for prototyping and experimenting with \gls{constexpr} programs
+can be done fast enough.
+
+The C'est \cite{cest} library was created with this goal in mind, filling the
+gap in the \cpp standard, and accommodating the need for \gls{constexpr}
+compatible standard containers.
+As of today most of the containers implemented in C'est are available in
+up-to-date standard libraries, but it is still a useful library for
+compatibility with platforms that do not have \cpp23 compatible compilers and
+standard libraries such as old versions of Debian.
+
+It was instrumental for this thesis as the research work I present here started
+a long time before \cpp23 was adopted and standard libraries and compilers
+started implementing it.
+
+I contributed to its development myself by implementing a \gls{constexpr} version
+of \lstinline{std::unique_ptr}. This collaboration led Joel Falcou and myself to
+meet with its initiator, Paul Keir, in Glasgow and Paris.
+Our collaboration also led to speak together at
+Meeting \cpp 2022 \cite{meetingcpp22} where we talked about C'est and
+its use cases for \gls{constexpr} programming research.
+
+
+
+
 The C'est\cite{cest} is one such example, as it aims to be a \gls{constexpr}
 compatible replacement for the \cpp standard library. The development was
 started by Paul Keir, and I contributed by implementing

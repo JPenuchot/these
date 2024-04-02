@@ -3,7 +3,7 @@
 \begin{document}
 
 \section{
-  ctbench design and features
+  ctbench features
 }
 
 ctbench implements a new methodology for the analysis of compilation times:
@@ -11,30 +11,36 @@ it allows users to define \cpp sizable benchmarks to analyze the scaling
 performance of \cpp metaprogramming techniques, and compare techniques
 against each other.
 
-The project was designed to be a well maintained, easy to install,
+The project was designed to be an easy to install,
 and easy to use alternative to current compile time benchmarking tools.
-It is developed with decent software quality in mind to offer a robust
-external API, and a well documented internal API to enable the reuse of
-its components.
+The public API is based on CMake as the project is aimed at \cpp software
+developers and researchers. Therefore, using familiar tools
+lowers barriers to entry to those who might want to contribute to it.
 
-All these goals are kept in mind to ensure that ctbench is not just a single
-use tool for this thesis, but a sustainable open-source project that enables
-researchers and developers to automatize the generation of reusable graphs
-and data artifacts.
+% It is developed with decent software quality in mind to offer a robust
+% external API, and a well documented internal API to enable the reuse of
+% its components.
+
+% All these goals are kept in mind to ensure that ctbench is not just a single
+% use tool for this thesis, but a sustainable open-source project that enables
+% researchers and developers to automatize the generation of reusable graphs
+% and data artifacts.
 
 \subsection{
   CMake API for benchmark and graph target declarations
 }
 \label{lbl:ctbench-cmake-api}
 
-The choice of using CMake as an entry point is to ensure that ctbench is not
-just a research tool made for a single set of benchmarks, but an easy-to-use
-solution for all \cpp developers willing to analyze the compile time
-performance of their metaprograms.
+% The choice of using CMake as an entry point is to ensure that ctbench is not
+% just a research tool made for a single set of benchmarks, but an easy-to-use
+% solution for all \cpp developers willing to analyze the compile time
+% performance of their metaprograms.
 
-The public CMake API of ctbench is meant to be as stable as reasonable.
-It is relatively simple, and all of it is implemented in
-a single CMake script file. It declares the following:
+The public API of ctbench is meant to be as stable as reasonable by relying on
+CMake as a base language. It is relatively simple, and all of it is implemented
+in a single CMake script file. It declares the following:
+
+% TODO: Nettoyer les lstinline qui depassent
 
 \begin{itemize}
 
@@ -96,32 +102,35 @@ declared with ctbench functions.
 Benchmark data is laid out in folders under the following layout:
 \lstinline{<benchmark target name>/<iteration size>/<repetition number>.json}.
 
-\subsection{
-  ctbench internals
+\section{
+  ctbench internal design
 }
 
 Besides the CMake scripts, ctbench is organized into several components:
+\textbf{compiler-launcher}, which is a simple executable that extends CMake's
+feature set, and \textbf{grapher} a \cpp library and CLI tool that reads
+benchmark data and draws plots.
 
-\begin{itemize}
+\subsection{
+  compiler-launcher: working around CMake's limitations
+}
 
-\item
-\textbf{A CMake API}: a CMake script file is installed as part of the CMake
-package. It provides an implement of the CMake API previously described.
+CMake has its own limitations that would make the implementation of ctbench
+impractical, or even impossible without a compiler launcher. Thankfully, CMake
+does support compiler launchers through the
+\lstinline{CMAKE_CXX_COMPILER_LAUNCHER} target property,
+allowing us to work around those issues.
 
-\item
-\textbf{grapher}: a \cpp library and CLI tool that reads benchmark data
-and draws plots. It
+The main issue that compiler-launcher was meant to solve is the lack of
+a CMake interface to retrieve the path of the binaries it generates (which is
+needed to locate JSON trace files), and the lack of a Clang option to set
+the output path of time trace files until Clang 16.
 
-\item
-\textbf{compiler-launcher}: a simple program that handles compiler flags in
-order to move JSON profiling output to the right place for grapher
-to retrieve it, measures compiler execution time if required, and invokes the
-desired compiler as part of the \lstinline{ctbench_set_compiler} CMake
-command implementation.
+The functionality of the wrapper was since extended to implement other features
+such as compilation time measurement for GCC or compiler permutation
+to enable the use of several \cpp compilers inside a single CMake build.
 
-\end{itemize}
-
-\subsubsection{
+\subsection{
   grapher: reading and plotting benchmark results
 }
 
@@ -224,60 +233,4 @@ struct plotter_base_t {
 
 \end{itemize}
 
-\subsubsection{
-  compiler-launcher: working around CMake's limitations
-}
-
-CMake has its own limitations that would make the implementation of ctbench
-impractical, or even impossible without a compiler launcher. Thankfully, CMake
-does support compiler launchers through the
-\lstinline{CMAKE_CXX_COMPILER_LAUNCHER} target property,
-allowing us to work around those issues.
-
-The main issue that compiler-launcher was meant to solve is the lack of
-a CMake interface to retrieve the path of the binaries it generates (which is
-needed to locate JSON trace files), and the lack of a Clang option to set
-the output path of time trace files until Clang 16.
-
-The functionality of the wrapper was since extended to implement other features
-such as compilation time measurement for GCC or compiler permutation
-to enable the use of several \cpp compilers inside a single CMake build.
-
-\subsection{
-  Software quality and journal publication
-}
-
-An emphasis was put on software quality since the beginning of the project.
-As mentioned, the goal was not just to develop a plotting tool for a single
-compilation time analysis, but to provide a methodology along with a robust
-implementation to improve compilation time performance analysis as a whole.
-
-\begin{itemize}
-
-\item
-The choice of CMake for the API and \cpp for the library code is intentional.
-The project is aimed at \cpp software developers and researchers, therefore
-using \cpp centric languages and tools lowers barriers to entry to those
-who might want to contribute to it.
-
-\item
-The use of a GitHub CI for building and testing the project guarantees that
-project remains functional at all times on all supported platforms.
-As of writing, the project is continuously built and tested for Ubuntu 23.04
-and Arch Linux. The test environment is fully reproducible as well thanks to
-the use of Docker for its setup.
-
-\item
-The software is installable through the source code and software packages
-available in the Arch User Repository and vcpkg.
-\end{itemize}
-
-The quality of ctbench as a research software project has been peer-reviewed,
-and a paper for ctbench itself was published at the
-Journal of Open-Source Science \cite{Penuchot2023}:
-Jules P\'enuchot, Joel Falcou, (2023).
-\textit{ctbench - compile-time benchmarking and analysis.}
-Journal of Open Source Software, 8(88), 5165,
-\url{https://doi.org/10.21105/joss.05165}.
-z
 \end{document}

@@ -5,21 +5,8 @@
 % state of the art section
 
 \section{
-  A technical background of C++ DSELs
+  Advanced constexpr programming
 }
-
-% TODO: re-ventiler puisqu'on introduit les DSEL plus haut
-
-By definition, a \gls{dsl} is a computer language
-specialized to a particular application domain, contrary to a general-purpose
-language, which is broadly applicable across domains, and lacks specialized
-features for a particular domain. \glspl{dsel}
-are a subclass of \gls{dsl} that rely on an existing general-purpose language to host
-it. \glspl{dsel} then reuse the host language syntax and tool ecosystem to be compiled
-or interpreted.
-
-In \cpp, the compile time process of generating new code is
-\gls{tmp} to ensure performance and correctness.
 
 % TODO: dig this for references https://youtu.be/q6X9bKpAmnI
 
@@ -151,36 +138,6 @@ This feature allows calls to virtual functions in constant expressions
 \cite{virtual-constexpr}. This allows heritage-based polymorphism in \gls{constexpr}
 programming when used with \gls{constexpr} allocation of polymorphic types.
 
-\subsubsection{
-  Cest: standard-like containers for \gls{constexpr} programming
-}
-
-With dynamic memory and virtual functions making their way to
-\gls{constexpr} programming, the next logical step is to make standard \cpp
-containers available in constant evaluations.
-Modifying the \cpp standard to accomodate that need takes time.
-However, implementing standard-like containers that are good enough
-for prototyping and experimenting with \gls{constexpr} programs
-can be done fast enough.
-
-The C'est \cite{cest} library was created with this goal in mind, filling the
-gap in the \cpp standard, and accommodating the need for \gls{constexpr} compatible
-standard containers.
-As of today most of the containers implemented in C'est are available in
-up-to-date standard libraries, but it is still a useful library for
-compatibility with platforms that do not have \cpp23 compatible compilers and
-standard libraries such as old versions of Debian.
-
-It was instrumental for this thesis as the research work I present here started
-a long time before \cpp23 was adopted and standard libraries and compilers
-started implementing it.
-
-I contributed to its development myself by implementing a \gls{constexpr} version
-of \lstinline{std::unique_ptr}. This collaboration led Joel Falcou and myself to
-meet with its initiator, Paul Keir, in Glasgow and Paris.
-Our collaboration also led to speak together at
-Meeting \cpp 2022 \cite{meetingcpp22} where we talked about C'est and
-its use cases for \gls{constexpr} programming research.
 
 % \section{C++23 experiments for implementing EDSLs of arbitrary syntaxes}
 
