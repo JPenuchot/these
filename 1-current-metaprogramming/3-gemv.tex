@@ -10,18 +10,20 @@ as gemv exists, the interest for small-sized, highly-optimized
 versions of those routines emerged.
 
 % TODO: Reduire cette phrase beaucoup trop longue
-In this section, we propose
-to show how a modern \cpp approach based on generative
+In this chapter, we show that modern \cpp generative
 programming techniques such as vectorization and loop unrolling
-in the framework of metaprogramming can deliver
-efficient automatically generated codes for such routines, that
-are competitive with existing, hand-tuned library kernels with
-a very low programming effort compared to writing assembly
-code.
+can deliver efficient automatically generated codes for such routines.
+The generated kernels are competitive with existing,
+hand-tuned library kernels with a very low programming effort
+compared to writing assembly code.
 \\
 
-The results of this chapter have been published at % TODO
-\\
+The results of this chapter have been published in
+Jules P\'enuchot, Joel Falcou, Amal Khabou,
+"\textit{Modern Generative Programming for Optimizing Small Matrix-Vector
+Multiplication}",
+2018 International Conference on High Performance Computing Simulation (HPCS)
+\cite{hpcs2018-matvec}.
 
 \section{
   Context
@@ -375,7 +377,7 @@ void for_constexpr(Body body) {
 \end{lstlisting}
 
 A sample usage of the \lstinline{for_constexpr} function is given
-in Listing \ref{lst:tuple-printing} in a function printing
+in listing \ref{lst:tuple-printing} in a function printing
 every element from a \lstinline{std::tuple}.
 
 \begin{lstlisting}[
@@ -448,7 +450,7 @@ we focus on matrices of small sizes ranging from
 4 to 512 as this range of sizes encompasses the size of
 most L1 cache memory, thus allowing a maximal throughput
 for \gls{simd} computation units. The algorithm we present in
-Listing \ref{lst:gemv-kernel} is optimized for a column-major matrix.
+listing \ref{lst:gemv-kernel} is optimized for a column-major matrix.
 For space consideration, we will only focus on the core processing of
 the computation, \ie the \gls{simd} part, as the computation of
 the scalar tail on the last columns and rows can be trivially
@@ -458,14 +460,19 @@ Our optimized code relies on two types representing
 statically-sized matrix and vector, namely \lstinline{mat<T,H,W>}
 and \lstinline{vec<T,N>}. Those types carry their height and width
 as template parameters so that all size related values can be
-derived from them. The code shown in Listing 7 is made up
-of three main steps as detailed in Figure 1:
-Broadcast of each element of
-the vector in different registersSIMDSIMD Scalar
-Fig. 1. An example of matrix vector multiplication showing the \gls{simd}/scalar
-computation boundaries. The matrix is $9 \times 9$
-of simple precision floats so we
-can put 4 elements per \gls{simd} register.
+derived from them. The code shown in listing \ref{lst:gemv-kernel} is made up
+of three main steps as detailed in figure \ref{fig:simd-gemv-illustration}:
+
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{images/gemv-fig1}
+\caption{
+  An example of matrix vector multiplication showing the \gls{simd}/scalar
+  computation boundaries. The matrix is $9 \times 9$ of simple precision floats
+  so we can put 4 elements per \gls{simd} register.
+}
+\label{fig:simd-gemv-illustration}
+\end{figure}
 
 \begin{enumerate}
 \item
@@ -569,30 +576,19 @@ measured time.
   On X86 Intel processor
 }
 
-% TODO
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{images/gemv-fig2}
+\caption{
+  GEMV performance on Intel i5-7200 processor using \gls{simd}
+  Extensions set (SSE-4.2)
+}
+\label{fig:gemv-avx-sse}
+\end{figure}
 
-% 0
-% 5
-% 10
-% 15
-% 20
-% 25
-% 30
-% 35
-% 40
-% 45
-% 50
-% 4 8 16 32 64 128 256 512
-% Gflop/s
-% Matrix size
-% SSE generated code
-% SSE OpenBLAS
-Fig. 2. GEMV performance on Intel i5-7200 processor using \gls{simd} Extensions
-set (SSE-4.2)
-
-In Figure 2, we compare the performance of our implementation
-using the \gls{simd} Extensions set SSE 4.2 and a similarly
-configured OpenBLAS GEMV kernel. The obtained results show
+In figure \ref{fig:gemv-avx-sse}, we compare the performance
+of our implementation using the \gls{simd} Extensions set SSE 4.2
+and a similarly configured OpenBLAS GEMV kernel. The obtained results show
 that the performances of our automatically generated code is
 up to 2 times better for matrices of sizes ranging from $4 \times 4$
 elements to $16 \times 16$ elements. However, for matrices of size
@@ -609,30 +605,19 @@ elements. For matrices of size $256 \times 256$ elements, the register
 usage starts to cause spill to the stack, showing that our
 solution can not be arbitrarily extended further to larger matrix sizes.
 
-% TODO
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{images/gemv-fig3}
+\caption{
+  GEMV performance on Intel i5-7200 processor using
+  Advanced Vector Extensions (AVX)
+}
+\label{fig:gemv-avx-bench}
+\end{figure}
 
-% 0
-% 5
-% 10
-% 15
-% 20
-% 25
-% 30
-% 35
-% 40
-% 45
-% 50
-% 4 8 16 32 64 128 256 512
-% Gflop/s
-% Matrix size
-% AVX generated code
-% AVX OpenBLAS
-Fig. 3. GEMV performance on Intel i5-7200 processor using Advanced Vector
-Extensions (AVX)
-
-In Figure 3, we compare the performance of our generated
-GEMV code using Advanced Vector Extensions AVX2 to the
-performance of a similarly configured OpenBLAS GEMV kernel.
+In figure \ref{fig:gemv-avx-bench}, we compare the performance
+of our generated GEMV code using Advanced Vector Extensions
+AVX2 to the performance of a similarly configured OpenBLAS GEMV kernel.
 Again, the performances of our implementation are close
 to that of OpenBLAS and are even quite better for matrices of
 small sizes ranging from 4 to 16 elements. For example, for a
@@ -660,7 +645,7 @@ a given size on a given architecture.
 }
 
 The comparison between our automatically generated code
-and the ARM OpenBLAS GEMV kernel is given in Figure 4.
+and the ARM OpenBLAS GEMV kernel is given in figure \ref{fig:gemv-arm-bench}.
 Contrary to the x86 Intel processor, we sustain a comparable
 yet slightly better throughput than the OpenBLAS GEMV
 kernel. The analysis of the generated assembly code shows
@@ -668,21 +653,14 @@ that our method of guiding the compiler and letting it do
 fine grained optimizations generates a better code than the
 hand-written assembly approach of the OpenBLAS library.
 
-% TODO
-
-% 0
-% 2
-% 4
-% 6
-% 8
-% 10
-% 12
-% 4 8 16 32 64 128 256 512
-% Gflop/s
-% Matrix size
-% ARM generated code
-% ARM OpenBLAS
-Fig. 4. GEMV performance on ARM Cortex A57 processor
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{images/gemv-fig4}
+\caption{
+  GEMV performance on ARM Cortex A57 processor
+}
+\label{fig:gemv-arm-bench}
+\end{figure}
 
 We exhibit performance drops similar to OpenBLAS due to
 $L1 \rightarrow L2$ misses. Register spilling also happens once we reach
