@@ -121,6 +121,12 @@
   morestring=[b]"
 }
 
+\lstdefinelanguage{terra}{
+  morekeywords={function, return, terra, end, var},
+  morecomment=[l]{--},
+  morestring=[b]"
+}
+
 \makeglossaries
 
 \newglossaryentry{litval}{
@@ -140,7 +146,9 @@
   description=The evaluation of an expression that is performed at compile time.
 }
 
+\newacronym{api}{API}{Application Programming Interface}
 \newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{avx}{AVX}{Advanced Vector Extensions}
 \newacronym{bf}{BF}{Brainfuck}
 \newacronym{blas}{BLAS}{Basic Linear Algebra Subprograms}
 \newacronym{ctpg}{CTPG}{Compile Time Parser Generator}
@@ -399,8 +407,8 @@ performance analysis as a whole.
 
 \ctbench was presented at CPPP 2021 \cite{ctbench-cppp21},
 and at Meeting \cpp 2022 \cite{meetingcpp22}. It was also published
-at the Journal of Open-Source Science \cite{Penuchot2023}.
-It is currently available as an open-source project at
+at the Journal of Open Source Science \cite{Penuchot2023}.
+It is currently available as an open source project at
 \url{https://github.com/jpenuchot/ctbench}.
 It is also available as a package through the Arch User Repository and vcpkg.
 
@@ -410,12 +418,25 @@ It is also available as a package through the Arch User Repository and vcpkg.
 
 % \subfile{2-compilation-time-analysis/features-and-design.tex}
 
-% TODO: Conclusion
+\section{
+  Conclusion
+}
 
 % Anbalyser le ct c'est important
 % y'avait rien de satisfaisant surtout pour la science
 % on en a un il est simple
 % il permet des benchmarks reproductibles
+
+Deep analysis of compile time scaling becomes necessary to understand
+compile time performance of metaprogramming techniques.
+Until now, no tool was really able to combine the depth of profiling data
+analysis with variable size compile time benchmarking.
+Moreover, there was no tool that could really fit in scientific work
+where reproductibility is a necessity.
+
+ctbench answers that need as a simple, powerful, and extensible
+open-source solution that is peer-reviewed and distributed as a reusable
+software package.
 
 \chapter{
   Constexpr parsing for high performance computing
@@ -460,16 +481,41 @@ said \glspl{dsel} in term of compile time to assess their usability in realistic
   Applied constexpr parsing
 }
 
-% TODO: Intro ou on detaille un peu le plan, l'arc narratif qui rend compte
-% de la demarche, des questionnements...
+Now that the idea of using \gls{constexpr} functions to generate code
+was proven to work, it is time to put it into practice and observe
+the viability of its integration in a high performance computing
+development cycle.
+
+I will present two examples in this chapter:
+the first one is a \gls{constexpr} Brainfuck parser that serves as a simple
+use case for experimenting different methods to generate code from
+\gls{constexpr} \glspl{ast}.
+
+These observations guided the implementation of the second example, which is a
+\gls{constexpr} parser for simple math languages. If features a code generation
+backend that supports high performance code generation via Blaze.
 
 \subfile{3-new-approaches-to-metaprogramming/3-brainfuck.tex}
 \subfile{3-new-approaches-to-metaprogramming/4-math-parsing.tex}
 
-% TODO: Conclusion pour le chapitre, discussion haut niveau avec les resultats
-% des experiences, on montre aussi que ctbench nous a permis de faire
-% des mesures utiles (ctbench nous a permis de voir la nature quadratique de
-% certains backends Brainfuck)
+\section{Conclusion}
+
+The Brainfuck example shows that using \gls{constexpr} programming to embed
+large programs written in foreign languages in \cpp can be achieved.
+\gls{ast} serialization makes it possible to store parsing results
+and avoid running into quadratic compilation time issues, as long as
+the code generation methods being .
+
+The case of \gls{tml} also shows that \gls{ast} serialization
+by itself is not a magic bullet to avoid running into compilation time
+scaling issues.
+The compilation time offset of \gls{tml} parsing, despite being reasonable
+within the bounds of expected use cases for \gls{tml}, was quadratic.
+
+These results show that more effort is needed to determine which metaprogramming
+techniques should be avoided to avoid runaway compilation times,
+and how \cpp library code or modifications to the \cpp language itself
+could facilitate scalable code generation from \gls{constexpr} function results.
 
 \chapter*{Conclusion}
 

@@ -14,25 +14,18 @@ tuned implementations that can be achieved by either specializing
 implementations for the target platforms, or using libraries that provide
 specialized abstractions at various levels and for various domains.
 
-% TODO - Loi de Moore etc...
-
 Years after its introduction, Moore's law is still doing alive and well:
 transistor count is still doubling every year despite people claiming
 it is not alive anymore. This is due to a common confusion between
 transistor count and computing power. While transistor count has been steadily
-rising, the throughput computing performance of single \gls{cpu} cores has not.
+increasing, the throughput computing performance of single \gls{cpu} cores
+has not.
+This lead to the conclusion that "free lunch" is over, and future
+high performance applications must adapt to increasingly parallel architectures
+to increase compute throughput \cite{concurrency-revolution}.
 
-% TODO - Qu'est-ce que le parallelisme (la fin du free lunch -> on parallelise)
-
-The need for more parallel software is driven by the fact that processors have
-become increasingly parallel \cite{concurrency-revolution} in order to
-compensate for the lack of serial execution performance improvements.
-
-% TODO - Qu'est-ce que la generation de code/metaprog
-
-% TODO: Flynn citation
-Flynn's taxonomy describes four ways in which computers can perform operations
-concurrently or not:
+Flynn's taxonomy \cite{flynn-taxonomy} describes four well known categories
+to describe serial and parallel computer architectures:
 
 \begin{itemize}
 \item
@@ -65,12 +58,22 @@ vector registers.
 
 \end{itemize}
 
-Note that these categories are not always mutually exclusive.
-Modern \glspl{cpu} in personal computers nowadays have multiple cores,
-each one of them having vector registers. Therefore, modern \glspl{cpu}
-leverage a mix of SIMD and MIMD computing to achieve higher throughput.
+This is just a high level overview of the new computer architecture landscape
+high performance software engineers have to navigate in.
+In an ideal world, every architecture within the same category
+should be programmable with same languages, tools, and libraries.
+But in reality, hardware architectures within a same category
+cannot run the same programs.
+For example, CUDA is not compatible with AMD \glspl{gpu}, \gls{avx} instructions
+are not available on ARM processors, oneAPI \gls{gpu} libraries developed by
+Intel are not compatible with its competitors' hardware, and so on.
 
-\glspl{gpu}
+To adapt to this variety of hardware and \glspl{api}, new abstractions
+were developed in the form of software libraries, compiler extensions,
+and even programming languages to help build portable high performance
+applications.
+
+% TODO - Qu'est-ce que la generation de code/metaprog
 
 % TODO - Quels sont les grands outils (citer les rapporteureuses)?
 

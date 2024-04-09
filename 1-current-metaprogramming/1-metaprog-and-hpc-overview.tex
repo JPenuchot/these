@@ -44,14 +44,16 @@ to emulate
 \textbf{Lisp macros}
 are known for being one of the oldest, yet one of the most powerful
 examples among all metaprogramming paradigms. The List macros, as opposed to
-C and \cpp macros, can make complete use of the Lisp language itself.
-
-The Lisp-lang \cite{lisp-lang-macros} website provides a code example of
-the definition of a \lstinline{while} macro, which
+C and \cpp macros, can make complete use of the Lisp language itself
+with powerful reflection capabilities.
+Anecdotally, common imperative language constructs such as the while loop
+can be implemented using macros as shown in listing \ref{lst:lisp-while}.
 
 \begin{lstlisting}[
   language={lisp},
-  caption={Definition of the \lstinline{while} Lisp macro}
+  caption={Definition of the \lstinline{while} Lisp macro,
+  source: \url{https://lisp-lang.org/learn/macros}},
+  label=lst:lisp-while
 ]{}
 (defmacro while (condition &body body)
   `(loop while ,condition do (progn ,@body)))
@@ -66,9 +68,13 @@ This enables code generation to occur both at runtime and at compile-time,
 and extends OCaml's partial evaluation capabilities.
 
 
+
 % TODO: cite source: https://okmij.org/ftp/meta-programming/tutorial/
 \begin{lstlisting}[
-  language=caml
+  language=caml,
+  caption={Run-time specialization of the power function in MetaOCaml,
+  source: \url{https://okmij.org/ftp/meta-programming/tutorial/}},
+  label=lst:metaocaml-spower
 ]{}
 let rec spower : int -> int code -> int code =
   fun n x ->
@@ -106,8 +112,14 @@ book \cite{rust-book} where a simplified version of the \lstinline{vec!} macro,
 which initializes a vector and pre-fills it with a static number of values,
 is defined:
 
+Listing \ref{lst:rust-vec-macro} shows how the \lstinline{vec!} standard macro
+can be defined. Note that the Rust standard library preallocates
+
 \begin{lstlisting}[
-  language=rust
+  language=rust,
+  caption={Definition of the \lstinline{vec!} macro,
+  source: \url{https://doc.rust-lang.org/stable/book/}},
+  label={lst:rust-vec-macro}
 ]{}
 #[macro_export]
 macro_rules! vec {
@@ -132,12 +144,33 @@ together with LLVM \gls{jit} compilation to allow code generation
 to happen at runtime.
 It implements multi-staged compilation and splicing just like MetaOCaml.
 
+Listing \ref{lst:terra-addone} shows the definition of a metafunction that
+returns a quoted expression that adds one to an element, which is then spliced
+twice to generate a function called \lstinline{doit}.
+
+\begin{lstlisting}[
+  language=terra,
+  caption={Definition of the \lstinline{addone} metafunction,
+  source: \url{https://terralang.org/getting-started.html}},
+  label={lst:terra-addone}
+]{}
+function addone(a)
+    --return quotation that
+    --represents adding 1 to a
+    return `a + 1
+end
+terra doit()
+    var first = 1
+    --call addone to generate
+    --expression first + 1 + 1
+    return [ addone(addone(first)) ]
+end
+\end{lstlisting}
+
 Additionally, Terra can be embedded in other languages through its C API.
 Overall it is a very versatile and experimental take on metaprogramming,
 but the lack of interoperability with \cpp templates makes it hard to justify
 its use for \gls{hpc} applications.
-
-% TODO: Exemple
 
 \item
 \textbf{LGEN}
