@@ -301,9 +301,11 @@ an optimized program that computes the operation.
 They enable a whole range of optimizations:
 
 \begin{itemize}
+
 \item
 \textbf{Lazy evaluation} is easily implemented through the generation
-of single element access operators that calculate single element values.
+of access operators that calculate single element values in one to one
+element operations such as additions or substractions.
 
 \item
 \textbf{\gls{blas} functions} can be used on complex operations that
@@ -318,38 +320,34 @@ require more hardware-specific tuning.
 \item
 \textbf{\gls{simd} optimizations} can be implemented through vector access
 operators to combine the benefits of lazy evaluation and \gls{simd} computing.
+
+\item
+\textbf{\gls{gpu} support} has been demonstrated as feasible.
+An attempt was made to bring it to Blaze \cite{blaze_cuda},
+although it was never fully implemented due to many roadblocks such as
+the requirement of adding \lstinline{__device__} qualifiers in front of
+all Blaze functions used in CUDA kernels.
+
 \end{itemize}
 
-\subsubsection{
-  \acrlong{gpu} support efforts
-}
+To implement these optimizations in Blaze \cite{blazelib},
+expression templates and assignment function overloading are equally essential
+to implement evaluation strategies depending on the nature of the operations.
 
-Lots of rewrite to do
+For example, element-wise operations are optimized through lazy evaluation
+thanks to element compute access operators, and via parallelism
+and vectorization implemented in the assignment functions.
+In the case of complex operations such as matrix-matrix products,
+optimizations are provided through assignment function overloading
+to call \gls{blas} routines instead of using regular element-wise assignment.
+\\
 
-Potentially a job for source rewriting tools
-
-\begin{itemize}
-\item Eventually: \gls{gpu} code generation, although Blaze needs a significant
-      rewrite for that. Source rewriting tools might be a good fit for that job.
-\end{itemize}
-
-Expression templates can provide expression level APIs for \gls{hpc} libraries.
-
-Still two limitations:
-
-\begin{itemize}
-\item Slow compilation times
-\item \cpp syntax only
-\end{itemize}
-
-Expression templates are aging (pretty well but still).
-Newer \cpp standards provide metaprogramming features that can fundamentally
-change the way we write metaprograms.
-
-The next part of my thesis will focus on how to leverage these features to
-implement \gls{dsel} of arbitrary syntax, and the study of their impact on
-compilation times.
-
+\acrlong{et} are a building block for \cpp math libraries that
+enable the creation of high level, portable \glspl{dsel} that resolve into
+high performance code thanks to a combination of metaprogramming techniques.
+In the next section, we will see a collection of libraries that go beyond the
+idea of using templates for code generation, and implement or enable the
+implementation of arbitrary compile-time programs.
 
 \section{
   Metaprogramming libraries

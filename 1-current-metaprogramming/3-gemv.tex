@@ -1,18 +1,15 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
-% TODO: Relire pour pas que ca ressemble a un papier dans une these
-
 \gls{blas} level functions are the cornerstone of a large
 subset of applications. If a large body of work surrounding
 efficient and large-scale implementation of some routines such
-as gemv exists, the interest for small-sized, highly-optimized
+as \gls{gemv} exists, the interest for small-sized, highly-optimized
 versions of those routines emerged.
 
-% TODO: Reduire cette phrase beaucoup trop longue
 In this chapter, we show that modern \cpp generative
-programming techniques such as vectorization and loop unrolling
-can deliver efficient automatically generated codes for such routines.
+programming techniques can deliver efficient automatically
+generated codes for such routines.
 The generated kernels are competitive with existing,
 hand-tuned library kernels with a very low programming effort
 compared to writing assembly code.
@@ -442,7 +439,7 @@ algorithms and applications. Moreover, small-scale \gls{blas}
 kernels are useful for some batched computations\cite{hpcs20}.
 
 Here, we consider the matrix-vector multiplication routine
-for general dense matrices, GEMV, which performs either
+for general dense matrices, \gls{gemv}, which performs either
 $y := \alpha A x + \beta y$ or $y := \alpha A T x + \beta y$,
 where $A$ is an $m \times n$ matrix, $\alpha$ and $\beta$ are scalars,
 and $y$ and $x$ are vectors. In this section,
@@ -558,8 +555,8 @@ cases into an API based on function calls.
 To validate our approach, we consider two main targeted
 processor architectures: an x86 Intel processor i5-7200 and an
 ARM processor AMD A1100 with Cortex A57. We compare
-the performance of the generated GEMV codes to that of the
-GEMV kernel of the OpenBLAS library based on GotoBLAS2 1.13\cite{hpcs21}.
+the performance of the generated \gls{gemv} codes to that of the
+\gls{gemv} kernel of the OpenBLAS library based on GotoBLAS2 1.13\cite{hpcs21}.
 We use GCC 7.2\cite{hpcs22} with maximal level of optimization.
 
 In the following experiments, we only show results
@@ -588,18 +585,18 @@ measured time.
 
 In figure \ref{fig:gemv-avx-sse}, we compare the performance
 of our implementation using the \gls{simd} Extensions set SSE 4.2
-and a similarly configured OpenBLAS GEMV kernel. The obtained results show
+and a similarly configured OpenBLAS \gls{gemv} kernel. The obtained results show
 that the performances of our automatically generated code is
 up to 2 times better for matrices of sizes ranging from $4 \times 4$
 elements to $16 \times 16$ elements. However, for matrices of size
-$32 \times 32$ elements and $64 \times 64$ elements, the OpenBLAS GEMV
+$32 \times 32$ elements and $64 \times 64$ elements, the OpenBLAS \gls{gemv}
 kernel gives a better performances, especially for the $64 \times 64$
 case. This is because the OpenBLAS library uses a dedicated
-GEMV kernel with specific optimizations and prefetching
+\gls{gemv} kernel with specific optimizations and prefetching
 strategies that our generic solution can not emulate. Beyond
 this size ($64 \times 64$ elements), the $L1 \rightarrow L2$ cache misses
 cause a performance drop for both our generated code and
-the OpenBLAS GEMV kernel. Nevertheless, our generated code
+the OpenBLAS \gls{gemv} kernel. Nevertheless, our generated code
 sustains a better throughput for matrices of sizes $128 \times 128$
 elements. For matrices of size $256 \times 256$ elements, the register
 usage starts to cause spill to the stack, showing that our
@@ -616,13 +613,13 @@ solution can not be arbitrarily extended further to larger matrix sizes.
 \end{figure}
 
 In figure \ref{fig:gemv-avx-bench}, we compare the performance
-of our generated GEMV code using Advanced Vector Extensions
-AVX2 to the performance of a similarly configured OpenBLAS GEMV kernel.
+of our generated \gls{gemv} code using Advanced Vector Extensions
+AVX2 to the performance of a similarly configured OpenBLAS \gls{gemv} kernel.
 Again, the performances of our implementation are close
 to that of OpenBLAS and are even quite better for matrices of
 small sizes ranging from 4 to 16 elements. For example, for a
 matrix of size 8 elements,the automatically generated code has
-a performance that is 3 times better than the OpenBLAS GEMV
+a performance that is 3 times better than the OpenBLAS \gls{gemv}
 kernel (15.78 Gflop/s vs 5.06 Gflop/s). Two phenomenons
 appear however. The first one is that the increased number
 of the AVX registers compared to the SSE ones makes the
@@ -645,9 +642,9 @@ a given size on a given architecture.
 }
 
 The comparison between our automatically generated code
-and the ARM OpenBLAS GEMV kernel is given in figure \ref{fig:gemv-arm-bench}.
+and the ARM OpenBLAS \gls{gemv} kernel is given in figure \ref{fig:gemv-arm-bench}.
 Contrary to the x86 Intel processor, we sustain a comparable
-yet slightly better throughput than the OpenBLAS GEMV
+yet slightly better throughput than the OpenBLAS \gls{gemv}
 kernel. The analysis of the generated assembly code shows
 that our method of guiding the compiler and letting it do
 fine grained optimizations generates a better code than the
@@ -674,16 +671,16 @@ abstraction cost.
 }
 
 This chapter presented the details of generating an optimized
-level 2 \gls{blas} routine GEMV. As a key difference with respect
+level 2 \gls{blas} routine \gls{gemv}. As a key difference with respect
 to highly tuned OpenBLAS routine, our generated code
 is designed to give the best performance with a minimum
 programming effort for rather small matrices that fit into the
 L1 cache. Compared to the best open source \gls{blas} library,
-OpenBLAS, the automatically generated GEMV codes show
+OpenBLAS, the automatically generated \gls{gemv} codes show
 competitive speedups for most of the matrix sizes tested in
 this section, that is for sizes ranging from 4 to 512. Therefore
 through this section and the example of the level 2 \gls{blas}
-routine GEMV, we showed that it is possible to employ modern
+routine \gls{gemv}, we showed that it is possible to employ modern
 generative programming techniques for the implementation
 of dense linear algebra routines that are highly optimized for
 small matrix sizes.
@@ -691,7 +688,7 @@ small matrix sizes.
 One of our next steps is to provide such metaprogrammed
 code generation process to tackle larger matrix sizes by precomputing
 an optimal tiling availability of prefetch and architecture,
-turning large-scale GEMV into an optimized sequence of
+turning large-scale \gls{gemv} into an optimized sequence of
 statically sized small-scale GEMVs. Such a technique is also naturally
 applicable to more complex algorithms, such the matrix-matrix
 multiplication, gemm, where tiling is paramount, or
