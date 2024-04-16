@@ -45,7 +45,7 @@ on an arbitrary number.
 
 \begin{lstlisting}[
   language={c++},
-  caption={C++ macro usage example \footnotemark{}},
+  caption={C++ macro usage example \protect\footnotemark{}},
   label={lst:c-preproc-example}
 ]{}
 #include <boost/preprocessor/facilities/apply.hpp>
@@ -73,7 +73,7 @@ can be implemented using macros as shown in listing \ref{lst:lisp-while}.
 
 \begin{lstlisting}[
   language={lisp},
-  caption={Definition of the \lstinline{while} Lisp macro\footnotemark{}},
+  caption={Definition of the \lstinline{while} Lisp macro\protect\footnotemark{}},
   label=lst:lisp-while
 ]{}
 (defmacro while (condition &body body)
@@ -95,7 +95,7 @@ of its single input parameter.
 
 \begin{lstlisting}[
   language=caml,
-  caption={Run-time specialization of the power function in MetaOCaml\footnotemark{}},
+  caption={Run-time specialization of the power function in MetaOCaml\protect\footnotemark{}},
   label={lst:metaocaml-spower}
 ]{}
 let rec spower : int -> int code -> int code =
@@ -140,7 +140,7 @@ can be defined. Note that the Rust standard library preallocates
 
 \begin{lstlisting}[
   language=rust,
-  caption={Definition of the \lstinline{vec!} macro\footnotemark{}},
+  caption={Definition of the \lstinline{vec!} macro\protect\footnotemark{}},
   label={lst:rust-vec-macro}
 ]{}
 #[macro_export]
@@ -173,7 +173,7 @@ twice to generate a function called \lstinline{doit}.
 
 \begin{lstlisting}[
   language=terra,
-  caption={Definition of the \lstinline{addone} metafunction\footnotemark{}},
+  caption={Definition of the \lstinline{addone} metafunction\protect\footnotemark{}},
   label={lst:terra-addone}
 ]{}
 function addone(a)
