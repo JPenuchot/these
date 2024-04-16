@@ -41,8 +41,6 @@ Grossly tracking TODOs.
 
   * [ ] Faire la liaison pour integrer (voir HDR de Joel)
   * [ ] Citer un peu boost.proto
-  * [ ] Pour les exemples de code,
-  * [ ] revoir l'integration du bloc
   * [ ] Refondre ce paragraphe pour mieux resumer le chapitre
 
 ## Part 2 - Compilation time analysis

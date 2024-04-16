@@ -358,35 +358,34 @@ implementation of arbitrary compile-time programs.
   Type based metaprogramming
 }
 
-% TODO: Pour les exemples de code,
-% mettre les explications avant les bouts de code
-% et etoffer les explications pour donner plus de details
-
-As previously said \cpp templates can be seen as a functional language.
-Over time a range of libraries emerged, aiming to provide functionalities
-similar to regular language such as containers and algorithms for use in
-template metaprograms. Notable examples of such libraries are MPL\cite{mpl},
-Brigand\cite{brigand}, and mp11 \cite{mp11}.
+As previously said, \cpp templates can be used as a compile-time
+functional language. Over time a range of libraries emerged, aiming to provide
+functionalities similar to regular language such as containers and algorithms
+for use in template metaprograms. Notable examples of such libraries are
+MPL\cite{mpl}, Brigand\cite{brigand}, and mp11 \cite{mp11}.
 
 \begin{lstlisting}[
   language=c++,
   caption=boost.mp11 code example,
   label=lst:mp11-example
 ]{}
-/// A predicate is implemented as a structure template
+// A predicate is implemented as a structure template
 template <int X> struct equals_to {
   template <typename Y>
   using apply = mp_bool<X == Y::type::value>;
 };
 
-/// We store a number list as a type alias called `my`
+// We store a number list as a type alias called `my_list`
 using my_list = mp_list_c<int, 0, 2, 4, 6, 8, 10>;
 
+// `pos_of_6` is a type representation of the index of 6
 using pos_of_6 =
     mp_find_if<my_list, equals_to<6>::apply>; // 3
 \end{lstlisting}
 
-
+Listing \ref{lst:mp11-example} shows a basic mp11 use case: we first define a
+list of arbitrary integers, and then we find the position of the first element
+of value 6 in the list.
 
 \begin{lstlisting}[
   language=c++,
@@ -402,63 +401,41 @@ using pos_of_6 = brigand::size<brigand::find<
                               int, 6>>>>; // 3
 \end{lstlisting}
 
-Listings \ref{lst:mp11-example} and \ref{lst:brigand-example} show
-how to use mp11 and Brigand to perform a basic task: we first define a list of
-arbitrary integers, and then we find the position of the first element 6
-in the list.
+Listing \ref{lst:brigand-example} shows the exact same task donw with the
+Brigand metaprogramming library.
 
 All these libraries either enable \gls{tmp}, or use \gls{tmp} to achieve
 a specific goal. However with the introduction of \gls{constexpr} programming,
-a new range of compile time libraries aim to provide new capabilities
+a new range of compile-time libraries aim to provide new capabilities
 for this new metaprogramming paradigm.
 
 \subsection{
   Value based metaprogramming
 }
 
-% TODO: revoir l'integration du bloc
+In \cpp, \gls{constexpr} functions can be executed at compile-time and since
+\cpp20, these functions can allocate memory, thus allowing dynamic containers
+to be implemented. Virtual functions were allowed too, further expanding
+\gls{constexpr} programming capabilities.
+However, not all standard containers were made available directly as
+the standard has to be revised for every single one of them to be
+usable in \glspl{consteval}. The C'est \cite{cest} library was meant to solve
+this temporary issue, filling the gap in the \cpp standard by providing
+\gls{constexpr} compatible standard containers.
 
-With dynamic memory and virtual functions making their way to
-\gls{constexpr} programming, the next logical step is to make standard \cpp
-containers available in constant evaluations.
-Modifying the \cpp standard to accomodate that need takes time.
-However, implementing standard-like containers that are good enough
-for prototyping and experimenting with \gls{constexpr} programs
-can be done fast enough.
-
-The C'est \cite{cest} library was created with this goal in mind, filling the
-gap in the \cpp standard, and accommodating the need for \gls{constexpr}
-compatible standard containers.
 As of today most of the containers implemented in C'est are available in
-up-to-date standard libraries, but it is still a useful library for
-compatibility with platforms that do not have \cpp23 compatible compilers and
-standard libraries such as old versions of Debian.
-
-It was instrumental for this thesis as the research work I present here started
-a long time before \cpp23 was adopted and standard libraries and compilers
-started implementing it.
-
-I contributed to its development myself by implementing a \gls{constexpr} version
-of \lstinline{std::unique_ptr}. This collaboration led Joel Falcou and myself to
-meet with its initiator, Paul Keir, in Glasgow and Paris.
-Our collaboration also led to speak together at
-Meeting \cpp 2022 \cite{meetingcpp22} where we talked about C'est and
-its use cases for \gls{constexpr} programming research.
-
-
-
-
-The C'est\cite{cest} is one such example, as it aims to be a \gls{constexpr}
-compatible replacement for the \cpp standard library. The development was
-started by Paul Keir, and I contributed by implementing
-\lstinline{cest::unique_ptr} which was needed to implement the Brainfuck parser
-in \ref{lbl:ptr-tree-codegen} before \lstinline{std::unique_ptr} became
-\gls{constexpr} compatible in libstdc++.
+up-to-date standard libraries, but it is still useful to write metaprograms
+in compilation environments that do not provide \cpp23 compatible compilers
+and standard libraries such as older versions of Debian
+or Red Hat Enterprise Linux.
 
 It implements the same containers and algorithms as the \cpp standard library,
 although all of them usable in \glspl{consteval}. For example,
 \lstinline{std::deque} is not usable in \glspl{consteval} whereas
 its C'est equivalent (\lstinline{cest::deque}) is.
+It was instrumental for this thesis as the research work I present here started
+a long time before \cpp23 was adopted and standard libraries as well as
+compilers started implementing it.
 
 \begin{lstlisting}[
   language=c++,
@@ -476,6 +453,19 @@ find_pos(int element,
 constexpr std::size_t pos_of_6 =
     find_pos(6, {0, 2, 4, 6, 8, 10});
 \end{lstlisting}
+
+Similar to previous examples, listing \ref{lst:cest-example} shows a
+compile-time program in which we find the index of the first element of value 6.
+Note that in this example, we are using properly typed values and functions
+instead of templates to represent values, predicates, and functions.
+
+I contributed to the development of C'est by implementing a \gls{constexpr}
+version of \lstinline{std::unique_ptr}. This collaboration led Joel Falcou
+and myself to meet with its initiator, Paul Keir, in Glasgow and Paris.
+Our collaboration also led us to speak together at
+Meeting \cpp 2022 \cite{meetingcpp22} where we talked about C'est and
+its use cases for \gls{constexpr} programming research,
+including my own projects.
 
 \subsection{
   Domain specific metaprogramming
