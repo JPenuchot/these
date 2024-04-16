@@ -342,11 +342,11 @@ optimizations are provided through assignment function overloading
 to call \gls{blas} routines instead of using regular element-wise assignment.
 \\
 
-\acrlong{et} are a building block for \cpp math libraries that
+\acrlong{et} are an important building block for \cpp math libraries that
 enable the creation of high level, portable \glspl{dsel} that resolve into
 high performance code thanks to a combination of metaprogramming techniques.
 In the next section, we will see a collection of libraries that go beyond the
-idea of using templates for code generation, and implement or enable the
+idea of using templates for math code generation, and implement or enable the
 implementation of arbitrary compile-time programs.
 
 \section{
@@ -386,6 +386,8 @@ using pos_of_6 =
     mp_find_if<my_list, equals_to<6>::apply>; // 3
 \end{lstlisting}
 
+
+
 \begin{lstlisting}[
   language=c++,
   caption=Brigand code example,
@@ -401,8 +403,9 @@ using pos_of_6 = brigand::size<brigand::find<
 \end{lstlisting}
 
 Listings \ref{lst:mp11-example} and \ref{lst:brigand-example} show
-how to use mp11 and Brigand to perform a basic task: finding the index of a
-value in a list at compile time.
+how to use mp11 and Brigand to perform a basic task: we first define a list of
+arbitrary integers, and then we find the position of the first element 6
+in the list.
 
 All these libraries either enable \gls{tmp}, or use \gls{tmp} to achieve
 a specific goal. However with the introduction of \gls{constexpr} programming,

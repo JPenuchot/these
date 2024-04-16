@@ -25,8 +25,6 @@ In \cpp, templates serve as an interface for partial specialization.
 However, many other ways to implement it exist across a wide range of languages
 spanning more than half a century.
 
-% TODO: Des p'tits exemples (voir le livre de Joel)
-
 % TODO: Citer https://hal.science/hal-01835202/document
 % - Voir chapitre sur le preprocesseur: https://theses.fr/2014PA112092
 %   repartir du 2.1 pour l'evaluation partielle et les beta-reductions
@@ -41,48 +39,28 @@ spanning more than half a century.
 that was not originally made for metaprogramming, but it can be hacked
 to emulate complex logic, such as functional languages.
 
+In listing \ref{lst:c-preproc-example} we can see the Boost.Preprocessor library
+being used to emulate a tuple structure to select a variable qualifier depending
+on an arbitrary number.
+
 \begin{lstlisting}[
-  language=c++
+  language={c++},
+  caption={C++ macro usage example \footnotemark{}},
+  label={lst:c-preproc-example}
 ]{}
-# /* Then consider the following preprocessor implementation of Fibonacci. */
-#
-# define LINEAR_FIB(n) LINEAR_FIB_D(1, n)
-# /* Since the macro is implemented using BOOST_PP_WHILE, the actual
-#  * implementation takes a depth as a parameters so that it can be called
-#  * inside a BOOST_PP_WHILE.  The above easy-to-use version simply uses 1
-#  * as the depth and cannot be called inside a BOOST_PP_WHILE.
-#  */
-#
-# define LINEAR_FIB_D(d, n) \
-   BOOST_PP_TUPLE_ELEM(3, 0, BOOST_PP_WHILE_ ## d(LINEAR_FIB_C, LINEAR_FIB_F, (0, 1, n)))
-# /*                   ^^^^                 ^^^^^           ^^            ^^   ^^^^^^^
-#  *                    #1                   #2             #3            #3     #4
-#  *
-#  * 1) The state is a 3-element tuple.  After the iteration is finished, the first
-#  *    element of the tuple is the result.
-#  *
-#  * 2) The WHILE primitive is "invoked" directly.  BOOST_PP_WHILE(D, ...)
-#  *    can't be used because it would not be expanded by the preprocessor.
-#  *
-#  * 3) ???_C is the condition and ???_F is the iteration macro.
-#  */
-#
-# define LINEAR_FIB_C(d, p) \
-   /* p.n */ BOOST_PP_TUPLE_ELEM(3, 2, p) \
-   /**/
-#
-# define LINEAR_FIB_F(d, p) \
-   ( \
-      /* p.a1 */ BOOST_PP_TUPLE_ELEM(3, 1, p), \
-      /* p.a0 + p.a1 */ BOOST_PP_ADD_D(d, BOOST_PP_TUPLE_ELEM(3, 0, p), BOOST_PP_TUPLE_ELEM(3, 1, p)), \
-                        /*          ^^ ^ \
-                         * BOOST_PP_ADD() uses BOOST_PP_WHILE().  Therefore we \
-                         * pass the recursion depth explicitly to BOOST_PP_ADD_D(). \
-                         */ \
-      /* p.n - 1 */ BOOST_PP_DEC(BOOST_PP_TUPLE_ELEM(3, 2, p)) \
-   ) \
-   /**/
+#include <boost/preprocessor/facilities/apply.hpp>
+#include <boost/preprocessor/tuple/elem.hpp>
+
+#define CV(i)                                    \
+  BOOST_PP_APPLY(BOOST_PP_TUPLE_ELEM(            \
+      4, i,                                      \
+      (BOOST_PP_NIL, (const), (volatile),        \
+       (const volatile))))
+
+CV(0) // expands to nothing
+CV(1) // expands to const
 \end{lstlisting}
+\footnotetext{\url{https://www.boost.org/doc/libs/1_85_0/libs/preprocessor/doc/ref/apply.html}}
 
 \item
 \textbf{Lisp macros}
@@ -95,14 +73,13 @@ can be implemented using macros as shown in listing \ref{lst:lisp-while}.
 
 \begin{lstlisting}[
   language={lisp},
-  caption={Definition of the \lstinline{while} Lisp macro,
-  source: \url{https://lisp-lang.org/learn/macros}},
+  caption={Definition of the \lstinline{while} Lisp macro\footnotemark{}},
   label=lst:lisp-while
 ]{}
 (defmacro while (condition &body body)
   `(loop while ,condition do (progn ,@body)))
 \end{lstlisting}
-
+\footnotetext{\url{https://lisp-lang.org/learn/macros}}
 
 \item
 \textbf{MetaOCaml} \cite{metaocaml} implements quoting and splicing
@@ -118,9 +95,8 @@ of its single input parameter.
 
 \begin{lstlisting}[
   language=caml,
-  caption={Run-time specialization of the power function in MetaOCaml,
-  source: \url{https://okmij.org/ftp/meta-programming/tutorial/}},
-  label=lst:metaocaml-spower
+  caption={Run-time specialization of the power function in MetaOCaml\footnotemark{}},
+  label={lst:metaocaml-spower}
 ]{}
 let rec spower : int -> int code -> int code =
   fun n x ->
@@ -132,6 +108,7 @@ let rec spower : int -> int code -> int code =
 let spowern : int -> (int -> int) code =
    fun n -> .<fun x -> .~(spower n .<x>.)>.;;
 \end{lstlisting}
+\footnotetext{\url{https://okmij.org/ftp/meta-programming/tutorial/}}
 
 \item
 \textbf{DLang} more or less extends the \cpp Metaprogramming model.
@@ -163,8 +140,7 @@ can be defined. Note that the Rust standard library preallocates
 
 \begin{lstlisting}[
   language=rust,
-  caption={Definition of the \lstinline{vec!} macro,
-  source: \url{https://doc.rust-lang.org/stable/book/}},
+  caption={Definition of the \lstinline{vec!} macro\footnotemark{}},
   label={lst:rust-vec-macro}
 ]{}
 #[macro_export]
@@ -180,6 +156,7 @@ macro_rules! vec {
   };
 }
 \end{lstlisting}
+\footnotetext{\url{https://doc.rust-lang.org/stable/book/}}
 
 \item
 \textbf{Terra}
@@ -196,8 +173,7 @@ twice to generate a function called \lstinline{doit}.
 
 \begin{lstlisting}[
   language=terra,
-  caption={Definition of the \lstinline{addone} metafunction,
-  source: \url{https://terralang.org/getting-started.html}},
+  caption={Definition of the \lstinline{addone} metafunction\footnotemark{}},
   label={lst:terra-addone}
 ]{}
 function addone(a)
@@ -212,6 +188,7 @@ terra doit()
     return [ addone(addone(first)) ]
 end
 \end{lstlisting}
+\footnotetext{\url{https://terralang.org/getting-started.html}}
 
 Additionally, Terra can be embedded in other languages through its C API.
 Overall it is a very versatile and experimental take on metaprogramming,
