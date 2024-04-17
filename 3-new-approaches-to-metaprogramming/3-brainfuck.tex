@@ -112,18 +112,34 @@ This will give us a clearer idea of their implementation difficulty,
 and they will enable us to run compilation time benchmarks to compare their
 compilation time performance.
 
-\subsubsection{Pass-by-generator + ET}
+\subsubsection{Pass-by-generator and Expression Template backends}
 
-The first technique I implemented was passing \gls{ast} nodes through lambdas
-to convert them into expression templates.
+The first backend implemented in the poacher project was the "ET" backend,
+where the AST is transformed a type-based intermediate representation
+as described in \ref{lbl:pbg-et-technique}. It was later simplified into
+the simpler "Pass-by-generator" backend which emits code without producing
+any intermediate representation.
 
-\subsubsection{Pass-by-generator}
+The implementation of these two backends do not differ significantly from
+the ones described in \ref{lbl:pbg-technique} and \ref{lbl:pbg-et-technique}:
+the generators that evaluate each node are passed as template parameters,
+only to work around the fact that pointers to \gls{constexpr} allocated memory
+cannot be used in a \gls{nttp}.
 
-actually very hard to implement because \lstinline{std::unique_pointer}
-lifetime management gets more difficult when combined with
-\gls{constexpr} constraints.
+They were notably difficult to implement as the rules enforced by Clang
+in regard to the use of \gls{constexpr} allocated memory are often inconsistent.
+Error messages relative to the use of \gls{constexpr} allocated memory are often
+too vague. Moreover, the compilation times were already noticeably long
+at the implementation phase of these backends. As we will see later,
+these two backends have quadradic compilation time complexity.
 
-% TODO: Mention compilation times
+Their implementation details will be relegated
+to appendices \ref{app:bf-et-backend} and \ref{app:bf-pbg-backend}.
+
+% NOTE: Maybe give more details?
+% Arguments for: It looks very unbalanced
+% Arguments against: There is no value adding details
+% to this inefficient backend, and it will take time to explain it in detail
 
 \subsubsection{Serializing the \gls{ast} into a \gls{litval}}
 
@@ -188,8 +204,8 @@ template <size_t N>
 using fixed_flat_ast_t = std::array<flat_node_t, N>;
 \end{lstlisting}
 
-In listing \ref{lst:flat-ir-typedef}, I show how this was implemented in the
-backend that will be used for the benchmarks.
+Listing \ref{lst:flat-ir-typedef}, shows the \gls{ast} as it was implemented
+for the benchmarks that will follow in the next section.
 Note that the serialized \gls{ast} can be stored either as a
 \lstinline{flat_ast_t} for convenience in \glspl{consteval},
 which can then be transformed into a \lstinline{fixed_flat_ast_t<N>}

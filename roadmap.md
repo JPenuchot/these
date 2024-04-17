@@ -51,10 +51,6 @@ Grossly tracking TODOs.
   * [ ] dig this for references https://youtu.be/q6X9bKpAmnI
   * [ ] Expose the issue clearly!!
 
-- `./3-new-approaches-to-metaprogramming/3-brainfuck.tex`:
-
-  * [ ] Mention compilation times
-
 - `./3-new-approaches-to-metaprogramming/2-constexpr-codegen-techniques.tex`:
 
   * [ ] Talk about how awful it is to get to a working codegen function:

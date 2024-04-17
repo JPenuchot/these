@@ -12,7 +12,7 @@
 
 \lstinputlisting[
   language=c++,
-  caption=\lstinline{brainfuck/include/brainfuck/ast.hpp}
+  caption=\lstinline{brainfuck/ast.hpp}
 ]{../external/poacher/brainfuck/include/brainfuck/ast.hpp}
 
 \clearpage{} %------------------------------------------------------------------
@@ -24,8 +24,32 @@
 
 \lstinputlisting[
   language=c++,
-  caption=\lstinline{brainfuck/include/brainfuck/parser.hpp}
+  caption=\lstinline{brainfuck/parser.hpp}
 ]{../external/poacher/brainfuck/include/brainfuck/parser.hpp}
+
+\clearpage{} %------------------------------------------------------------------
+
+\subsection{
+  Brainfuck "ET" code generation backend
+}
+\label{app:bf-et-backend}
+
+\lstinputlisting[
+  language=c++,
+  caption=\lstinline{brainfuck/backends/expression_template.hpp}
+]{../external/poacher/brainfuck/include/brainfuck/backends/expression_template.hpp}
+
+\clearpage{} %------------------------------------------------------------------
+
+\subsection{
+  Brainfuck "pass-by-generator"" code generation backend
+}
+\label{app:bf-pbg-backend}
+
+\lstinputlisting[
+  language=c++,
+  caption=\lstinline{brainfuck/backends/pass_by_generator.hpp}
+]{../external/poacher/brainfuck/include/brainfuck/backends/pass_by_generator.hpp}
 
 \clearpage{} %------------------------------------------------------------------
 
@@ -36,19 +60,7 @@
 
 \lstinputlisting[
   language=c++,
-  caption=\lstinline{shunting-yard/include/shunting_yard.hpp}
+  caption=\lstinline{shunting_yard.hpp}
 ]{../external/poacher/shunting-yard/include/shunting_yard.hpp}
-
-\clearpage{} %------------------------------------------------------------------
-
-\subsection{
-  Constexpr Shunting Yard implementation
-}
-\label{app:tml-impl}
-
-\lstinputlisting[
-  language=c++,
-  caption=\lstinline{shunting-yard/include/tiny_math_language.hpp}
-]{../external/poacher/shunting-yard/include/tiny_math_language.hpp}
 
 \end{document}
