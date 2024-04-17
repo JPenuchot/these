@@ -17,30 +17,14 @@ The public API is based on CMake as the project is aimed at \cpp software
 developers and researchers. Therefore, using familiar tools
 lowers barriers to entry to those who might want to contribute to it.
 
-% It is developed with decent software quality in mind to offer a robust
-% external API, and a well documented internal API to enable the reuse of
-% its components.
-
-% All these goals are kept in mind to ensure that ctbench is not just a single
-% use tool for this thesis, but a sustainable open source project that enables
-% researchers and developers to automatize the generation of reusable graphs
-% and data artifacts.
-
 \subsection{
   CMake API for benchmark and graph target declarations
 }
 \label{lbl:ctbench-cmake-api}
 
-% The choice of using CMake as an entry point is to ensure that ctbench is not
-% just a research tool made for a single set of benchmarks, but an easy-to-use
-% solution for all \cpp developers willing to analyze the compile time
-% performance of their metaprograms.
-
 The public API of ctbench is meant to be as stable as reasonable by relying on
 CMake as a base language. It is relatively simple, and all of it is implemented
 in a single CMake script file. It declares the following:
-
-% TODO: Nettoyer les lstinline qui depassent
 
 \begin{itemize}
 
@@ -57,10 +41,10 @@ of user-defined sizable benchmark cases:
   compiled with their sized passed as the \lstinline{BENCHMARK_SIZE} define.
 
   \item
-  \lstinline{ctbench_add_benchmark_for_range}, similar to
-  \lstinline{ctbench_add_benchmark} except for the fact that benchmark range
-  parameters are taken as a single list. This interface only exists to provide
-  a more compact function call.
+  \lstinline{ctbench_add_benchmark_for_range}, provides an interface similar to
+  \lstinline{ctbench_add_benchmark} except that benchmark range parameters
+  are taken as a single list. This interface only exists to provide a more
+  compact function call.
 
   \item
   \lstinline{ctbench_add_benchmark_for_size_list}, similar to the previous ones,
@@ -68,7 +52,7 @@ of user-defined sizable benchmark cases:
 
   \item
   And finally, \lstinline{ctbench_add_custom_benchmark} inherits
-  \lstinline{ctbench_add_benchmark}'s interface with an addition:
+  the interface of \lstinline{ctbench_add_benchmark} with an addition:
   a callback function name must be passed as a parameter. It will be called
   for each benchmark iteration target definition with the name and size of the
   target. This allows users to set compiler parameters other than ctbench's
@@ -100,7 +84,8 @@ declared with ctbench functions.
 \end{itemize}
 
 Benchmark data is laid out in folders under the following layout:
-\lstinline{<benchmark target name>/<iteration size>/<repetition number>.json}.
+
+\lstinline{<benchmark name>/<iteration size>/<repetition number>.json}.
 
 \section{
   ctbench internal design
@@ -117,9 +102,9 @@ benchmark data and draws plots.
 
 CMake has its own limitations that would make the implementation of ctbench
 impractical, or even impossible without a compiler launcher. Thankfully, CMake
-does support compiler launchers through the
-\lstinline{CMAKE_CXX_COMPILER_LAUNCHER} target property,
-allowing us to work around those issues.
+does support compiler launchers through the target property
+\lstinline{CMAKE_CXX_COMPILER_LAUNCHER} which allows us to work around
+those issues.
 
 The main issue that compiler-launcher was meant to solve is the lack of
 a CMake interface to retrieve the path of the binaries it generates (which is

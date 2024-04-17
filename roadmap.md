@@ -43,16 +43,6 @@ Grossly tracking TODOs.
   * [ ] Citer un peu boost.proto
   * [ ] Refondre ce paragraphe pour mieux resumer le chapitre
 
-## Part 2 - Compilation time analysis
-
-- `./2-compilation-time-analysis/1-state-of-the-art.tex`:
-
-  * [ ] completer et expliquer pourquoi c'est pas ce qu''il nous faut
-
-- `./2-compilation-time-analysis/2-ctbench-design.tex`:
-
-  * [ ] Nettoyer les lstinline qui depassent
-
 ## Part 3 - `constexpr` metaprogramming
 
 - `./3-new-approaches-to-metaprogramming/1-technical-background.tex`:
@@ -69,8 +59,3 @@ Grossly tracking TODOs.
 
   * [ ] Talk about how awful it is to get to a working codegen function:
   * [ ] Phrasing
-
-- `./3-new-approaches-to-metaprogramming/4-math-parsing.tex`:
-
-  * [ ] High level description of the algorithm
-

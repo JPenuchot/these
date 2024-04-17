@@ -36,25 +36,13 @@ total compilation time. This approach is compiler-agnostic, it allows to compare
 not just metaprograms but compilers as well.
 \\
 
-However, Metabench is inactive since 2019, and its design makes it
+However, Metabench was not updated since 2019, and its design makes it
 difficult to modify and reuse it for the assessment of metaprogramming
 techniques performance in a scientific context:
-
-\begin{itemize}
-\item
-non-CMake scripts are embedded in CMake strings, making it difficult to modify
-and debug them,
-
-\item
-benchmarks are not standalone, they are embedded in the Metabench
-project itself,
-
-\item
-web-based visualizations cannot be embedded in scientific publications.
-
-\end{itemize}
-
-For all these reasons, Metabench cannot fit our needs properly.
+non-CMake scripts are embedded in CMake strings making it difficult to modify
+and debug them, benchmarks are not standalone as they are embedded
+in the Metabench project itself, and web-based visualizations cannot be embedded
+in scientific publications.
 
 \subsection{
   Templight
@@ -62,9 +50,14 @@ For all these reasons, Metabench cannot fit our needs properly.
 
 Templight \cite{templight} is the first effort to instrument Clang with a
 profiler. It aims to provide tools to measure resource usage (CPU time,
-memory usage, and file I/O) of template instantiations.
+memory usage, and file I/O) of template instantiations, and display the
+data in a GUI. It also provides debugging features, allowing to set breakpoints
+to interrupt template instantiations.
 
-% TODO: completer et expliquer pourquoi c'est pas ce qu''il nous faut
+Templight is meant to be used as an interactive tool for template instantiation
+profiling and debugging. It does not provide a command line interface for the
+automated export of profiling data or graphs, nor can it be used to compare
+template instantiations.
 
 \subsection{
   Clang's built-in profiler
@@ -118,22 +111,14 @@ being processed durin this trace event. This field may also contain details
 related to symbols being processed for events like
 \lstinline{InstantiateFunction}.
 
-Clang's profiler data is very exhaustive and insightful, however there is no
-tooling to make sense of it in the context of variable size compile time
-benchmarks. \ctbench tries to bridge the gap by providing a tool to analyze
-this valuable data. It also improves upon existing tools by providing a solution
-that's easy to integrate into existing CMake projects, and generates graphs in
-various formats that are trivially embeddable in documents like research papers,
-web pages, or documentations. Additionally, relying on persistent configuration,
-benchmark declaration and description files provides strong guarantees for
-benchmark reproductibility, as opposed to web tools or interactive profilers.
+Clang's profiling data is both very exhaustive as it covers
+all compilation stages, but also very insightful as every timer event is
+annotated with metadata that relates to specific \cpp symbols.
+It can be extracted automatically by adding a compilation flag,
+and there is a multitude of libraries that can parse its JSON output.
 
-While Metabench could have been a good candidate for assessing the scalability
-of metaprogramming techniques, its design choices make it simpler to write a new
-tool that better fits the needs of scientific assessment of metaprogramming
-techniques.
-
-The goal of ctbench is to remain as simple as Metabench while providing
-the same analysis depth as Templight.
+As such, the choice was made to reuse this data by making a tool to help
+automate the extraction, analysis, and comparison of time trace files
+for variable size compile time benchmarking.
 
 \end{document}

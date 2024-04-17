@@ -11,11 +11,8 @@ calculate the sum of a series of integers known at compile-time, using a type
 template to store unsigned integer values at compile-time.
 
 We will be comparing the compile-time performance of two implementations:
-
-\begin{itemize}
-\item one based on a recursive function template,
-\item and one based on \cpp11 parameter pack expansion.
-\end{itemize}
+one based on a recursive function template,
+and another one based on \cpp11 parameter pack expansion.
 
 First we need to include \lstinline{utility} to instantiate our benchmark
 according to the size parameter using \lstinline{std::make_index_sequence}, and

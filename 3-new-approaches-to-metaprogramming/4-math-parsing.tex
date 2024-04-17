@@ -7,16 +7,20 @@
   Math parsing and high performance code generation
 }
 
-Now that we have a good overview of what to
+Thanks to the previous experiments, we now that using serialized structures
+as \glspl{nttp} is preferable to keep compilation times lower.
+As such, we will be generating code from mathematical expressions using
+a parsing algorithm that transforms infix formulas into their \gls{rpn}
+representation.
+
+In \ref{lbl:codegen-from-rpn}, we already demonstrated that generating code
+from \gls{rpn} formulas is a rather easy task, therefore this section
+will only cover the Shunting Yard algorithm, and the use of \gls{rpn}
+code generation applied to high performance computing.
 
 \subsection{
   The Shunting-Yard algorithm
 }
-
-As seen in \ref{lbl:codegen-from-rpn}, generating code from \gls{rpn} formulas
-is a rather easy task, and converting formulas from an infix notation to a
-postfix notation can be done using the Shunting Yard
-algorithm \cite{shunting-yard}.
 
 As parsing algorithms and \gls{constexpr} dynamic data representations were
 already covered in \ref{lbl:bf-parsing-and-codegen}, the implementation of
@@ -27,10 +31,11 @@ data structures it relies on, and higher order helper functions
 for code generation.
 
 The working principle of the algorithm is rather simple:
-an operator and an operand stack are read in order and moved
+an operator and an operand stack are read in order, and moved
 from the input list to the output queue and the operator stack.
-
-% TODO: High level description of the algorithm
+If an operator of lower precedence than the operator on top of the
+operator stack is read, then the operator stack is dumped in the output queue.
+The worst case time and memory complexity of the algorithm is $O(N)$.
 
 Once again, code generation from postfix notation formulas was already covered
 in \ref{lbl:codegen-from-rpn}, so we will skip straight to the use of Blaze
