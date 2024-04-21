@@ -54,4 +54,3 @@ Grossly tracking TODOs.
 - `./3-new-approaches-to-metaprogramming/2-constexpr-codegen-techniques.tex`:
 
   * [ ] Talk about how awful it is to get to a working codegen function:
-  * [ ] Phrasing

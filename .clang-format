@@ -1,7 +1,7 @@
 # clang-format config for LaTeX listings
 Language:        Cpp
 BasedOnStyle:  LLVM
-ColumnLimit:     60
+# ColumnLimit:     60
 
 # This size is better suited for listings in `itemize` ranges
-# ColumnLimit:     54
+ColumnLimit:     50

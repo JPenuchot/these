@@ -114,17 +114,42 @@ compilation time performance.
 
 \subsubsection{Pass-by-generator and Expression Template backends}
 
-The first backend implemented in the poacher project was the "ET" backend,
-where the AST is transformed a type-based intermediate representation
-as described in \ref{lbl:pbg-et-technique}. It was later simplified into
-the simpler "Pass-by-generator" backend which emits code without producing
-any intermediate representation.
+The first backend implemented in the poacher project was the \gls{et} backend,
+where the AST is transformed a type-based \gls{ir}
+as described in \ref{lbl:pbg-et-technique}. It was later simplified to
+remove the \gls{ir} transformation step, which gave the \gls{pbg} backend.
+
+\begin{lstlisting}[
+  language=c++,
+  caption=\gls{et} backend \acrlong{ir},
+  label=lst:bf-et-ir
+]{}
+template <typename... Nodes> struct et_block_t {
+  constexpr et_block_t() {}
+  constexpr et_block_t(Nodes const &...) {}
+};
+
+template <typename... Nodes> struct et_while_t {
+  constexpr et_while_t() {}
+  constexpr et_while_t(Nodes const &...) {}
+};
+
+template <token_t Token> struct et_token_t {};
+\end{lstlisting}
 
 The implementation of these two backends do not differ significantly from
 the ones described in \ref{lbl:pbg-technique} and \ref{lbl:pbg-et-technique}:
 the generators that evaluate each node are passed as template parameters,
 only to work around the fact that pointers to \gls{constexpr} allocated memory
 cannot be used in a \gls{nttp}.
+
+Listing \ref{lst:bf-et-ir} shows the type-based \gls{ir} used for the \gls{et}
+backend. \lstinline{et_block_t} and \lstinline{et_while_t} structures contain a
+pack of arbitrary types that may be \lstinline{et_token_t} elements for single
+tokens, or \lstinline{et_while_t} elements for nested while loops.
+
+% TODO: finish explanations
+From there, the code generation
 
 They were notably difficult to implement as the rules enforced by Clang
 in regard to the use of \gls{constexpr} allocated memory are often inconsistent.
@@ -136,10 +161,6 @@ these two backends have quadradic compilation time complexity.
 Their implementation details will be relegated
 to appendices \ref{app:bf-et-backend} and \ref{app:bf-pbg-backend}.
 
-% NOTE: Maybe give more details?
-% Arguments for: It looks very unbalanced
-% Arguments against: There is no value adding details
-% to this inefficient backend, and it will take time to explain it in detail
 
 \subsubsection{Serializing the \gls{ast} into a \gls{litval}}
 
@@ -153,7 +174,7 @@ a trivial transformation. As long as a static array holds \glspl{litval},
 the array itself remains a \gls{litval} as well, and can therefore be used
 as a \gls{nttp}.
 
-In order to do this, an intermediate serialized representation of the \gls{ast}
+In order to do this, a serialized \gls{ir} of the \gls{ast}
 which must only contain \glspl{litval} must be implemented.
 It is a fairly trivial task:
 
@@ -171,7 +192,7 @@ AST nodes are stored.
 
 \begin{lstlisting}[
   language=c++,
-  caption=\gls{pbg} intermediate representation type definitions,
+  caption=\gls{pbg} \acrlong{ir} type definitions,
   label=lst:flat-ir-typedef
 ]{}
 /// Represents a single instruction token
@@ -672,21 +693,9 @@ functionally identical to the previous one.
 \end{itemize}
 
 \subsubsection{
-  Difficulties
-}
-
-\begin{itemize}
-\item Embedding text from the original string
-\item \lstinline{if constexpr} requiring the definition of a \gls{constexpr} variable
-\end{itemize}
-
-\subsubsection{
-  Implementation complexity
-}
-
-\subsubsection{
   Small synthetic variable-size benchmarks
 }
+\label{lbl:compile-time-eval}
 
 We first begin by running two variable-sized benchmarks, consisting in
 measuring compiler execution time as the \gls{ast} widens, and as the \gls{ast} deepens.
@@ -778,8 +787,8 @@ Here is what can be said about each backend:
 
 \item
 \textbf{Flat backends}:
-they are not the easiest to implement due to the additional intermediate
-representation and serialization step that need to be implemented.
+they are not the easiest to implement due to the additional \gls{ir}
+and serialization step that need to be implemented.
 
 However, they present clear benefits when it comes to compilation times.
 So far they are the only ones that can be used at scale.
@@ -810,7 +819,7 @@ This backend was originally meant to be a demonstrator for the interoperability
 of \gls{constexpr} memory and \glspl{et}. It shows no particular advantage
 compared to the two other backends: it is slower than the \gls{pbg} backend while
 requiring additional effort to implement the \gls{et}
-intermediate representation.
+\gls{ir}.
 
 \end{itemize}
 

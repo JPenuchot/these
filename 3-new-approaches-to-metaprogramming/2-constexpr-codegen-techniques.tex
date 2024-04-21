@@ -178,10 +178,36 @@ number of nodes. Experiments in \ref{lbl:compile-time-eval} highlight
 the scaling issues induced by this code generation method.
 And while it is very quick to implement, there are still difficulties
 related to \gls{constexpr} memory constraints and compiler or library support.
-GCC 13.2.1 is still unable to compile such code
 
-% [TODO] Talk about how awful it is to get to a working codegen function:
-% - bad if constexpr
+Note that GCC 13.2.1 is still unable to compile such code.
+And while Clang 17.0.6 supports it, getting a this technique to work can be
+difficult as \gls{constexpr} memory rules are enforced in an erratic way,
+and often with poorly explained compiler errors.
+
+For example, if the expression in an \lstinline{if constexpr}
+condition involves \gls{constexpr} allocated memory, the result of the condition
+must be stored in an intermediate \gls{constexpr} variable to avoid a compiler
+error:
+
+\begin{lstlisting}[
+  language=c++
+]{}
+constexpr std::vector<int> foo() {
+  return {{1, 2, 3, 4, 5}};
+}
+
+// Compilation error
+if constexpr (foo().size() == 5);
+
+// OK
+if constexpr (constexpr bool val =
+                  foo().size() == 5;
+              val);
+\end{lstlisting}
+
+With no \gls{constexpr} intermediate variable, Clang tells that the condition
+expression is not a constant expression, despite the condition expression being
+usable to initialize a \gls{constexpr} variable.
 
 \subsubsection{
   Pass-by-generator + ET
@@ -599,11 +625,6 @@ is or isn't possible to do with \glspl{nttp} and \gls{constexpr} functions.
 While the examples show working examples for code generation from \gls{constexpr}
 function results with \gls{constexpr} allocated memory, they do not show the time
 it takes to comply with \cpp \gls{constexpr} restrictions.
-
-% TODO: Phrasing
-For example, condition results in \lstinline{if constexpr} statements must be
-stored in a \gls{constexpr} variable if the result is evaluated from an temporary
-object that contains \gls{constexpr} allocated memory.
 
 \item
 The easiest way to get around \gls{nttp} constraints, \ie the \gls{pbg}
