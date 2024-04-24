@@ -1,61 +1,56 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
-% TODO: Rework this as most of this stuff is introduced in the
-% state of the art section
-
 \section{
   Advanced constexpr programming
 }
+\label{lbl:constexpr-programming}
 
 % TODO: dig this for references https://youtu.be/q6X9bKpAmnI
 
-\subsection{
-  Constexpr programming
-}
-\label{lbl:constexpr-programming}
+As mentioned in \ref{lbl:cpp-meta-constructs}, the \gls{constexpr}
+allows variables and functions to be used in \gls{consteval},
+making a whole subset of the \cpp language itself usable for compile-time logic.
 
-Expressions that generate results for use at compile time are called
-constant expressions. In \cpp11, the \gls{constexpr} keyword was introduced
-to qualify functions or variables that may be used in constant expressions.
-Consequently, regular functions and variables became usable for the evaluation
-of \glspl{nttp}.
-
-However not all functions and variables can be qualified as \gls{constexpr},
-and not all constant expression results can be used as \glspl{nttp}.
-
-Since the introduction of the \gls{constexpr} specifier, the requirements on
-functions for being \gls{constexpr} specifiable have constantly been relaxed as new
-\cpp standards were adopted. In \cpp20, notable changes made dynamic memory
-allocations\cite{constexpr-memory} and virtual \gls{constexpr} function
-calls\cite{virtual-constexpr} allowed in compile time \gls{constexpr} function
-executions.
-
+As the language evolves, this subset becomes larger as more \cpp become
+usable in \gls{constexpr} functions. Some of the most notable evolutions
+are allowing \gls{constexpr} memory allocations and virtual function calls
+in \glspl{consteval} since \cpp20.
 These two additions make dynamic memory and heritage-based polymorphism
 possible in \gls{constexpr} functions. Therefore more regular \cpp code can be
 executed at compile time, including parsers for arbitrary languages.
 
-\paragraph{\gls{constexpr} functions} Functions that are \gls{constexpr} qualified can
-still be used in other contexts than constant evaluation happening at
-compile time. In non-constant evaluation, \gls{constexpr} functions can still call
-non-\gls{constexpr} functions. But in constant evaluations, \gls{constexpr} functions must
-only call other \gls{constexpr} functions. This applies to methods as well.
-In order to make a \cpp class or structure fully usable in constant evaluations,
-its methods ---including the constructors and destructor--- must be \gls{constexpr}.
+This section will cover advanced technicalities of \gls{constexpr} programming,
+including \gls{constexpr} memory allocation and the restrictions that make
+\gls{constexpr} allocated memory difficult to use for \cpp code generation.
 
-\paragraph{\gls{constexpr} variables} Variables that are \gls{constexpr} qualified can be
+\subsection{
+  \gls{constexpr} functions and \gls{constexpr} variables
+}
+
+\textbf{Functions} that are \gls{constexpr} qualified can still be used
+in other contexts than \gls{consteval} happening at compile time.
+In non-\gls{consteval}, \gls{constexpr} functions can still call
+non-\gls{constexpr} functions. But in \glspl{consteval}, \gls{constexpr}
+functions must only call other \gls{constexpr} functions.
+This applies to methods as well. In order to make a \cpp class or structure
+fully usable in \glspl{consteval}, its methods --including the constructors
+and destructor-- must be \gls{constexpr}.
+
+\textbf{Variables} that are \gls{constexpr} qualified can be
 used in constant expressions. Note that they are different from
 non-\gls{constexpr} variables used in \gls{constexpr} functions.
 There are more requirements on \gls{constexpr} variables.
 Their values must be literal, meaning that memory allocated in \gls{constexpr}
 function bodies cannot be stored in \gls{constexpr} variables.
 
-\paragraph{
-  \gls{constexpr} memory allocation
+\subsection{
+  \gls{constexpr} memory allocation and \gls{constexpr} virtual function calls
 }
-Starting from \cpp20, \lstinline{std::allocate} and \lstinline{std::deallocate}
-are \gls{constexpr} functions, allowing memory allocations to happen in
-constant evaluations.
+
+With \cpp20, \lstinline{std::allocate} and \lstinline{std::deallocate}
+became \gls{constexpr} functions, allowing memory allocations to happen in
+\glspl{consteval}.
 
 However \gls{constexpr} allocated memory is not transient, \ie memory allocated in
 constant expressions cannot be stored in \gls{constexpr} variables, and \glspl{nttp}
@@ -114,30 +109,29 @@ content cannot be transferred to \gls{nttp} compatible data structures.
   label=lst:cx-vector-to-array
 ]{}
 constexpr auto generate_as_array() {
-  constexpr std::size_t array_size = generate().size();
+  constexpr std::size_t array_size =
+      generate().size();
   std::array<int, array_size> res{};
   std::ranges::copy(generate(), res.begin());
   return res;
 }
 
-constexpr auto e = generate_as_array();         // OK
-constexpr auto f = foo<generate_as_array()>();  // OK
+constexpr auto e = generate_as_array();        // OK
+constexpr auto f = foo<generate_as_array()>(); // OK
 \end{lstlisting}
 
 Listing \ref{lst:cx-vector-to-array} shows how \lstinline{generate}'s result
 can be evaluated into a static array. Static arrays are literal as long
 as the values they hold are literal. Therefore the result of
-\lstinline{generate_as_array} can be stored in a \gls{constexpr} variable or used
-directly as an \gls{nttp} for code generation.
+\lstinline{generate_as_array} can be stored in a \gls{constexpr} variable or
+used directly as an \gls{nttp} for code generation.
 
-\paragraph{
-  \gls{constexpr} virtual functions
-}
-
+The addition of \gls{constexpr} memory allocation goes hand in hand
+with the ability to use virtual functions in \glspl{consteval}.
 This feature allows calls to virtual functions in constant expressions
-\cite{virtual-constexpr}. This allows heritage-based polymorphism in \gls{constexpr}
-programming when used with \gls{constexpr} allocation of polymorphic types.
-
+\cite{virtual-constexpr}. This allows heritage-based polymorphism in
+\gls{constexpr} programming when used with \gls{constexpr} allocation of
+polymorphic types.
 
 % \section{C++23 experiments for implementing EDSLs of arbitrary syntaxes}
 
