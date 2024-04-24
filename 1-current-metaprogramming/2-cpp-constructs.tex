@@ -4,16 +4,33 @@
 \section{
   \cpp language constructs for metaprogramming
 }
+\label{lbl:cpp-meta-constructs}
 
 Templates are an interesting feature for metaprogramming. As they
 are Turing-complete \cite{unruh:1994}, one can design a set of
-\textbf{template metaprograms} \cite{abrahams:2004} allowing the compiler
-to perform arbitrary computation at compile time and generating temporary
-\cpp code fragment as an output.
-The resulting temporary source code is then
-merged with the rest of the source code and finally processed by the classic
-compilation process.
-\\
+\textbf{template metaprograms} \cite{abrahams:2004} that allow the compiler
+to perform arbitrary computation at compile time, and generate
+\cpp code fragments as an output.
+The resulting source code is then merged with the rest of the program
+and processed through the subsequent compilation stages.
+
+Due to the fact that templates are instantiated at compile-time, they can only
+accept types and compile-time constants as parameters. Templates support
+pattern-matching and recursion thanks to partial template specialization,
+making it equivalent to a pure functional language \cite{haeri:2012}.
+
+Metaprogramming is essential to implement high level \glspl{dsel} that translate
+into high performance programs through a series of transformations that
+occur at compile-time, akin to an additional user-defined compilation stage
+embedded into the compilation process itself.
+
+This complex logic is often used to implement \gls{hpc} libraries that embed
+high level declarative languages based on \cpp's syntax, and provide
+high performance portable functionalities thanks to metaprogramming.
+
+\subsection{
+  \cpp template metaprogramming
+}
 
 Listing \ref{lst:basic-tmp} shows basic principles of \cpp template
 metaprogramming. The \lstinline{fibonacci_t} type template accepts an
@@ -25,17 +42,18 @@ and two specializations for elements of ranks $0$ and $1$.
 
 \begin{lstlisting}[
   language=C++,
-  caption=Example of compile time computation using C++ templates,
+  caption=Fibonacci series computation using C++ templates,
   label=lst:basic-tmp
 ]{}
 template <unsigned N> struct fibonacci_t;
 
 template <unsigned N> struct fibonacci_t {
   static constexpr unsigned value =
-      fibonacci_t<N - 2>::value + fibonacci_t<N - 1>::value;
+      fibonacci_t<N - 2>::value +
+      fibonacci_t<N - 1>::value;
 };
 
-// Specialization for cases 0 and 1
+// Specializations for cases 0 and 1
 template <> struct fibonacci_t<0> {
   static constexpr unsigned value = 0;
 };
@@ -47,18 +65,22 @@ template <> struct fibonacci_t<1> {
 std::array<int, fibonacci_t<5>::value> some_array;
 \end{lstlisting}
 
-Due to the fact that template code generation is performed at compile time,
-it is limited to the use of constants and supports pattern-matching and
-recursion thanks to template partial specialization. It can then be looked
-at as a pure functional language \cite{haeri:2012}.
-The execution of metaprograms by the compiler enables libraries to implement
-domain-specific optimizations.
-\\
+Note that template parameters in \ref{lst:basic-tmp} are values and not types.
+This is allowed since \cpp11 as \glspl{nttp} were introduced along with
+the \textbf{\gls{constexpr}} function and variable qualifier.
+Before \glspl{nttp} were introduced, even numerical values
+had to be represented using types.
 
-Metaprograms can be seen as programs that take code as input and/or output.
-This distinction will be important to explain the work presented in
-this thesis, as it focuses a lot on methods to translate
-compile time compute results into \cpp programs.
+The \gls{constexpr} qualifier allows functions and variables to be used to
+produce \glspl{nttp}, or more broadly, to be used in \textbf{\glspl{consteval}}.
+\Glspl{consteval} are evaluations that result in the creation of
+compile-time constants such as \glspl{nttp}.
+In this example, the constant is the size of a static array.
+
+This evolution of the \cpp standard marks the beginning of
+\textbf{value-based metaprogramming}, in opposition to
+\textbf{type-based metaprogramming}. Although in this example, both types
+and values are involved in the compile-time computation.
 
 \subsection{
   Different kinds of templates
@@ -156,8 +178,9 @@ arbitrary list of types as a single type.
 
   \item
 
-\textbf{\gls{constexpr} function parameters}, even though not all of them can be
-used as \glspl{nttp}, they can be used to produce \gls{nttp} compatible values.
+\textbf{Regular function parameters} can be used in certain conditions.
+Since \cpp11, functions and variables can be qualified as \gls{constexpr}
+and used to produce \glspl{nttp}.
 
 \end{itemize}
 
