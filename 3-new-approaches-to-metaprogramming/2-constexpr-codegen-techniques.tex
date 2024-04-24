@@ -2,7 +2,7 @@
 \begin{document}
 
 \section{
-  Constexpr abstract syntax trees
+  Constexpr abstract syntax trees and code generation
 }
 
 In this section, we will present different solutions to generate code
@@ -622,9 +622,9 @@ Code generation from \gls{constexpr} dynamic structures is not a trivial process
 It still requires advanced \cpp knowledge to understand the limits of what
 is or isn't possible to do with \glspl{nttp} and \gls{constexpr} functions.
 
-While the examples show working examples for code generation from \gls{constexpr}
-function results with \gls{constexpr} allocated memory, they do not show the time
-it takes to comply with \cpp \gls{constexpr} restrictions.
+The code generation examples themselves do not show the difficulties related to
+\cpp \gls{constexpr} restrictions, and the inconsistent enforcement
+of those restrictions by Clang.
 
 \item
 The easiest way to get around \gls{nttp} constraints, \ie the \gls{pbg}
