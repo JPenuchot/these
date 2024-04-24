@@ -5,24 +5,16 @@
   Constexpr abstract syntax trees and code generation
 }
 
-In this section, we will present different solutions to generate code
-from non-literal data structures generated with \gls{constexpr} functions.
+The addition of \gls{constexpr} memory and virtual function calls allows
+\gls{constexpr} implementation of \glspl{ast}, akin to those found
+in modern \cpp compiler frontends like Clang.
+However, these \glspl{ast} cannot be used directly as \glspl{nttp}
+for generating structures and functions.
 
-Non-literal data structures allow more flexibility through the use of
-dynamic memory, and allow simpler code as they do not require contraptions
-to get around the lack of dynamic allocations.
-
-% Limitations
-
-However, keep in mind that there are still limitations.
-The solutions evaluated in this thesis are still workarounds.
-What they allow is the use of dynamically-sized structures for code generation.
-
-The first subsection covers a case where we need to convert a
-pointer tree returned by a \gls{constexpr} function into code.
-
-The second one will cover a case where the tree is returned in a serialized
-representation.
+This section will cover the implementation of \gls{constexpr} \glspl{ast},
+and how to work around the limitations that prevent their direct use as
+\glspl{nttp}, either through functional wrapping techniques, or through
+their convertion of into values that satisfy \gls{nttp} requirements.
 
 \subsection{
   Code generation from pointer tree data structures
