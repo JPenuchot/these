@@ -6,14 +6,15 @@ Grossly tracking TODOs.
 
 - `./main.tex`:
 
+  * [ ] ??
   * [ ] Verifier l'unite de recherche
   * [ ] Merci les collegues et les parents
   * [ ] Merci les rapporteureuses et aux membres du jury
   * [ ] Merci les potes
-  * [ ] \noindent \textbf{Mots clés:} M\'etaprogrammation, compilation, C++ % TODO
-  * [ ] \noindent \textbf{Résumé:} Mettre le sum ici % TODO
-  * [ ] \noindent \textbf{Keywords:} Metaprogramming, compilation, C++ % TODO
-  * [ ] \noindent \textbf{Abstract:} Mettre l'abstract ici % TODO
+  * [ ] \noindent \textbf{Mots clés:} M\'etaprogrammation, compilation, C++
+  * [ ] \noindent \textbf{Résumé:} Mettre le sum ici
+  * [ ] \noindent \textbf{Keywords:} Metaprogramming, compilation, C++
+  * [ ] \noindent \textbf{Abstract:} Mettre l'abstract ici
 
 - `./introduction.tex`:
 
@@ -47,6 +48,13 @@ Grossly tracking TODOs.
 
 - `./3-new-approaches-to-metaprogramming/1-technical-background.tex`:
 
-  * [ ] Rework this as most of this stuff is introduced in the
   * [ ] dig this for references https://youtu.be/q6X9bKpAmnI
   * [ ] Expose the issue clearly!!
+
+  - `./3-new-approaches-to-metaprogramming/2-constexpr-codegen-techniques.tex`:
+
+  * [ ] Reflow this conclusion
+
+- `./3-new-approaches-to-metaprogramming/3-brainfuck.tex`:
+
+  * [ ] finish explanations
