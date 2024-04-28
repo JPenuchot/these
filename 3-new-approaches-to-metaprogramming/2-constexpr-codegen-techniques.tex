@@ -12,8 +12,8 @@ However, these \glspl{ast} cannot be used directly as \glspl{nttp}
 for generating structures and functions.
 
 This section will cover the implementation of \gls{constexpr} \glspl{ast},
-and how to work around the limitations that prevent their direct use as
-\glspl{nttp}, either through functional wrapping techniques, or through
+and techniques to work around the limitations that prevent their direct use as
+\glspl{nttp} either through functional wrapping techniques, or through
 their convertion of into values that satisfy \gls{nttp} requirements.
 
 \subsection{
@@ -107,7 +107,7 @@ as embedded compilation of Brainfuck programs, and of \LaTeX math formulae
 into high performance math computation kernels.
 
 \subsubsection{
-  Pass-by-generator
+  PBG - Pass-By-Generator
 }
 
 \label{lbl:pbg-technique}
@@ -202,17 +202,24 @@ expression is not a constant expression, despite the condition expression being
 usable to initialize a \gls{constexpr} variable.
 
 \subsubsection{
-  Pass-by-generator + ET
+  PBG + ET - Pass-By-Generator and Expression Template IR
 }
 
 \label{lbl:pbg-et-technique}
 
-Why through? Interoperability with type-based metaprogramming libraries.
+Another method consists in transforming \gls{constexpr} \glspl{ast}
+into an \acrlong{et} \acrlongpl{ir}. This serves as a proof that making
+\gls{constexpr} programming interoperable with older metaprogramming
+paradigms is feasible, but it will also help us assess the viability
+of using the \gls{pbg} method in coordination with \glspl{et}.
 
-Types:
+The first step consists in creating the \gls{ir} itself, which is a type-based
+representation of the \gls{ast}.
 
 \begin{lstlisting}[
-  language=C++
+  language=C++,
+  caption=cap,
+  label=lst:pbg-et-ir
 ]{}
 /// Type representation of a constant
 template <int Value> struct et_constant_t {};
@@ -220,10 +227,18 @@ template <int Value> struct et_constant_t {};
 template <typename Left, typename Right> struct et_add_t {};
 \end{lstlisting}
 
-Codegen:
+
+Listing \ref{lst:pbg-et-ir} shows the type-based \gls{ir} of the \gls{ast}
+representation from listing \ref{lst:tree_generation}. It is meant to be
+a one to one reimplementation of its value-based equivalent.
+
+From there, we can implement a metaprogram that transforms a \gls{constexpr}
+a \gls{ast} into this new type-based representation.
 
 \begin{lstlisting}[
-  language=C++
+  language=C++,
+  caption=AST to Expression Template transformation,
+  label=lst:to_expression_template-impl
 ]{}
 /// Accumulates the value from a tree returned by TreeGenerator.
 /// TreeGenerator() is expected to return a std::unique_ptr<tree_t>.
@@ -270,8 +285,18 @@ template <tree_generator auto Fun> constexpr auto codegen() {
 }
 \end{lstlisting}
 
+As shown in listing \ref{lst:to_expression_template-impl}, it is very similar
+to the transformation code in \ref{lbl:pbg-technique} since it relies on
+the same technique to traverse the \gls{ast}.
+However, its output is not a \cpp lambda but an \acrlong{et}, and as such
+proves that \gls{constexpr} programming is interoperable with existing
+type-based paradigms, even when \gls{constexpr} allocated memory is involved.
+
+It is worth mentioning that both this technique and the previous one induce
+very high compilation times, as we will see in \ref{lbl:bf-parsing-and-codegen}.
+
 \subsubsection{
-  FLAT
+  FLAT - AST serialization
 }
 
 \label{lbl:flat-technique}
@@ -279,6 +304,19 @@ template <tree_generator auto Fun> constexpr auto codegen() {
 To overcome the performance issues of the previously introduced techniques,
 we can try a different approach. Instead of passing trees as they are,
 they can be transformed into static arrays which can be used as \glspl{nttp}.
+
+This transformation might sound odd at first: the generated \glspl{ast} are
+dynamic structures that need dynamic memory allocation, and static arrays
+have a fixed size. However, because the size of the output is known
+at compile time, it is possible to determine the size of the serialized
+\gls{ast} in a first step to deterine the size of the array,
+and then transfer the serialized content into the array.
+\\
+
+In short: "static" array sizes are static at run-time but not at compile-time.
+This can be exploited to generate values that meet the requirements
+of \glspl{nttp} but still contain the same data as the \glspl{ast} they were
+generated from.
 
 \begin{lstlisting}[language=C++, label=lst:flat_struct_def]{}
 /// Serialized representation of a constant
@@ -299,30 +337,24 @@ using flat_node_t = std::variant<flat_add_t, flat_constant_t>;
 constexpr std::size_t null_index = std::size_t(0) - 1;
 \end{lstlisting}
 
-This requires the tree to be serialized first.
-For the sake of demonstration, we will serialize the tree into an ad hoc
-data representation that is identical to the original one, except pointers
-are replaced with \lstinline{std::size_t} indexes, and \lstinline{nullptr}
-is replaced with an arbitrary value called \lstinline{null_index} as shown in
-listing \ref{lst:flat_struct_def}.
-
-Heritage polymorphism is also replaced by \lstinline{std::variant}
-
-These nodes will be stored in \lstinline{std::vector} containers,
-and the indexes will refer to the position of other nodes within the container.
-Note that our tree nodes are not polymorphic. If needed,
-\lstinline{std::variant} could have been used to have polymorphic nodes in
-the serialized representation.
+The first step consists in implementing the \gls{ir} nodes which are similar
+to the \gls{ast} nodes.
+Pointers are replaced with \lstinline{std::size_t} indexes,
+and \lstinline{nullptr} is replaced with an arbitrary value called
+\lstinline{null_index}, as shown in listing \ref{lst:flat_struct_def}.
+This \gls{ir} also replaces heritage polymorphism with the use of
+\lstinline{std::variant}.
+These nodes are then stored in \lstinline{std::vector} containers,
+and the indexes refer to the positions of other nodes within the same container.
 
 \begin{lstlisting}[
   language=C++,
   label=lst:flat_backend_serialization,
-  caption=\gls{constexpr} tree serialization implementation
+  caption=constexpr AST serialization
 ]{}
-/// Serializes the current subtree and returns
-/// the top node's index to the caller.
-constexpr std::size_t serialize_impl(tree_ptr_t const &top,
-                                     std::vector<flat_node_t> &out) {
+constexpr std::size_t
+serialize_impl(tree_ptr_t const &top,
+               std::vector<flat_node_t> &out) {
   // nullptr translates directly to null_index
   if (top == nullptr) {
     return null_index;
@@ -333,25 +365,29 @@ constexpr std::size_t serialize_impl(tree_ptr_t const &top,
   out.emplace_back();
 
   if (top->kind == add_v) {
-    auto const &typed_top = static_cast<add_t const &>(*top);
+    auto const &typed_top =
+        static_cast<add_t const &>(*top);
 
     // Serializing left and right subtrees,
     // initializing the new node
-    out[dst_index] = {
-        flat_add_t{.left = serialize_impl(typed_top.left, out),
-                   .right = serialize_impl(typed_top.right, out)}};
+    out[dst_index] = {flat_add_t{
+        .left = serialize_impl(typed_top.left, out),
+        .right =
+            serialize_impl(typed_top.right, out)}};
   }
 
   if (top->kind == constant_v) {
-    auto const &typed_top = static_cast<constant_t const &>(*top);
-    out[dst_index] = {flat_constant_t{.value = typed_top.value}};
+    auto const &typed_top =
+        static_cast<constant_t const &>(*top);
+    out[dst_index] = {
+        flat_constant_t{.value = typed_top.value}};
   }
 
   return dst_index;
 }
 
-/// Returns a serialized representation of a pointer tree.
-constexpr std::vector<flat_node_t> serialize(tree_ptr_t const &tree) {
+constexpr std::vector<flat_node_t>
+serialize(tree_ptr_t const &tree) {
   std::vector<flat_node_t> result;
   serialize_impl(tree, result);
   return result;
@@ -359,14 +395,10 @@ constexpr std::vector<flat_node_t> serialize(tree_ptr_t const &tree) {
 \end{lstlisting}
 
 Listing \ref{lst:flat_backend_serialization} shows the implementation of the
-serialization step. The implementation itself has nothing particular, except for
-the functions being \gls{constexpr}.
-
-Once the data is serialized, it can be converted into a static array container.
-This can be done because the generator function is \gls{constexpr}, therefore it
-can be used to produce \gls{constexpr} values. The size of the resulting
-\lstinline{std::vector} can be stored at compile time to set the size
-of a static array.
+serialization step. Note that all the code that was presented so far
+is ordinary \cpp code, except for the functions being \gls{constexpr}.
+From there we can implement the last transformation, which consists
+in transferring the serialized data into a static array.
 
 \begin{lstlisting}[
   language=C++,
@@ -386,12 +418,13 @@ constexpr auto serialize_as_array() {
 Listing \ref{lst:serialize_as_array} shows the implementation of a helper
 function that takes a \gls{constexpr} tree generator function as an input,
 serializes the result, and returns it as a static array.
-
-Static arrays are not dynamically allocated, therefore they can be used as
-\glspl{nttp} if their values do not hold pointers to
-\gls{constexpr} allocated memory either.
-In our case, the elements only hold integers, so a \lstinline{std::array} of
-\lstinline{flat_node_t} elements can be used as a \glspl{nttp}.
+This can be done because the generator function is \gls{constexpr}, therefore it
+can be used to produce \gls{constexpr} values. The size of the resulting
+\lstinline{std::vector} can be stored at compile time to set the size
+of a static array.
+The elements contained in the resulting array are \glspl{litval} since they do
+not hold pointers to dynamic memory, therefore the array itself is a
+\gls{litval} as well.
 
 \begin{lstlisting}[
   language=C++,
