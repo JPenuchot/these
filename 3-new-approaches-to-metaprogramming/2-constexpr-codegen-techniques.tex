@@ -634,68 +634,31 @@ corresponding to the symbol being read.
 Once all symbols are read, there should be only one operand remaining
 on the stack: the function that evaluates the whole tree.
 
-\section{
+\subsection{
   Conclusion
 }
 
-% TODO: Reflow this conclusion
+We now have a set of methods that allow us to convert \gls{constexpr}
+\glspl{ast} into \cpp code, each with their flaws and advantages with regard
+to compilation times, implementation difficulty, or simply final code size.
+So far, all of them require advanced \cpp knowledge and tinkering to get
+Clang to compile them. But as difficult as their implementation may be,
+it is still possible to design toolchains that minimize the amount of code
+related to \gls{ast} transformation, and keep most of the computing in
+\gls{constexpr} functions that are easier to write and maintain
+for most \cpp developers.
 
-The presented code snippets already allow us to draw a few observations.
+We can alreaady notice a few differences between those techniques:
+\gls{pbg}-based backends seem to have much higher compilation times,
+and they induce errors that are harder to diagnose despite the implementation
+being seemingly straightforward.
+The Flat backend however, requires more work to serialize the \gls{ast},
+but serializing a pointer tree does not require as much advanced \cpp knowledge.
+Moreover, the serialization code can be executed, debugged, and tested in a
+regular run-time environment.
 
-\begin{itemize}
-
-\item
-Code generation from \gls{constexpr} dynamic structures is not a trivial process.
-It still requires advanced \cpp knowledge to understand the limits of what
-is or isn't possible to do with \glspl{nttp} and \gls{constexpr} functions.
-
-The code generation examples themselves do not show the difficulties related to
-\cpp \gls{constexpr} restrictions, and the inconsistent enforcement
-of those restrictions by Clang.
-
-\item
-The easiest way to get around \gls{nttp} constraints, \ie the \gls{pbg}
-technique, is very costly in terms of compilation times.
-
-Section \ref{lbl:compile-time-eval} covers that scaling issue in more detail.
-The overall assesment is that this technique can be used for small metaprograms,
-but it fails to scale properly as larger ones are being considered
-due to its quadratic compilation time complexity.
-
-In our Brainfuck metacompilation examples, we were able to trigger Clang's
-timeout using this technique when compiling a Mandelbrot visualizer
-whereas the so-called "flat" backend was able to generate the program in less
-than a minute.
-
-\item
-Compiler support for \gls{constexpr} programming and constant evaluation in general
-is still very inconsistent across compilers. GCC still has issues with
-\lstinline{if constexpr} where templates are instantiated even when they are
-in a discarded statement.
-
-\item
-Library support is also limited.
-Most of the containers from the \cpp standard library are not usable in
-\gls{constexpr} functions simply because the \cpp standard lacks \gls{constexpr}
-qualfications for their methods (and \gls{constexpr} qualification is not implicit).
-
-As of today, the only exceptions are the main containers such as
-\lstinline{std::vector}, \lstinline{std::string} (since \cpp20),
-or \lstinline{std::unique_ptr} (since \cpp23).
-
-The C'est \cite{cest} library however provides more standard-like containers
-that are usable in \gls{constexpr} functions in \cpp20, which is enough to make
-the previous examples run on Clang in \cpp20.
-
-\end{itemize}
-
-So far we can conclude that while being doable, code generation from \gls{constexpr}
-function results with dynamic memory is still not accessible to all \cpp
-programmers.
-
-An effort on the language itself would be needed to allow easier data passing
-from \gls{constexpr} allocated memory to \gls{nttp}.
-
-Alternatively, the language could allow code generation
+So far, it seems that the \gls{pbg} method is more suitable for prototyping,
+whereas the serialization method is more suitable in larger metaprograms that
+might benefit from having better readability and performance at scale.
 
 \end{document}
