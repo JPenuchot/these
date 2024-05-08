@@ -1,15 +1,11 @@
-#include <vector>
+int foo() {
+  // generate random data serially
+  thrust::host_vector<int> h_vec(100);
+  std::generate(h_vec.begin(), h_vec.end(), rand);
 
-constexpr std::vector<int> foo() {
-  return {{1, 2, 3, 4, 5}};
+  // transfer to device and compute sum
+  thrust::device_vector<int> d_vec = h_vec;
+  return thrust::reduce(d_vec.begin(),
+                        d_vec.end(), 0,
+                        thrust::plus<int>());
 }
-
-// Compiles
-if constexpr (constexpr bool val =
-                  foo().size() == 5;
-              val)
-  ;
-
-// Does not compile
-if constexpr (foo().size() == 5)
-  ;

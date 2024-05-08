@@ -103,6 +103,12 @@
   morestring=[b]"
 }
 
+\lstdefinelanguage{dlang}{
+  morekeywords={static, if, typeof, int},
+  morecomment=[l]{\#},
+  morestring=[b]"
+}
+
 \lstdefinelanguage{rust}{
   morekeywords={let, mut, expr},
   morecomment=[l]{//},
@@ -370,7 +376,9 @@ optimisation
 % ------------------------------------------------------------------------------
 % These de Jules
 
-\part{Current state of metaprogramming for high performance computing}
+\part{
+  Current state of metaprogramming for high performance computing
+}
 
 \chapter*{
   Introduction
@@ -390,13 +398,37 @@ of such techniques being used in the context of \gls{hpc} libraries.
 \subfile{1-current-metaprogramming/1-metaprog-and-hpc-overview.tex}
 \subfile{1-current-metaprogramming/2-cpp-constructs.tex}
 
+\section{
+  Conclusion
+}
+
+Metaprogramming surfaced in many forms and in many languages such as Lisp or C
+macros, long before \cpp templates came to exist.
+It still persists as an advanced but widespread practice across many languages,
+ranging from basic preprocessing to dynamic code generation and compilation.
+
+Template metaprogramming has been the de facto standard for \cpp metaprogramming
+as many libraries use it to implement high performance or highly specialized
+libraries that benefit from compile-time evaluation and code generation.
+This is especially true for \gls{hpc} libraries that benefit the most from
+partial evaluation.
+
+The language \cpp later evolved to provide host language availability for
+metaprogramming with the introduction and evolution of \gls{constexpr}
+programming, similar to what Lisp macros have been pioneering.
+This new way of writing \cpp metaprograms will be explored throughout
+the second part of this thesis, but before that we will take a look at
+how to use \gls{tmp} to generate high performance linear algebra kernels.
+
 \chapter{
   Code generation at low level
 }
 
 \subfile{1-current-metaprogramming/3-gemv.tex}
 
-\part{C++ metaprogramming beyond templates}
+\part{
+  C++ metaprogramming beyond templates
+}
 
 \chapter{
   Compile time benchmarking methodology

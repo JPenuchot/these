@@ -1,11 +1,6 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
-% - SotA metaprog (Can't read)
-%   - C++ (Can't read)
-%   - Reflection
-%   - Can't read
-
 \section{
   Metaprogramming styles and languages
 }
@@ -25,19 +20,13 @@ In \cpp, templates serve as an interface for partial specialization.
 However, many other ways to implement it exist across a wide range of languages
 spanning more than half a century.
 
-% TODO: Citer https://hal.science/hal-01835202/document
-% - Voir chapitre sur le preprocesseur: https://theses.fr/2014PA112092
-%   repartir du 2.1 pour l'evaluation partielle et les beta-reductions
-% - Voir 2.1.1: eval partielle
-% - Voir 2.1.2.2
-% - Citations 26 et 33
-
 \begin{itemize}
 
 \item
 \textbf{The C and C++ preprocessor} acts as rudimentary token manipulation stage
-that was not originally made for metaprogramming, but it can be hacked
-to emulate complex logic, such as functional languages.
+that was not originally made for metaprogramming, but it can be used
+to emulate complex logic, such as functional languages. As such, it can even
+be used for high performance code generation \cite{6662183}.
 
 In listing \ref{lst:c-preproc-example} we can see the Boost.Preprocessor library
 being used to emulate a tuple structure to select a variable qualifier depending
@@ -122,7 +111,21 @@ which are pre-parsed constructs that can be injected later,
 as well as string mixins that allow strings containing Dlang code
 to be compiled and inserted directly into programs.
 
-% TODO: Exemple
+Other metaprogramming constructs exists in Dlang, such as \lstinline{static if}
+shown in listing \ref{lst:dlang-static-if}, which is an equivalent of
+\lstinline{if constexpr} in \cpp.
+
+\begin{lstlisting}[
+  language=dlang,
+  caption={Use of \lstinline{static if} in Dlang\protect\footnotemark{}},
+  label={lst:dlang-static-if}
+]{}
+static if(is(T == int))
+    writeln("T is an int");
+static if (is(typeof(x) :  int))
+    writeln("x implicitly converts to int");
+\end{lstlisting}
+\footnotetext{\url{https://tour.dlang.org/tour/en/gems/template-meta-programming}}
 
 \item
 \textbf{Rust} proposes metaprogramming through macros, generics, and traits.
@@ -207,15 +210,10 @@ transposition, and scalar multiplication. Based on
 polyhedral analysis using CLoog, the generated code
 outperforms MKL and Eigen.
 
-% TODO: Combiner et dire que ces 2 langages sont d'autres exemples de metaprog
-
 \item
-\textbf{Braid} \cite{braid} is language that implements metaprogramming
-through multi-staged programming (like MetaOCaml) for heterogeneous real-time
-3D graphics. It is however unmaintained.
-
-\item
-\textbf{Julia} \cite{julia} is a dynamic language that uses the LLVM
+Other languages such as \textbf{Braid} \cite{braid} or
+\textbf{Julia} \cite{julia} implement staged metaprogramming,
+although Julia emits LLVM code directly, and Braid is unmaintained.
 
 \end{itemize}
 

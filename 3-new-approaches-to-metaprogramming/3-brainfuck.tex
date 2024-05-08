@@ -93,10 +93,6 @@ Additionally, \gls{constexpr} execution enforces checks on memory allocations an
 deallocations as well as memory bound checking. Therefore testing functions
 in \gls{constexpr} contexts can help finding memory safety issues.
 
-\subsection{
-  A variety of techniques to generate code from a dynamic AST
-}
-
 Once the \gls{constexpr} parser is implemented, the next step consists in
 figuring out how to transform its result, which contains dynamic memory,
 into \cpp code.
@@ -112,7 +108,9 @@ This will give us a clearer idea of their implementation difficulty,
 and they will enable us to run compilation time benchmarks to compare their
 compilation time performance.
 
-\subsubsection{Pass-by-generator and Expression Template backends}
+\subsection{
+  Pass-by-generator and Expression Template backends
+}
 
 The first backend implemented in the poacher project was the \gls{et} backend,
 where the AST is transformed a type-based \gls{ir}
@@ -148,47 +146,25 @@ backend. \lstinline{et_block_t} and \lstinline{et_while_t} structures contain a
 pack of arbitrary types that may be \lstinline{et_token_t} elements for single
 tokens, or \lstinline{et_while_t} elements for nested while loops.
 
-% TODO: finish explanations
-From there, the code generation
+From there, the code generation occurs in the same way as it did in
+\ref{lbl:pbg-et-technique}: the \gls{et} is traversed recursively using
+overloaded functions to generate the \cpp code that corresponds to every
+while block, and down to every instruction in the \gls{et}.
+The complete implementations of these backends are available in appendices
+\ref{app:bf-et-backend} and \ref{app:bf-pbg-backend}.
 
-They were notably difficult to implement as the rules enforced by Clang
-in regard to the use of \gls{constexpr} allocated memory are often inconsistent.
-Error messages relative to the use of \gls{constexpr} allocated memory are often
-too vague. Moreover, the compilation times were already noticeably long
-at the implementation phase of these backends. As we will see later,
-these two backends have quadradic compilation time complexity.
+\subsection{
+  Serializing the \gls{ast} into a \gls{litval}
+}
 
-Their implementation details will be relegated
-to appendices \ref{app:bf-et-backend} and \ref{app:bf-pbg-backend}.
-
-
-\subsubsection{Serializing the \gls{ast} into a \gls{litval}}
-
-The last technique I will discuss, which is by far the most efficient
-in regard to compilation time, consists in transforming the \gls{ast} into a
-\gls{litval} that can be used as a \gls{nttp}.
-
-As I've discussed in \ref{lbl:constexpr-programming}, a \gls{constexpr}
-\lstinline{std::vector} return value can be transformed into a static array with
-a trivial transformation. As long as a static array holds \glspl{litval},
-the array itself remains a \gls{litval} as well, and can therefore be used
-as a \gls{nttp}.
-
-In order to do this, a serialized \gls{ir} of the \gls{ast}
-which must only contain \glspl{litval} must be implemented.
-It is a fairly trivial task:
-
-\begin{itemize}
-\item
-Polymorphism through the inheritance of \lstinline{node_interface_t}
-can be replaced with the use of \lstinline{std::variant}, which is literal
-as long as the value it holds is literal as well.
-
-\item
-Pointers contained in AST nodes can be replaced by integer indexes pointing to
-internal values of the array (static or dynamic) in which serialized
-AST nodes are stored.
-\end{itemize}
+The last remaining backend to implement is the one that transforms
+the \gls{ast} into a serialized, \gls{nttp} compatible \gls{ir}.
+The case of Brainfuck introduces a notable difference compared to the simple
+use case seen in \ref{lbl:flat-technique}: while \gls{ast} nodes in Brainfuck
+can have an arbitrary number of children nodes, as opposed to add nodes in
+the simple use case I presented earlier. This introduces a few technical
+differences with regard to seerialization and code generation, which I will
+cover in detail in this subsection.
 
 \begin{lstlisting}[
   language=c++,
@@ -214,7 +190,8 @@ struct flat_while_t {
 
 /// Polymorphic representation of a node
 using flat_node_t =
-    std::variant<flat_token_t, flat_block_descriptor_t,
+    std::variant<flat_token_t,
+                 flat_block_descriptor_t,
                  flat_while_t>;
 
 /// AST container type
@@ -225,22 +202,25 @@ template <size_t N>
 using fixed_flat_ast_t = std::array<flat_node_t, N>;
 \end{lstlisting}
 
-Listing \ref{lst:flat-ir-typedef}, shows the \gls{ast} as it was implemented
-for the benchmarks that will follow in the next section.
-Note that the serialized \gls{ast} can be stored either as a
-\lstinline{flat_ast_t} for convenience in \glspl{consteval},
-which can then be transformed into a \lstinline{fixed_flat_ast_t<N>}
-to be passed as a \gls{nttp}.
+Listing \ref{lst:flat-ir-typedef} shows the definition of the serialized
+Brainfuck \gls{ir}. It is similar to the \gls{ir} in \ref{lbl:flat-technique},
+except that it can represent ranges of instructions through
+\lstinline{flat_block_descriptor_t}. This representation of node blocks
+implies that nodes within the same block must be stored contiguously
+after the serialization process.
 
-To serialize the AST, we will rely on a function called \lstinline{block_gen}
-which visits the AST recursively and generates serializes the AST progressively.
+To guarantee that nodes remain contiguous, the serialization process was split
+in two parts: a first phase that generates a vector of blocks where references
+are materialized by indexes to the blocks within that vector of vectors,
+and a second phase that merges these blocks together into a single vector,
+and replaces the block indexes by the beginning position of their subrange
+in the result of the merging process.
 
 \begin{lstlisting}[
   language=c++,
   caption=\lstinline{block_gen_state_t} definition,
   label={lst:flat-block_gen_state_t}
 ]{}
-/// Support structure for generate_blocks function
 struct block_gen_state_t {
   /// Flat AST blocks, result of block_gen
   std::vector<flat_ast_t> blocks;
@@ -253,16 +233,17 @@ struct block_gen_state_t {
 };
 \end{lstlisting}
 
-In listing \ref{lst:flat-block_gen_state_t} we begin by defining a structure
-called \lstinline{block_gen_state_t} that contains the intermediate result.
+In listing \ref{lst:flat-block_gen_state_t} we begin by defining the structure
+called \lstinline{block_gen_state_t} that contains the result of the first
+serialization phase, and other useful values for the serialization process.
 
 \begin{lstlisting}[
   language=c++,
   caption=Generic \lstinline{block_gen} implementation,
   label=lst:flat-block_gen-generic
 ]{}
-/// Extracts an AST into a vector of blocks of
-/// contiguous operations
+/// Extracts an AST into a vector
+/// of blocks of contiguous operations
 constexpr void block_gen(ast_node_ptr_t const &,
                          block_gen_state_t &);
 
@@ -277,10 +258,10 @@ constexpr void block_gen(ast_node_ptr_t const &p,
 Listing \ref{lst:flat-block_gen-generic} shows the implementation of the generic
 version of \lstinline{block_gen}. It consists in a forward declaration
 followed by node-specific implementations which call the generic version
-recursively. The generic version relies on the \lstinline{visit} function,
-and for that reason overloads for derivatives of \lstinline{node_interface_t}
-must be declared first. To make it simpler, I chose to define them as well
-to avoid unnecessary forward declarations.
+recursivelythanks to the  \lstinline{visit} function.
+Specialized overloads of the \lstinline{block_gen} function follow the same
+inteface: they are invoked with a node and the state of the block generation
+process as a mutable reference.
 
 \begin{lstlisting}[
   language=c++,
@@ -337,22 +318,15 @@ Listing \ref{lst:flat-block_gen-impl} shows the implementation of
 \lstinline{block_gen} overloads for all types derived from
 \lstinline{node_interface_t}.
 
-The most important one is the implementation for \lstinline{ast_block_t}.
-This is the overload that generates new blocks in the \lstinline{blocks} vector
-of the \lstinline{block_gen_state_t} structure.
+The most important one is the overload for \lstinline{ast_block_t}.
+It transfers each block in the \lstinline{blocks} vector
+of the \lstinline{block_gen_state_t} structure by allocating them in the vector,
+and calling \lstinline{block_gen} recursively for each node in the source block
+to effectively transfer them in the destination block.
 
-It works by simply allocating a new block in the \lstinline{block_gen_state_t}
-structure, and traverse each node by calling \lstinline{block_gen} recursively.
-This ensures the elements contained in \gls{ast} block nodes remain contiguous
-which is instrumental to make code generation easier later on.
-
-The elements contained in these blocks have their indexes pointing to
-the elements of the \lstinline{blocks} vector
-of the \lstinline{block_gen_state_t} structure, but the expected result is a
-single \lstinline{std::vector} containing all \gls{ast} nodes.
-
-The \lstinline{flatten} function is responsible for transforming the
-contents of \lstinline{block_gen_state_t} into such a representation.
+Once the vector of blocks is generated, the \lstinline{flatten} function
+is responsible for transforming the contents of \lstinline{block_gen_state_t}
+into such a representation.
 
 \begin{lstlisting}[
   language=c++,
@@ -778,7 +752,7 @@ could dramatically increase the size of embedded programs as whole source files
 could be used directly as embedded expressions or programs in \cpp.
 
 \subsubsection{
-  Conclusions
+  Conclusion
 }
 
 Here is what can be said about each backend:

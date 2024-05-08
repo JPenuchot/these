@@ -259,6 +259,16 @@ compile time programs to run much faster than pure \gls{tmp} does.
 }
 \label{lbl:expression-level-metaprogramming}
 
+% By definition, a Domain-Specific Language (DSL) is a computer language special-
+% ized to a particular application domain, contrary to a general-purpose language,
+% which is broadly applicable across domains, and lacks specialized features for a par-
+% ticular domain. Domain Specific Embedded Languages (DSELs) are a subclass of
+% DSL that rely on an existing general-purpose language to host it. DSELs then reuse
+% the host language syntax and tool ecosystem to be compiled or interpreted. The
+% compile-time process of generating new code (either inside or outside the current
+% host language) known as Template Meta-Programming is then used to ensure
+% performances and correctness.
+
 % TODO: Citer un peu boost.proto
 
 % DEBUT
@@ -290,8 +300,8 @@ expressions at compile time by creating type-based arborescences.
 This type of representation is called an \gls{et} \cite{veldhuizen:1995}.
 
 Combined with compile-time mechanisms such as function overloading,
-specialization, and operator overloading, \gls{et}\acrpluralsuffix{} can be used to
-implement expression level \gls{dsel}\acrpluralsuffix{} and convert complex
+specialization, and operator overloading, \glspl{et} can be used to
+implement expression level \glspl{dsel} and convert complex
 mathematical expressions into high performance code.
 
 There are two main libraries that are able to do just this: Eigen \cite{eigen}
@@ -338,7 +348,8 @@ lazy evaluation, more complex operations such as matrix-matrix multiplications
 require more hardware-specific tuning.
 
 \item
-\textbf{Multi-threading} can be implemented via parallel assignment functions.
+\textbf{Multi-threading} can be implemented via parallel assignment functions,
+with the help of views.
 
 \item
 \textbf{\gls{simd} optimizations} can be implemented through vector access
@@ -702,7 +713,8 @@ int foo() {
 
   // transfer to device and compute sum
   thrust::device_vector<int> d_vec = h_vec;
-  return thrust::reduce(d_vec.begin(), d_vec.end(), 0,
+  return thrust::reduce(d_vec.begin(),
+                        d_vec.end(), 0,
                         thrust::plus<int>());
 }
 \end{lstlisting}
@@ -712,20 +724,5 @@ int foo() {
 These libraries operate at many different levels: some of them provide
 high level declarative APIs for math computing, while others provide generic
 building blocks to write generic compute kernels.
-
-\section{
-  Conclusion
-}
-
-% TODO: Refondre ce paragraphe pour mieux resumer le chapitre
-All these examples show that metaprogramming is not just a gimmick.
-There is enough interest in leveraging metaprogramming
-for generic programming that many frameworks, libraries, or languages
-have been developed around this paradigm and maintained sometimes
-for more than a decade. Its adoption in languages like Braid, Julia, Terra,
-Rust, or Dlang shows that it is not limited to \cpp.
-
-In the next chapter, I will focus on the use of Boost.SIMD \cite{bsimd}
-for the generation of \gls{blas}-compatible linear algebra kernels.
 
 \end{document}
