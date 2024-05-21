@@ -159,8 +159,8 @@
 \newacronym{blas}{BLAS}{Basic Linear Algebra Subprograms}
 \newacronym{ctpg}{CTPG}{Compile Time Parser Generator}
 \newacronym{ctre}{CTRE}{Compile Time Regular Expression}
-\newacronym{dsel}{DSEL}{Domain Specific Embedded Language}
-\newacronym{dsl}{DSL}{Domain Specific Language}
+\newacronym{dsel}{DSEL}{Domain-Specific Embedded Language}
+\newacronym{dsl}{DSL}{Domain-Specific Language}
 \newacronym{erb}{ERB}{Embedded Ruby}
 \newacronym{et}{ET}{Expression Template}
 \newacronym{gemv}{GEMV}{General Matrix Vector multiply}
@@ -237,16 +237,14 @@
 
 \vspace{6mm}
 
-% TODO
-\small École doctorale n$^{\circ}$ d'accréditation, dénomination et sigle\\
-\small Spécialité de doctorat: voir annexe\\
-\small Graduate School : voir annexe. Référent : voir annexe \\
+\small École doctorale n$^{\circ}$580: sciences et technologies de l'information et de la communication (STIC)\\
+\small Spécialité de doctorat: Informatique\\
+\small Graduate School: Informatique et sciences du numérique. Référent: Faculté des sciences d’Orsay\\
 \vspace{6mm}
 
-% TODO: Verifier l'unite de recherche
-\footnotesize Thèse préparée dans la (ou les) unité(s) de recherche
-\textbf{STIC} (voir annexe), sous la direction de \textbf{Joel FALCOU},
-titre du directeur ou de la directrice de thèse \\
+\footnotesize Thèse préparée dans l'unités de recherche
+\textbf{Université Paris-Saclay, CNRS, Laboratoire interdisciplinaire des sciences du numérique, 91405, Orsay, France}, sous la direction de \textbf{Joel FALCOU},
+Maître de conférences\\
 \vspace{15mm}
 
 \textbf{Thèse soutenue à Paris-Saclay, le JJ mois AAAA, par}\\
@@ -333,7 +331,8 @@ parall\'elisme
 
 \noindent \textbf{Mots clés:}
 M\'etaprogrammation, compilation, C++, HPC, parall\'elisme, constexpr, SIMD,
-optimisation
+optimisation, programmation g\'en\'erique, programmation g\'en\'erative,
+templates, langage d\'edi\'e
 
 \vspace{-.5cm}
 \begin{multicols}{2}
@@ -348,10 +347,39 @@ optimisation
 
 \textbf{Title:} Advanced techniques for parallel code generation
 
-\noindent \textbf{Keywords:} Metaprogramming, compilation, C++ % TODO
+\noindent \textbf{Keywords:}
+Metaprogramming, compilation, C++, HPC, parallelism, constexpr, SIMD,
+optimization, generic programming, generative programming,
+templates, domain-specific language
 
 \begin{multicols}{2}
-\noindent \textbf{Abstract:} Mettre l'abstract ici % TODO
+\noindent \textbf{Abstract:}
+As a response to an increasing demand for computing performance,
+hardware manufacturers propose new parallel hardware architectures
+of very different nature, each with their own API and programming model.
+This makes high performance applications more complex to develop
+with traditional programming practices, especially when multiple architectures
+are targeted.
+
+As a response, libraries leveraging compile-time code generation were developed
+to facilitate portable high performance programming with high level abstractions
+such as Domain-Specific Embedded Languages (DSELs).
+
+In this thesis, we first explore existing metaprogramming practices across
+a wide variety of languages, then evaluate current C++ template metaprogramming
+techniques in the framework of BLAS-like kernel generation.
+
+We then cover new metaprogramming techniques based on compile-time
+C++ code execution by implementing compile-time parsers for two languages:
+Brainfuck, and a language called Tiny Math Language (TML).
+The Brainfuck parser is provided with several code generation backends
+to study and compare different code generation techniques, whereas TML is used
+to study code generation using portable high performance computing libraries.
+
+In order to assess the compile-time impact of these various metaprogramming
+techniques, we propose a new benchmarking methodology that leverages
+Clang's built-in profiler, enabling compile-time performance scaling analysis
+beyond black-box benchmarking.
 \end{multicols}
 \end{mdframed}
 
