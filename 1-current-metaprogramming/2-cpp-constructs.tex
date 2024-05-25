@@ -6,7 +6,7 @@
 }
 \label{lbl:cpp-meta-constructs}
 
-Templates are an interesting feature for metaprogramming. As they
+\cpp templates are an interesting feature for metaprogramming. As they
 are Turing-complete \cite{unruh:1994}, one can design a set of
 \textbf{template metaprograms} \cite{abrahams:2004} that allow the compiler
 to perform arbitrary computation at compile time, and generate
@@ -18,11 +18,6 @@ Due to the fact that templates are instantiated at compile-time, they can only
 accept types and compile-time constants as parameters. Templates support
 pattern-matching and recursion thanks to partial template specialization,
 making it equivalent to a pure functional language \cite{haeri:2012}.
-
-Metaprogramming is essential to implement high level \glspl{dsel} that translate
-into high performance programs through a series of transformations that
-occur at compile-time, akin to an additional user-defined compilation stage
-embedded into the compilation process itself.
 
 This complex logic is often used to implement \gls{hpc} libraries that embed
 high level declarative languages based on \cpp's syntax, and provide
@@ -148,6 +143,8 @@ named_value_t<int> val = annotated_default_v<int>;
   Different kinds of parameters
 }
 
+% TODO: Rajouter un exemple pour synthetiser chaque categorie de parametres
+
 Metaprograms can take many kinds of \cpp constructs as inputs.
 
 \begin{itemize}
@@ -253,7 +250,13 @@ preferable for many reasons: they are familiar to all \cpp developers
 semantics properly as opposed to type-based metaprogramming, and they allow
 compile time programs to run much faster than pure \gls{tmp} does.
 
-% TODO: Faire la liaison pour integrer (voir HDR de Joel)
+% TODO: Rajouter un exemple de fibonacci en fonction constexpr
+
+Metaprogramming is essential to implement high level \glspl{dsel} that translate
+into high performance programs through a series of transformations that
+occur at compile-time, akin to an additional user-defined compilation stage
+embedded into the compilation process itself.
+
 \section{
   Domain specific embedded language
 }
@@ -272,11 +275,11 @@ compile time programs to run much faster than pure \gls{tmp} does.
 % TODO: Citer un peu boost.proto
 
 % DEBUT
-\glspl{dsel} in \cpp use \gls{tmp} via the \textit{Expression Template} idiom.
-\textbf{Expression Templates} \cite{veldhuizen:1995,vandevoorde:2002} is a
+\glspl{dsel} in \cpp use \gls{tmp} via the \textbf{\gls{et}} idiom.
+\glspl{et} \cite{veldhuizen:1995,vandevoorde:2002} is a
 technique implementing a form of \textbf{delayed evaluation} in
 \cpp \cite{spinellis:2001}. Expression Templates are built around the
-\textit{recursive type composition} idiom \cite{jarvi:1998} that allows the
+\textbf{recursive type composition} idiom \cite{jarvi:1998} that allows the
 construction, at compile time, of a type representing the \gls{ast}
 of an arbitrary statement. This is done by overloading functions and operators
 on those types so they return a lightweight object.
@@ -285,7 +288,7 @@ being built in its type instead of performing any kind of computation.
 Once reconstructed, this \gls{ast} can be transformed into arbitrary code fragments
 using Template Metaprograms.
 
-As of today, most \cpp EDSLs rely on \textit{Expression Templates} and therefore
+As of today, most \cpp \glspl{dsel} rely on \gls{et} and therefore
 are limited to the \cpp syntax. New techniques are becoming more popular through
 the use of \gls{constexpr} strings to embed arbitray
 \glspl{dsel}. One major example is the \gls{ctre} \cite{ctre}
@@ -294,42 +297,58 @@ However, \gls{ctre} still relies on type-based \gls{tmp} to parse
 regular expressions and transform them into regular expression evaluators.
 % FIN
 
-In this chapter I will cover the use of \gls{tmp} for higher levels
-of abstraction. Templates can be used to represent whole mathematical
-expressions at compile time by creating type-based arborescences.
-This type of representation is called an \gls{et} \cite{veldhuizen:1995}.
+% TODO: Rajouter exemple CTRE
+\begin{lstlisting}[
+  language=c++
+]{}
+struct date {
+  std::string_view year;
+  std::string_view month;
+  std::string_view day;
+};
+
+std::optional<date>
+extract_date(std::string_view s) noexcept {
+  using namespace ctre::literals;
+  if (auto [whole, year, month, day] =
+          ctre::match<
+              "(\\d{4})/(\\d{1,2})/(\\d{1,2})">(
+              s);
+      whole) {
+    return date{year, month, day};
+  } else {
+    return std::nullopt;
+  }
+}
+\end{lstlisting}
+
+In this section, I will cover the use of \gls{tmp} for higher levels
+of abstraction.
+
+\subsection{
+  A use case for Expression Templates
+}
 
 Combined with compile-time mechanisms such as function overloading,
 specialization, and operator overloading, \glspl{et} can be used to
 implement expression level \glspl{dsel} and convert complex
-mathematical expressions into high performance code.
-
-There are two main libraries that are able to do just this: Eigen \cite{eigen}
-and Blaze \cite{blazelib}, which were cited in \ref{lbl:meta-libraries}.
-In this section, I will introduce the basics of \cpp \gls{tmp},
-
-\subsection{
-  Expression templates: a type-based representation of math formulas
-}
-
-Expression templates are template trees that represent math formulas.
-They are generated using operator and function overloading from expressions
-that must be known at compile time.
+mathematical expressions into high performance code\cite{veldhuizen:1995}.
+There are two main libraries that are able to do this: Eigen \cite{eigen}
+and Blaze \cite{blazelib}.
 
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{images/expressiontemplates.pdf}
 \caption{
-  Expression template evaluation illustration,
-  taken from Joel Falcou's HDR thesis \cite{falcou-hdr}
+  Expression template evaluation illustration\cite{falcou-hdr}
 }
 \label{fig:expression-template-illustration}
 \end{figure}
 
-Figure \ref{fig:expression-template-illustration} shows the basic
-working principle of \glspl{et}: an operation involving matrices generates
-a type hirarchy that represents the operation itself, and the assignment
-of this expression to \lstinline{x} triggers the generation of
-an optimized program that computes the operation.
+Figure \ref{fig:expression-template-illustration} shows how mathematical
+expressions can be encoded via \glspl{et}: an operation involving matrices
+generates a type hierarchy that represents the operation itself,
+and the assignment of this expression to \lstinline{x} triggers the generation
+of an optimized program that computes the operation.
 
 They enable a whole range of optimizations:
 
@@ -365,7 +384,7 @@ all Blaze functions used in CUDA kernels.
 \end{itemize}
 
 To implement these optimizations in Blaze \cite{blazelib},
-expression templates and assignment function overloading are equally essential
+\glspl{et} and assignment function overloading are equally essential
 to implement evaluation strategies depending on the nature of the operations.
 
 For example, element-wise operations are optimized through lazy evaluation
@@ -453,11 +472,11 @@ to be implemented. Virtual functions were allowed too, further expanding
 \gls{constexpr} programming capabilities.
 However, not all standard containers were made available directly as
 the standard has to be revised for every single one of them to be
-usable in \glspl{consteval}. The C'est \cite{cest} library was meant to solve
+usable in \glspl{consteval}. The \textbf{C'est} \cite{cest} library was meant to solve
 this temporary issue, filling the gap in the \cpp standard by providing
 \gls{constexpr} compatible standard containers.
 
-As of today most of the containers implemented in C'est are available in
+As of today most of the containers implemented in \textbf{C'est} are available in
 up-to-date standard libraries, but it is still useful to write metaprograms
 in compilation environments that do not provide \cpp23 compatible compilers
 and standard libraries such as older versions of Debian
@@ -466,14 +485,14 @@ or Red Hat Enterprise Linux.
 It implements the same containers and algorithms as the \cpp standard library,
 although all of them usable in \glspl{consteval}. For example,
 \lstinline{std::deque} is not usable in \glspl{consteval} whereas
-its C'est equivalent (\lstinline{cest::deque}) is.
+its \textbf{C'est} equivalent (\lstinline{cest::deque}) is.
 It was instrumental for this thesis as the research work I present here started
 a long time before \cpp23 was adopted and standard libraries as well as
 compilers started implementing it.
 
 \begin{lstlisting}[
   language=c++,
-  caption=C'est code example,
+  caption=\textbf{C'est} code example,
   label=lst:cest-example
 ]{}
 constexpr std::size_t
@@ -493,50 +512,48 @@ compile-time program in which we find the index of the first element of value 6.
 Note that in this example, we are using properly typed values and functions
 instead of templates to represent values, predicates, and functions.
 
-I contributed to the development of C'est by implementing a \gls{constexpr}
-version of \lstinline{std::unique_ptr}. This collaboration led Joel Falcou
-and myself to meet with its initiator, Paul Keir, in Glasgow and Paris.
-Our collaboration also led us to speak together at
-Meeting \cpp 2022 \cite{meetingcpp22} where we talked about C'est and
-its use cases for \gls{constexpr} programming research,
-including my own projects.
+I contributed to the development of \textbf{C'est} by implementing a \gls{constexpr}
+version of \lstinline{std::unique_ptr}. This collaboration led Paul Keir
+and myself to speak together at Meeting \cpp 2022 \cite{meetingcpp22}
+where we talked about \textbf{C'est} and its use cases for \gls{constexpr}
+programming research, including my own projects.
 
-\subsection{
-  Domain specific metaprogramming
-}
-
-Libraries for more specific uses were also introduced, such as
-\gls{ctre} \cite{ctre} for compiling regular expressions,
-and \gls{ctpg} \cite{ctpg} for generating LR1 parsers
-(also not for compile time parsing).
-
-\begin{lstlisting}[
-  language=c++,
-  caption=\gls{ctre} code example
-]{}
-auto input = "123,456,768"sv;
-
-for (auto match : ctre::range<"([0-9]+),?">(input)) {
-  std::cout << std::string_view{match.get<0>()}
-            << "\n";
-}
-\end{lstlisting}
-
-In listing \ref{lst:cest-example} we can see an example compile time program
-equivalent to what was shown for Brigand and mp11. Thanks to new \cpp features,
-metaprogramming can be partially done using \cpp code. This makes
-compile time programs significantly easier to write and understand.
-
-However, most of generic libraries and frameworks that are developed
-and maintained today are based on \cpp, and \cpp itself is likely to
-evolve to provide more ways to generate programs as shown by the recent
-standard proposal for Scalable Reflection in \cpp \cite{scalable-reflection}.
+% \subsection{
+%   Domain specific metaprogramming
+% }
+%
+% Libraries for more specific uses were also introduced, such as
+% \gls{ctre} \cite{ctre} for compiling regular expressions,
+% and \gls{ctpg} \cite{ctpg} for generating LR1 parsers
+% (also not for compile time parsing).
+%
+% \begin{lstlisting}[
+%   language=c++,
+%   caption=\gls{ctre} code example
+% ]{}
+% auto input = "123,456,768"sv;
+%
+% for (auto match : ctre::range<"([0-9]+),?">(input)) {
+%   std::cout << std::string_view{match.get<0>()}
+%             << "\n";
+% }
+% \end{lstlisting}
+%
+% In listing \ref{lst:cest-example} we can see an example compile time program
+% equivalent to what was shown for Brigand and mp11. Thanks to new \cpp features,
+% metaprogramming can be partially done using \cpp code. This makes
+% compile time programs significantly easier to write and understand.
+%
+% However, most of generic libraries and frameworks that are developed
+% and maintained today are based on \cpp, and \cpp itself is likely to
+% evolve to provide more ways to generate programs as shown by the recent
+% standard proposal for Scalable Reflection in \cpp \cite{scalable-reflection}.
 
 \section{
   Applications of metaprogramming for HPC
 }
 
-Metaprogramming can bring significant benefits to libraries:
+As we just saw, metaprogramming can bring significant benefits to libraries:
 
 \begin{itemize}
 
@@ -552,8 +569,8 @@ which also works by compiling regular expressions.
 
 \textbf{Language integration}: since these are \cpp libraries,
 their APIs can take advantage of \cpp operator overloading and lambdas.
-In \gls{ctpg}, these are used to provide a domain-specific language that is close to
-what parser generators like YACC or Bison provide,
+In \gls{ctpg}, these are used to provide a domain-specific language that is
+close to what parser generators like YACC or Bison provide,
 though it is still regular \cpp code which can be put inside any function body.
 Using a \cpp API makes these libraries easier to learn
 as the syntax is already familiar to their users.

@@ -1,11 +1,19 @@
-int foo() {
-  // generate random data serially
-  thrust::host_vector<int> h_vec(100);
-  std::generate(h_vec.begin(), h_vec.end(), rand);
+struct date {
+  std::string_view year;
+  std::string_view month;
+  std::string_view day;
+};
 
-  // transfer to device and compute sum
-  thrust::device_vector<int> d_vec = h_vec;
-  return thrust::reduce(d_vec.begin(),
-                        d_vec.end(), 0,
-                        thrust::plus<int>());
+std::optional<date>
+extract_date(std::string_view s) noexcept {
+  using namespace ctre::literals;
+  if (auto [whole, year, month, day] =
+          ctre::match<
+              "(\\d{4})/(\\d{1,2})/(\\d{1,2})">(
+              s);
+      whole) {
+    return date{year, month, day};
+  } else {
+    return std::nullopt;
+  }
 }

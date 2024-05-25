@@ -1,7 +1,8 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
-\gls{blas} level functions are the cornerstone of a large
+
+\gls{blas} level functions\cite{blas} are the cornerstone of a large
 subset of applications. If a large body of work surrounding
 efficient and large-scale implementation of some routines such
 as \gls{gemv} exists, the interest for small-sized, highly-optimized
@@ -421,9 +422,9 @@ extend and does not rely on non-standard extensions.
   Application: the GEMV kernel
 }
 
-Level 2 \gls{blas} routines such as gemv have a low
+Level 2 \gls{blas} routines such as \gls{gemv} have a low
 computational intensity compared to Level 3 \gls{blas} operations
-such as gemm. For that reason, in many dense linear algebra
+such as GEMM. For that reason, in many dense linear algebra
 algorithms in particular for one sided factorizations such as
 Cholesky, LU, and QR decompositions some techniques are
 used to accumulate several Level 2 \gls{blas} operations when
@@ -685,14 +686,16 @@ generative programming techniques for the implementation
 of dense linear algebra routines that are highly optimized for
 small matrix sizes.
 
+% TODO en faire une conclusion de chapitre et pas de papier
+% (raccourcir + transition)
 One of our next steps is to provide such metaprogrammed
 code generation process to tackle larger matrix sizes by precomputing
 an optimal tiling availability of prefetch and architecture,
 turning large-scale \gls{gemv} into an optimized sequence of
 statically sized small-scale GEMVs. Such a technique is also naturally
 applicable to more complex algorithms, such the matrix-matrix
-multiplication, gemm, where tiling is paramount, or
-LAPACK-level functions where the compile-time optimization
+multiplication\cite{matrix-matrix} where tiling is paramount,
+or LAPACK-level functions where the compile-time optimization
 may lead to an easier to parallelize solvers or decompositions.
 
 \end{document}

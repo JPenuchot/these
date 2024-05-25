@@ -35,6 +35,7 @@
 \definecolor{D5}{RGB}{213,223,61}
 
 \usepackage[absolute]{textpos}
+\usepackage{appendix}
 \usepackage{array}
 \usepackage{biblatex}
 \usepackage{booktabs}
@@ -266,13 +267,13 @@ Maître de conférences\\
 \arrayrulecolor{Prune}
 \textbf{Prénom NOM} &   Président ou Présidente\\
 Titre, Affiliation & \\
-\textbf{Prénom NOM} &  Rapporteur \& Examinateur / trice \\
+\textbf{David HILL} &  Rapporteur \& Examinateur / trice \\
 Titre, Affiliation   &   \\
-\textbf{Prénom NOM} &  Rapporteur \& Examinateur / trice \\
+\textbf{Thierry G\'ERAUD} &  Rapporteur \& Examinateur / trice \\
 Titre, Affiliation  &   \\
-\textbf{Prénom NOM} &  Examinateur ou Examinatrice \\
+\textbf{Sarah Cohen-Boulakia} &  Examinateur ou Examinatrice \\
 Titre, Affiliation   &   \\
-\textbf{Prénom NOM} &  Examinateur ou Examinatrice \\
+\textbf{Amina Guermouche} &  Examinateur ou Examinatrice \\
 Titre, Affiliation   &   \\
 
 \end{tabular}
@@ -281,32 +282,40 @@ Titre, Affiliation   &   \\
 
 \chapter*{Remerciements}
 
+% TODO Ajouter les noms
+Merci aux rapporteurs \textbf{David Hill} et \textbf{Thierry G\'eraud},
+ainsi qu'aux examinatrices \textbf{Sarah Cohen-Boulakia}
+et \textbf{Amina Guermouche}.
+Je tien \'egalement \`a faire part de ma reconnaissance envers
+\textbf{Sarah Cohen-Boulakia} pour la cr\'eation du Magist\`ere d'Informatique
+qui m'a permis de d\'ecouvrir la recherche dans un cadre tr\`es privil\'egi\'e.
+
+Bien s\^ur \textbf{Jo\"el Falcou}, pour son accompagnement bienveillant,
+valorisant, et d\'evou\'e depuis mon premier stage de recherche.
+
+\textbf{Amal Khabou}, dont l'aide m'a \'et\'e pr\'ecieuse pour la pr\'eparation
+de ma premi\`ere conf\'erence.
+
+\textbf{Hartmut Kaiser}, pour son accueil \`a LSU,
+\textbf{Adrian et Cory Lemoine}, qui m'ont aid\'e \`a
+traverser un \'ev\'enement difficile et marquant pendant mon s\'ejour,
+et bien s\^ur \textbf{le reste de l'\'equipe Ste||ar} pour les amiti\'es
+que j'ai pu y nouer, et la gentillesse de chaque personne que j'y ai
+rencontr\'ee.
+
+\textbf{Paul Keir}, pour sa collaboration amicale et bienveillante.
+
 % TODO Merci les collegues et les parents
 Merci \`a \textbf{mes parents},
 pour m'avoir transmis la passion de l'informatique,
 pour m'avoir soutenu \`a tout \^age,
 y compris pendant mes ann\'ees de th\`ese.
 
-\textbf{Amal}, dont l'aide m'a \'et\'e pr\'ecieuse pour la pr\'eparation de ma premi\`ere
-conf\'erence.
-
-\textbf{Antoine et Alexandrina}, pour leur camaraderie, les d\'ecorations de
+\textbf{Antoine Lanco et Alexandrina Korneva}, pour leur camaraderie, les d\'ecorations de
 f\^etes, les f\^etes dans les champs, et les champs de pizzas.
 
-\textbf{Marie}, pour son soutien moral in\'ebranlable lorsque je m'inqui\'etais pour
-le financement de ma th\`ese.
-
-\textbf{Hartmut}, pour son accueil \`a LSU, \textbf{Adrian et Cory},
-qui m'ont aid\'e \`a
-traverser un \'ev\'enement difficile et marquant pendant mon s\'ejour,
-et bien s\^ur \textbf{le reste de l'\'equipe Ste||ar} pour les amiti\'es
-que j'ai pu y nouer, et la gentillesse de chaque personne que j'y ai
-rencontr\'ee.
-
-Bien s\^ur \textbf{Joel}, pour son accompagnement bienveillant, valorisant,
-et d\'evou\'e depuis mon premier stage de recherche.
-
-% TODO Merci les rapporteureuses et aux membres du jury
+\textbf{Marie Debard}, pour son soutien moral in\'ebranlable lorsque
+je m'inqui\'etais pour le financement de ma th\`ese.
 
 % TODO Merci les potes
 
@@ -336,13 +345,76 @@ templates, langage d\'edi\'e
 
 \vspace{-.5cm}
 \begin{multicols}{2}
-\noindent \textbf{Résumé:} Mettre le sum ici % TODO
+\noindent \textbf{Résumé:}
+% As a response to an increasing demand for computing performance,
+% hardware manufacturers propose new parallel hardware architectures
+% of very different nature, each with their own API and programming model.
+En r\'eponse \`a la demande croissante de puissance de calcul,
+les constructeurrs de mat\'eriel proposent de nouvelles architectures
+parall\`eles de tr\`es diff\'erentes natures, et ayant chacune ses propres
+API et mod\`ele de programmation.
+
+% This makes high performance applications more complex to develop
+% with traditional programming practices, especially when multiple architectures
+% are targeted.
+Cela rend les applications haute performance plus complexes \`a d\'evelopper
+avec des m\'ethodes de programmation traditionnelles, d'autant plus lorsque
+plusieurs architectures sont cibl\'ees.
+
+% As a response, libraries leveraging compile-time code generation were developed
+% to facilitate portable high performance programming with high level abstractions
+% such as Domain-Specific Embedded Languages (DSELs).
+En r\'eponse \`a cette demande, des biblioth\`eques exploitant la
+g\'en\'eration de code \`a la compilation furent d\'evelopp\'ees pour faciliter
+la programmation haute performance avec des abstractions de haut niveau tels
+que les langages d\'edi\'es externes.
+
+% In this thesis, we first explore existing metaprogramming practices across
+% a wide variety of languages, then evaluate current C++ template metaprogramming
+% techniques in the framework of BLAS-like kernel generation.
+Dans cette th\`ese, nous explorons en premier temps les techniques de
+m\'etaprogrammation existant \`a travers un large panel de langages, puis nous
+\'evaluons les techniques actuelles de m\'etaprogrammation de templates C++
+dans le cadre de la g\'en\'eration de noyaux de calculs de type BLAS.
+
+% We then cover new metaprogramming techniques based on compile-time
+% C++ code execution by implementing compile-time parsers for two languages:
+% Brainfuck, and a language called Tiny Math Language (TML).
+Nous couvrons ensuite de nouvelles techniques de m\'etaprogrammation bas\'ees
+sur l'ex\'ecution de code C++ \`a la compilation en impl\'ementant des parsers
+pour deux langages: Brainfuck, et un langage appel\'e Tiny Math Language (TML).
+% The Brainfuck parser is provided with several code generation backends
+% to study and compare different code generation techniques, whereas TML is used
+% to study code generation using portable high performance computing libraries.
+Le parser Brainfuck est fourni avec plusieurs backends de g\'en\'eration de code
+pour \'etudier diff\'erentes techniques de g\'en\'eration de code, tandis que
+TML est utilis\'e pour \'etudier la g\'en\'eration de code en utilisant des
+biblioth\`eques portables haute performance.
+
+% In order to assess the compile-time impact of these various metaprogramming
+% techniques, we propose a new benchmarking methodology that leverages
+% Clang's built-in profiler, enabling compile-time performance scaling analysis
+% beyond black-box benchmarking.
+Pour \'evaluer l'impact de ces diverses techniques de m\'etaprorgammation,
+nous proposons une nouvelle m\'ethodologie de benchmarking qui exploite
+le profiler int\'egr\'e de Clang, ce qui permet l'analyse de performance
+en temps de compilation au-del\`a des mesures de performance en bo\^ite noire.
+
 \end{multicols}
 
 \end{mdframed}
 
-\vspace{8mm}
+\clearpage
 
+\thispagestyle{empty}
+\newgeometry{top=1.5cm, bottom=1.25cm, left=2cm, right=2cm}
+
+\noindent
+\includegraphics[height=2.45cm]{ups/logo_STIC.png}
+\vspace{1cm}
+%*****************************************************
+
+\small
 \begin{mdframed}[linecolor=Prune,linewidth=1]
 
 \textbf{Title:} Advanced techniques for parallel code generation
@@ -405,7 +477,7 @@ beyond black-box benchmarking.
 % These de Jules
 
 \part{
-  Current state of metaprogramming for high performance computing
+  Metaprogramming for High Performance Computing
 }
 
 \chapter*{
@@ -445,8 +517,9 @@ The language \cpp later evolved to provide host language availability for
 metaprogramming with the introduction and evolution of \gls{constexpr}
 programming, similar to what Lisp macros have been pioneering.
 This new way of writing \cpp metaprograms will be explored throughout
-the second part of this thesis, but before that we will take a look at
-how to use \gls{tmp} to generate high performance linear algebra kernels.
+the second part of this thesis. Meanwhile, we are going to investigate the
+actual benefits of such techniques by applying them to the basic building blocks
+of \gls{hpc} applications: linear algebra kernels.
 
 \chapter{
   Code generation at low level
@@ -524,7 +597,7 @@ open-source solution that is peer-reviewed and distributed as a reusable
 software package.
 
 \chapter{
-  Constexpr parsing for high performance computing
+  Constexpr parsing for HPC
 }
 % \begin{abstract}
 % Design of high performance, high abstraction libraries in \cpp often take
@@ -614,7 +687,9 @@ could facilitate scalable code generation from \gls{constexpr} function results.
 \clearpage
 \printbibliography
 
+\begin{appendices}
 \chapter{Appendix}
+\end{appendices}
 
 \appendix
 
