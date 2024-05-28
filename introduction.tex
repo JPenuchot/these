@@ -25,40 +25,68 @@ high performance applications must adapt to increasingly parallel architectures
 to increase compute throughput \cite{concurrency-revolution}.
 
 Flynn's taxonomy \cite{flynn-taxonomy} describes four well known categories
-to describe serial and parallel computer architectures:
+to describe serial and parallel computer architectures\footnotemark{}:
 
-\begin{itemize}
-\item
-\textbf{\gls{mimd}}, which consists in having several processors or cores
-executing different proccesses. This category of parallelism itself has several
-sub-categories depending on the memory topology:
+\footnotetext{Source of the graphs:
+\url{https://en.wikipedia.org/wiki/Flynn's_taxonomy}}
 
-  \begin{itemize}
-  \item \textbf{Shared memory}, where processing units share a single
-  pool of memory. Multi-threading is an example of such a topology as
-  CPU cores share the same pool of RAM.
-  \item \textbf{Distributed memory}, where processing units have their own
-  memories and cannot access other memory pools.
-  \item \textbf{Distributed shared memory}, where processing units have their
-  own memory pools and can access other memory pools indirectly.
-  \end{itemize}
+\begin{center}
+\begin{tabular}{ p{0.3\textwidth} p{0.7\textwidth} }
 
-\item
-\textbf{\gls{misd}}, which is primarily used for fault tolerance by having
-execution redundancy.
+\raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/SISD}}
+&
+\textbf{\gls{sisd}}, where a computer only has a single processor with no
+vector registers.
 
-\item
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{ p{0.3\textwidth} p{0.7\textwidth} }
+
+\raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/SIMD}}
+&
 \textbf{\gls{simd}}, which is a parallelism that can be implemented inside
 a single \gls{cpu} core by having vector registers. These registers can hold
 several values, and single instructions can operate on the vectors themselves.
 
-\item
-\textbf{\gls{sisd}}, where a computer only has a single processor with no
-vector registers.
+\end{tabular}
+\end{center}
 
+\begin{center}
+\begin{tabular}{ p{0.3\textwidth} p{0.7\textwidth} }
+
+\raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/MISD}}
+&
+\textbf{\gls{misd}}, which is primarily used for fault tolerance by having
+execution redundancy.
+
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{ p{0.3\textwidth} p{0.7\textwidth} }
+
+\raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/MIMD}}
+&
+\textbf{\gls{mimd}}, which consists in having several processors or cores
+executing different proccesses. This category of parallelism itself has several
+sub-categories depending on the memory topology:
+
+\begin{itemize}
+\item \textbf{Shared memory}, where processing units share a single
+pool of memory. Multi-threading is an example of such a topology as
+CPU cores share the same pool of RAM.
+
+\item \textbf{Distributed memory}, where processing units have their own
+memories and cannot access other memory pools.
+
+\item \textbf{Distributed shared memory}, where processing units have their
+own memory pools and can access other memory pools indirectly.
 \end{itemize}
 
-% TODO: Rajouter des images (Flynn, GPU...)
+\end{tabular}
+\end{center}
 
 This is just a high level overview of the new computer architecture landscape
 high performance software engineers have to navigate in.
