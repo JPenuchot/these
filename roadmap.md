@@ -13,10 +13,6 @@ Grossly tracking TODOs.
 
 - `./introduction.tex`:
 
-  * Quels sont les grands outils (citer les rapporteureuses)?
-  * Exposer la problematique des methodes de bench pour la meta + la repro
-  * Detail du plan
-
   * Rajouter des images (Flynn, GPU...)
   * Quels sont les grands outils (citer les rapporteureuses)?
     Exposer la problematique des methodes de bench pour la meta + la repro
