@@ -143,7 +143,7 @@ named_value_t<int> val = annotated_default_v<int>;
   Different kinds of parameters
 }
 
-% TODO: Rajouter un exemple pour synthetiser chaque categorie de parametres
+% TODO: Titres pour synthetiser les exemples
 
 Metaprograms can take many kinds of \cpp constructs as inputs.
 
@@ -181,6 +181,21 @@ and used to produce \glspl{nttp}.
 
 \end{itemize}
 
+\begin{lstlisting}[
+  language=c++
+]{}
+// Type template parameter
+template <typename T> T foo() { return T{}; }
+// Non-type template parameter
+template <int I> int foo() { return I; }
+// Parameter pack
+template <typename... Ts> auto foo() {
+  return Ts{} + ...;
+}
+// Constexpr function parameter
+constexpr int foo(int i) { return i; }
+\end{lstlisting}
+
 \subsection{
   Advanced \cpp template mechanisms
 }
@@ -212,6 +227,33 @@ and the next candidate will be instantiated.
 reductions on parameter packs.
 
 \end{itemize}
+
+\begin{lstlisting}[
+  language=c++
+]{}
+// Template specialization
+template <unsigned I> unsigned foo() {
+  return I + foo<I - 1>();
+}
+template <> unsigned foo<0>() { return 0; }
+
+// Template parameter deduction
+template <typename T1, typename T2>
+int foo(std::tuple<T1, T2>) {
+  return T1{} + T2{};
+}
+
+// sfinae
+template <typename T>
+std::enable_if<std::is_integral_v<T>, void>
+foo() {
+  return T{};
+}
+
+// Parameter pack expansion
+template <typename... Ts>
+bool var = (std::is_integral_v<Ts> && ...);
+\end{lstlisting}
 
 \subsection{
   Compile time logic
@@ -247,10 +289,28 @@ Memory allocations have been allowed in this context only since \cpp20.
 The use of \gls{constexpr} functions for compile time programming might be
 preferable for many reasons: they are familiar to all \cpp developers
 (and, as such, are more maintainable), they allow the use of types to enforce
-semantics properly as opposed to type-based metaprogramming, and they allow
-compile time programs to run much faster than pure \gls{tmp} does.
+semantics properly as opposed to type-based metaprogramming, and they often
+allow compile time programs to run much faster than pure \gls{tmp} does,
+as we will see in the next chapters.
 
-% TODO: Rajouter un exemple de fibonacci en fonction constexpr
+% TODO: Titre + integration
+
+\begin{lstlisting}[
+  language=c++
+]{}
+constexpr unsigned fibonacci(unsigned n) {
+  unsigned n0 = 1;
+  unsigned n1 = 0;
+
+  for (unsigned i = 0; i < n; i++) {
+    unsigned n1_copy = n1;
+    n1 = n0 + n1;
+    n0 = n1_copy;
+  }
+
+  return n1;
+}
+\end{lstlisting}
 
 Metaprogramming is essential to implement high level \glspl{dsel} that translate
 into high performance programs through a series of transformations that

@@ -686,16 +686,19 @@ generative programming techniques for the implementation
 of dense linear algebra routines that are highly optimized for
 small matrix sizes.
 
-% TODO en faire une conclusion de chapitre et pas de papier
-% (raccourcir + transition)
-One of our next steps is to provide such metaprogrammed
-code generation process to tackle larger matrix sizes by precomputing
-an optimal tiling availability of prefetch and architecture,
-turning large-scale \gls{gemv} into an optimized sequence of
-statically sized small-scale GEMVs. Such a technique is also naturally
-applicable to more complex algorithms, such the matrix-matrix
-multiplication\cite{matrix-matrix} where tiling is paramount,
-or LAPACK-level functions where the compile-time optimization
-may lead to an easier to parallelize solvers or decompositions.
+Now that we know that \gls{tmp} is a viable technique for generating
+portable high performance kernels that can compete with hand written assembly,
+we will dive deeper into newer \cpp metaprogramming techniques and apply them
+for compile-time parsing and code generation.
+
+% One of our next steps is to provide such metaprogrammed
+% code generation process to tackle larger matrix sizes by precomputing
+% an optimal tiling availability of prefetch and architecture,
+% turning large-scale \gls{gemv} into an optimized sequence of
+% statically sized small-scale GEMVs. Such a technique is also naturally
+% applicable to more complex algorithms, such the matrix-matrix
+% multiplication\cite{matrix-matrix} where tiling is paramount,
+% or LAPACK-level functions where the compile-time optimization
+% may lead to an easier to parallelize solvers or decompositions.
 
 \end{document}
