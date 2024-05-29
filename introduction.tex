@@ -164,6 +164,24 @@ through existing \cpp libraries.
 % TODO - Quels sont les grands outils (citer les rapporteureuses)?
 
 % TODO   - Exposer la problematique des methodes de bench pour la meta + la repro
-% TODO - Detail du plan
+
+\\
+
+In the first part of the thesis, we will take a look at the state of the art of
+metaprogramming across many languages and in \cpp,
+then we will see how it can be used to generate high performance linear algebra
+kernels.
+
+In the second part we will focus on a new methodology for the study of \cpp
+metaprograms compile-time performance and use it to analyze and compare the
+performance of novel \cpp metaprogramming techniques based on compile-time \cpp
+execution. The study will be conducted on two embedded languages that are parsed
+and transformed into \cpp code within the \cpp compilation process itself.
+The first language is Brainfuck, which is provided with several code generation
+backends to compare different code generation techniques. The second one
+is a simple math language called Tiny Math Language that is used to demonstrate
+the usability of compile-time \cpp execution to implement a \gls{dsel} for
+\acrlong{hpc} application, and study the compile-time impact of this technique
+in this context.
 
 \end{document}
