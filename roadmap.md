@@ -6,17 +6,13 @@ Grossly tracking TODOs.
 
 - `./main.tex`:
 
-  * Ajouter les noms
-  * Merci les collegues et les parents
-  * Merci les potes
   * Ca fait pas 15 fois que je repete ca? Abrege frere
 
 - `./introduction.tex`:
 
-  * Rajouter des images (Flynn, GPU...)
+  * Rajouter des images (GPU...)
   * Quels sont les grands outils (citer les rapporteureuses)?
     Exposer la problematique des methodes de bench pour la meta + la repro
-  * Detail du plan
 
 - `./conclusion.tex`:
 
@@ -37,13 +33,8 @@ Grossly tracking TODOs.
 - `./1-current-metaprogramming/2-cpp-constructs.tex`:
 
   * Rajouter un exemple pour synthetiser chaque categorie de parametres
-  * Rajouter un exemple de fibonacci en fonction constexpr
   * Citer un peu boost.proto
   * Rajouter exemple CTRE
-
-- `./1-current-metaprogramming/3-gemv.tex`:
-
-  * en faire une conclusion de chapitre et pas de papier
 
 - `./2-compilation-time-analysis/3-ctbench-in-action.tex`:
 
