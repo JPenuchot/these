@@ -137,21 +137,16 @@ to turn off CPU frequency scaling to improve measurement precision.
 
 \begin{figure}[h]
 \fontsize{8}{10}\selectfont
-\includesvg[width=\textwidth]{images/ExecuteCompiler}
-\caption{ExecuteCompiler}
+\includesvg[width=\textwidth]{images/timer-aggregates}
+\caption{Timer aggregate measurements}
+\label{fig:total-timers}
 \end{figure}
 
-The first timer we want to look at is ExecuteCompiler, which is the total
-compilation time. Starting from there we can go down in the timer event
-hierarchy to take a look at frontend and backend execution times.
-
-% TODO fusion
-
-\begin{figure}[h]
-\fontsize{8}{10}\selectfont
-\includesvg[width=\textwidth]{images/Total_Frontend_Backend}
-\caption{Total Frontend and Backend times}
-\end{figure}
+The first timer we want to look at in figure \ref{fig:total-timers} is
+ExecuteCompiler, which measures the total compilation time.
+Starting from there we can go down in the timer event hierarchy to take a look
+at frontend and backend execution times, and finally InstantiateFunction as
+it makes up for most of the Frontend execution time.
 
 The backend is not being impacted here, supposedly because this is purely a
 compile-time program and the output program is empty. However this might not be
@@ -161,27 +156,18 @@ symbols, larger symbols, more data structures, etc.).
 
 \begin{figure}[h]
 \fontsize{8}{10}\selectfont
-\includesvg[width=\textwidth]{images/Total_InstantiateFunction}
-\caption{Total InstantiateFunction}
-\end{figure}
-
-The "Total Instantiate function" timer is an interesting one as it explicitly
-targets the total time spent in function instanciations.
-Events prefixed with "Total" indicate aggregates that measure
-the whole time spent in a category of timers.
-
-\begin{figure}[h]
-\fontsize{8}{10}\selectfont
 \includesvg[width=\textwidth]{images/InstantiateFunction/foovoid}
 \caption{InstantiateFunction foovoid}
 \end{figure}
 
-Finally, we can take a look at \lstinline{InstantiateFunction/foovoid.png} which
+Finally, we can take a look at \lstinline{InstantiateFunction/foovoid.svg} which
 measures the InstantiateFunction event time specifically for
 \lstinline{foo<void>()}, which is our driver template function. Using Perfetto
-UI to look at the timer event hierarchy, we can validate that the timer event
+UI to look at the timer event hierarchy in
+figure \ref{fig:perfetto-time-trace-ui}, we can validate that the timer event
 for this specific symbol includes the InstantiateFunction time for all the
-symbols that may be instantiated within this function.
+symbols that may be instantiated for this function, and therefore that this
+event is the best proxy
 
 This level of detail and granularity in the analysis of compile-time benchmarks
 was never reached before, and may help us set good practices to improve the
