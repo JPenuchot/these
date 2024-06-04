@@ -278,6 +278,7 @@ Maître de conférences\\
 
 \bigskip
 
+% TODO: Affiliations
 \flushleft
 \small {\color{Prune} \textbf{Composition du jury}}\\
 {\color{Prune} \scriptsize {Membres du jury avec voix délibérative}} \\
@@ -285,15 +286,15 @@ Maître de conférences\\
 \scriptsize
 \begin{tabular}{|p{7cm}l}
 \arrayrulecolor{Prune}
-\textbf{Prénom NOM} &   Président ou Présidente\\
+\textbf{Christine PAULIN} &   Présidente \\
 Titre, Affiliation & \\
-\textbf{David HILL} &  Rapporteur \& Examinateur / trice \\
-Titre, Affiliation   &   \\
-\textbf{Thierry G\'ERAUD} &  Rapporteur \& Examinateur / trice \\
+\textbf{David HILL} & Rapporteur \& Examinateur \\
+Titre, Affiliation   & \\
+\textbf{Thierry G\'ERAUD} & Rapporteur \& Examinateur \\
 Titre, Affiliation  &   \\
-\textbf{Sarah Cohen-Boulakia} &  Examinateur ou Examinatrice \\
+\textbf{Sarah Cohen-Boulakia} & Examinatrice \\
 Titre, Affiliation   &   \\
-\textbf{Amina Guermouche} &  Examinateur ou Examinatrice \\
+\textbf{Amina Guermouche} & Examinatrice \\
 Titre, Affiliation   &   \\
 
 \end{tabular}
@@ -302,10 +303,11 @@ Titre, Affiliation   &   \\
 
 \chapter*{Remerciements}
 
-Merci aux rapporteurs \textbf{David Hill} et \textbf{Thierry G\'eraud},
+Merci \`a \textbf{Christine Paulin} d'assurer la pr\'esidence du jury,
+aux rapporteurs \textbf{David Hill} et \textbf{Thierry G\'eraud},
 ainsi qu'aux examinatrices \textbf{Sarah Cohen-Boulakia}
 et \textbf{Amina Guermouche}.
-Je tien \'egalement \`a faire part de ma reconnaissance envers
+Je tiens \'egalement \`a faire part de ma reconnaissance envers
 \textbf{Sarah Cohen-Boulakia} pour la cr\'eation du Magist\`ere d'Informatique
 qui m'a permis de d\'ecouvrir la recherche dans un cadre tr\`es privil\'egi\'e.
 
@@ -644,14 +646,14 @@ Blaze\cite{blazelib,iglberger2012_2}. They all suffer from a major limitation:
 by being tied to the natural \cpp syntax, they can't express nor embed arbitrary
 languages.
 
-In this thesis, we try to demonstrate that the new features of \cpp23 related to
+In this chapter, we try to demonstrate that the new features of \cpp23 related to
 compile time programming are able to help developers designing \glspl{dsel} with
 arbitrary syntax by leveraging \gls{constexpr} computations, compile time dynamic
 objects and lazy evaluation through lambda functions. After contextualizing our
 contribution in the general \glspl{dsel} domain, this thesis will explain the core
 new techniques enabled by \cpp23 and how we can apply to build two different
 \glspl{dsel} with their own non-\cpp syntax. We'll also explore the performances of
-said \glspl{dsel} in term of compile time to assess their usability in realistic code.
+said \glspl{dsel} in term of compile time to assess their usability in \gls{hpc} code.
 
 \subfile{3-new-approaches-to-metaprogramming/1-technical-background.tex}
 \subfile{3-new-approaches-to-metaprogramming/2-constexpr-codegen-techniques.tex}
