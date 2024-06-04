@@ -22,24 +22,6 @@ Grossly tracking TODOs.
   * Il faut un nouveau paradigme pour la metaprog qui offre des manieres
   * Talk about faer
 
-## Part 1 - Current metaprogramming
-
-- `./1-current-metaprogramming/1-metaprog-and-hpc-overview.tex`:
-
-  * Rajouter les dates de visite pour les liens en footnotes
-  * rajouter une ref
-  * Mini-conclusion, dire pourquoi on vise C++
-
-- `./1-current-metaprogramming/2-cpp-constructs.tex`:
-
-  * Rajouter un exemple pour synthetiser chaque categorie de parametres
-  * Citer un peu boost.proto
-  * Rajouter exemple CTRE
-
-- `./2-compilation-time-analysis/3-ctbench-in-action.tex`:
-
-  * fusion
-
 ## Part 3 - `constexpr` metaprogramming
 
 - `./3-new-approaches-to-metaprogramming/1-technical-background.tex`:
