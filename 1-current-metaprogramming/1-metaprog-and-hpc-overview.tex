@@ -22,8 +22,6 @@ spanning more than half a century.
 
 \begin{itemize}
 
-% TODO: Rajouter les dates de visite pour les liens en footnotes
-
 \item
 \textbf{The C and C++ preprocessor} acts as rudimentary token manipulation stage
 that was not originally made for metaprogramming, but it can be used
@@ -51,15 +49,14 @@ on an arbitrary number.
 CV(0) // expands to nothing
 CV(1) // expands to const
 \end{lstlisting}
-\footnotetext{\url{https://www.boost.org/doc/libs/1_85_0/libs/preprocessor/doc/ref/apply.html}}
+\footnotetext{\url{https://www.boost.org/doc/libs/1_85_0/libs/preprocessor/doc/ref/apply.html}, 4th of June 2024}
 
 \item
-% TODO: rajouter une ref
 \textbf{Lisp macros}
 are known for being one of the oldest, yet one of the most powerful
-examples among all metaprogramming paradigms. The List macros, as opposed to
-C and \cpp macros, can make complete use of the Lisp language itself
-with powerful reflection capabilities.
+examples among all metaprogramming paradigms \cite{metaprog-lang-survey}.
+The List macros, as opposed to C and \cpp macros, can make complete use of
+the Lisp language itself with powerful reflection capabilities.
 Anecdotally, common imperative language constructs such as the while loop
 can be implemented using macros as shown in listing \ref{lst:lisp-while}.
 
@@ -71,7 +68,7 @@ can be implemented using macros as shown in listing \ref{lst:lisp-while}.
 (defmacro while (condition &body body)
   `(loop while ,condition do (progn ,@body)))
 \end{lstlisting}
-\footnotetext{\url{https://lisp-lang.org/learn/macros}}
+\footnotetext{\url{https://lisp-lang.org/learn/macros}, 4th of June 2024}
 
 \item
 \textbf{MetaOCaml} \cite{metaocaml} implements quoting and splicing
@@ -100,7 +97,7 @@ let rec spower : int -> int code -> int code =
 let spowern : int -> (int -> int) code =
    fun n -> .<fun x -> .~(spower n .<x>.)>.;;
 \end{lstlisting}
-\footnotetext{\url{https://okmij.org/ftp/meta-programming/tutorial/}}
+\footnotetext{\url{https://okmij.org/ftp/meta-programming/tutorial/}, 4th of June 2024}
 
 \item
 \textbf{DLang} more or less extends the \cpp Metaprogramming model.
@@ -128,7 +125,7 @@ static if(is(T == int))
 static if (is(typeof(x) :  int))
     writeln("x implicitly converts to int");
 \end{lstlisting}
-\footnotetext{\url{https://tour.dlang.org/tour/en/gems/template-meta-programming}}
+\footnotetext{\url{https://tour.dlang.org/tour/en/gems/template-meta-programming}, 4th of June 2024}
 
 \item
 \textbf{Rust} proposes metaprogramming through macros, generics, and traits.
@@ -162,7 +159,7 @@ macro_rules! vec {
   };
 }
 \end{lstlisting}
-\footnotetext{\url{https://doc.rust-lang.org/stable/book/}}
+\footnotetext{\url{https://doc.rust-lang.org/stable/book/}, 4th of June 2024}
 
 \item
 \textbf{Terra}
@@ -194,7 +191,7 @@ terra doit()
     return [ addone(addone(first)) ]
 end
 \end{lstlisting}
-\footnotetext{\url{https://terralang.org/getting-started.html}}
+\footnotetext{\url{https://terralang.org/getting-started.html}, 4th of June 2024}
 
 Additionally, Terra can be embedded in other languages through its C API.
 Overall it is a very versatile and experimental take on metaprogramming,
@@ -219,6 +216,10 @@ Other languages such as \textbf{Braid} \cite{braid} or
 \textbf{Julia} \cite{julia} implement staged metaprogramming,
 although Julia emits LLVM code directly, and Braid is unmaintained.
 
-% TODO: Mini-conclusion, dire pourquoi on vise C++
+In the next section, we will take a deeper look at \cpp as it has
+powerful metaprogramming capabilities, while providing bleeding edge support for
+all kinds of computer architectures through a decades-old ecosystem. Moreover,
+its development is still very active, with many significant metaprogramming
+proposals being adopted throughout the latest releases.
 
 \end{document}

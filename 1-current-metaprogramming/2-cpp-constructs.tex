@@ -89,8 +89,7 @@ can or cannot generate.
 
   \item
 
-\textbf{Type templates} to generate data structures.
-
+\textbf{Type templates} to generate data structures:
 \begin{lstlisting}[language=c++]{}
 template <typename T> struct named_value_t {
   std::string name;
@@ -101,8 +100,7 @@ template <typename T> struct named_value_t {
   \item
 
 \textbf{Type alias templates} which can be used as abstractions on top of
-template types.
-
+template types:
 \begin{lstlisting}[language=c++]{}
 template <typename T>
 using nested_named_value_t =
@@ -111,8 +109,7 @@ using nested_named_value_t =
 
   \item
 
-\textbf{Function templates} to create generic functions.
-
+\textbf{Function templates} to create generic functions:
 \begin{lstlisting}[language=c++]{}
 /// Returns a value annotated with
 /// its string representation
@@ -125,8 +122,7 @@ named_value_t<T> make_named_value(T value) {
 
   \item
 
-\textbf{Variable templates} to map template parameters to values.
-
+\textbf{Variable templates} to map template parameters to values:
 \begin{lstlisting}[language=c++]{}
 /// Returns the default value of T annotated with
 /// its string representation
@@ -142,8 +138,6 @@ named_value_t<int> val = annotated_default_v<int>;
 \subsection{
   Different kinds of parameters
 }
-
-% TODO: Titres pour synthetiser les exemples
 
 Metaprograms can take many kinds of \cpp constructs as inputs.
 
@@ -182,7 +176,8 @@ and used to produce \glspl{nttp}.
 \end{itemize}
 
 \begin{lstlisting}[
-  language=c++
+  language=c++,
+  caption=Compile-time parameter examples
 ]{}
 // Type template parameter
 template <typename T> T foo() { return T{}; }
@@ -229,7 +224,8 @@ reductions on parameter packs.
 \end{itemize}
 
 \begin{lstlisting}[
-  language=c++
+  language=c++,
+  caption=Advanced \cpp template mechanism examples
 ]{}
 // Template specialization
 template <unsigned I> unsigned foo() {
@@ -291,12 +287,15 @@ preferable for many reasons: they are familiar to all \cpp developers
 (and, as such, are more maintainable), they allow the use of types to enforce
 semantics properly as opposed to type-based metaprogramming, and they often
 allow compile time programs to run much faster than pure \gls{tmp} does,
-as we will see in the next chapters.
-
-% TODO: Titre + integration
+as we will see in the next chapters. In \ref{lbl:constexpr-fibonacci},
+we can see a \gls{constexpr} implementation of the Fibonacci sequence
+computation. It produces the same output as \lstinline{fibonacci_t} in
+\ref{lst:basic-tmp}.
 
 \begin{lstlisting}[
-  language=c++
+  language=c++,
+  caption=constexpr Fibonacci sequence computation,
+  label=lbl:constexpr-fibonacci
 ]{}
 constexpr unsigned fibonacci(unsigned n) {
   unsigned n0 = 1;
@@ -332,34 +331,35 @@ embedded into the compilation process itself.
 % host language) known as Template Meta-Programming is then used to ensure
 % performances and correctness.
 
-% TODO: Citer un peu boost.proto
-
-% DEBUT
 \glspl{dsel} in \cpp use \gls{tmp} via the \textbf{\gls{et}} idiom.
-\glspl{et} \cite{veldhuizen:1995,vandevoorde:2002} is a
+\Glspl{et} \cite{veldhuizen:1995,vandevoorde:2002} consist of a
 technique implementing a form of \textbf{delayed evaluation} in
-\cpp \cite{spinellis:2001}. Expression Templates are built around the
+\cpp \cite{spinellis:2001}. They are built around the
 \textbf{recursive type composition} idiom \cite{jarvi:1998} that allows the
 construction, at compile time, of a type representing the \gls{ast}
-of an arbitrary statement. This is done by overloading functions and operators
-on those types so they return a lightweight object.
-The object encodes the current operation in the \gls{ast}
-being built in its type instead of performing any kind of computation.
-Once reconstructed, this \gls{ast} can be transformed into arbitrary code fragments
-using Template Metaprograms.
+of an arbitrary statement.
+This is done by overloading functions and operators on those types
+so they return a lightweight object. The object encodes the current operation
+in the \gls{ast} being built in its type instead of performing
+any kind of computation. Once reconstructed, this \gls{ast} can be transformed
+into arbitrary code fragments using template metaprograms.
 
 As of today, most \cpp \glspl{dsel} rely on \gls{et} and therefore
-are limited to the \cpp syntax. New techniques are becoming more popular through
+are limited to the \cpp syntax. The boost.proto \cite{boost.proto} library
+enables rapid prototyping of \glspl{dsel} based on the \cpp syntax.
+
+New techniques are becoming more popular through
 the use of \gls{constexpr} strings to embed arbitray
 \glspl{dsel}. One major example is the \gls{ctre} \cite{ctre}
-that implements most of the \gls{pcre} syntax.
-However, \gls{ctre} still relies on type-based \gls{tmp} to parse
-regular expressions and transform them into regular expression evaluators.
-% FIN
+that implements most of the \gls{pcre} syntax as shown in
+listing \ref{lst:crte-example}.
+It relies on type-based metaprogramming to parse regular expressions and
+transform them into regular expression evaluators.
 
-% TODO: Rajouter exemple CTRE
 \begin{lstlisting}[
-  language=c++
+  language=c++,
+  caption=CTRE usage example\footnotemark{},
+  label=lst:crte-example
 ]{}
 struct date {
   std::string_view year;
@@ -382,8 +382,7 @@ extract_date(std::string_view s) noexcept {
 }
 \end{lstlisting}
 
-In this section, I will cover the use of \gls{tmp} for higher levels
-of abstraction.
+\footnotetext{\url{https://github.com/hanickadot/compile-time-regular-expressions}, 4th of June 2024}
 
 \subsection{
   A use case for Expression Templates
