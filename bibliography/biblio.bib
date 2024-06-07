@@ -272,3 +272,90 @@
   isbn = "978-3-319-43659-3",
 }
 
+
+@inproceedings{10.1145/3564719.3568692,
+  author = {Roynard, Micha\"{e}l and Carlinet, Edwin and G\'{e}raud, Thierry},
+  title = {A Modern C++ Point of View of Programming in Image Processing},
+  year = {2022},
+  isbn = {9781450399203},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3564719.3568692},
+  doi = {10.1145/3564719.3568692},
+  abstract = {C++ is a multi-paradigm language that enables the programmer to
+              set up efficient image processing algorithms easily. This language
+              strength comes from many aspects. C++ is high-level, so this
+              enables developing powerful abstractions and mixing different
+              programming styles to ease the development. At the same time, C++
+              is low-level and can fully take advantage of the hardware to
+              deliver the best performance. It is also very portable and highly
+              compatible which allows algorithms to be called from high-level,
+              fast-prototyping languages such as Python or Matlab. One
+              fundamental aspects where C++ shines is generic programming.
+              Generic programming makes it possible to develop and reuse bricks
+              of software on objects (images) of different natures (types)
+              without performance loss. Nevertheless, conciliating genericity,
+              efficiency, and simplicity at the same time is not trivial. Modern
+              C++ (post-2011) has brought new features that made it simpler and
+              more powerful. In this paper, we focus on some C++20 aspects of
+              generic programming: ranges, views, and concepts, and see how they
+              extend to images to ease the development of generic image
+              algorithms while lowering the computation time.},
+  booktitle = {Proceedings of the 21st ACM SIGPLAN International Conference on
+               Generative Programming: Concepts and Experiences},
+  pages = {164–171},
+  numpages = {8},
+  keywords = {Generic Programming, Image processing, Modern C++, Performance,
+              Software},
+  location = {Auckland, New Zealand},
+  series = {GPCE 2022},
+}
+
+@misc{antunes2024reproducibility,
+  title = {Reproducibility, Replicability, and Repeatability: A survey of
+           reproducible research with a focus on high performance computing},
+  author = {Benjamin A. Antunes and David R. C. Hill},
+  year = {2024},
+  eprint = {2402.07530},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.SE},
+}
+
+@article{doi:10.1142/S0129626404001829,
+  author = {MAIGNE, LYDIA and HILL, DAVID and CALVAT, PASCAL and BRETON, VINCENT
+            and REUILLON, ROMAIN and LAZARO, DELPHINE and LEGRE, YANNICK and
+            DONNARIEIX, DENISE},
+  title = {PARALLELIZATION OF MONTE CARLO SIMULATIONS AND SUBMISSION TO A GRID
+           ENVIRONMENT},
+  journal = {Parallel Processing Letters},
+  volume = {14},
+  number = {02},
+  pages = {177-196},
+  year = {2004},
+  doi = {10.1142/S0129626404001829},
+  URL = { https://doi.org/10.1142/S0129626404001829 },
+  eprint = { https://doi.org/10.1142/S0129626404001829 },
+  abstract = { Monte Carlo simulations are increasingly used in medical physics.
+              In scintigraphic imaging these simulations are used to model
+              imaging systems and to develop and assess tomographic
+              reconstruction algorithms and correction methods for improved image
+              quantization. In radiotherapy-brachytherapy the goal is to evaluate
+              accurately the dosimetry in complex phantoms and at interfaces of
+              tissue, where analytic calculations have shown some limits. The
+              main drawback of Monte Carlo simulations is their high computing
+              time. The aim of our research is to reduce the computing time by
+              parallelizing a simulation on geographically distributed
+              processors. The method is based on the parallelization of the
+              Random Number Generator (RNG) used in Monte Carlo simulations. The
+              long serial of numbers used by the sequential simulation is split.
+              Once the partitioning is done, a software application allows the
+              user to generate automatically the files describing each simulation
+              part. Finally, another software executes them on the DataGrid
+              testbed using an API. All these steps have been made transparent
+              for the user by providing a web page asking the user for all the
+              parameters necessary to launch the simulation and retrieve results.
+              Different tests have been done in order to show first, the
+              reliability of the physical results obtained by concatenation of
+              parallelized output data and secondly the time gained for jobs
+              execution. },
+}
