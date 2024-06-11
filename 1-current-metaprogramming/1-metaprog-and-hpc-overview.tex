@@ -40,10 +40,10 @@ on an arbitrary number.
 #include <boost/preprocessor/facilities/apply.hpp>
 #include <boost/preprocessor/tuple/elem.hpp>
 
-#define CV(i)                                    \
-  BOOST_PP_APPLY(BOOST_PP_TUPLE_ELEM(            \
-      4, i,                                      \
-      (BOOST_PP_NIL, (const), (volatile),        \
+#define CV(i)                                        \
+  BOOST_PP_APPLY(BOOST_PP_TUPLE_ELEM(                \
+      4, i,                                          \
+      (BOOST_PP_NIL, (const), (volatile),            \
        (const volatile))))
 
 CV(0) // expands to nothing
@@ -160,6 +160,8 @@ macro_rules! vec {
 }
 \end{lstlisting}
 \footnotetext{\url{https://doc.rust-lang.org/stable/book/}, 4th of June 2024}
+
+\clearpage%
 
 \item
 \textbf{Terra}

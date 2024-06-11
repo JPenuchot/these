@@ -247,6 +247,18 @@ implementation of a vectorized dot product can simply be
 derived from using Boost.SIMD types and range adapters,
 polymorphic lambdas and standard algorithm.
 
+\clearpage%
+
+Note how the Boost.SIMD abstraction shields the end
+user to have to handle any architecture specific idioms
+and how it integrates with standard algorithms, hence
+simplifying the design of more complex algorithms.
+Another point is that, by relying on higher-level library
+instead of \gls{simd} pragma, Boost.SIMD guarantees
+the quality of the vectorization across compilers and
+compiler versions. It also leads to a cleaner and easier to
+maintain codes, relying only on standard \cpp constructs.
+
 \begin{lstlisting}[
   language=c++,
   caption=Sample Boost.SIMD code,
@@ -280,16 +292,6 @@ auto simd_dot(T *in1, T *in2, std::size_t count) {
   return sr + simd::sum(vr);
 }
 \end{lstlisting}
-
-Note how the Boost.SIMD abstraction shields the end
-user to have to handle any architecture specific idioms
-and how it integrates with standard algorithms, hence
-simplifying the design of more complex algorithms.
-Another point is that, by relying on higher-level library
-instead of \gls{simd} pragma, Boost.SIMD guarantees
-the quality of the vectorization across compilers and
-compiler versions. It also leads to a cleaner and easier to
-maintain codes, relying only on standard \cpp constructs.
 
 \paragraph{Loop unrolling} The notion of unrolling requires
 a proper abstraction. Loop unrolling requires three
@@ -335,17 +337,6 @@ All these elements can then be combined into a
 listing \ref{lst:ct-unroller}.
 \end{itemize}
 
-The function proceed to compute the proper
-integral constant sequence from the Start,
-End and D compile-time integral constant. As
-\lstinline{std::integral_sequence<N...>} enumerates values
-from 0 to N , we need to pass the start index and iteration
-1 pragma are compiler-dependent and can be ignored
-increment as separate constants. The actual index is then
-computed at the unrolling site. To prevent unwanted copies
-and ensure inlining, all elements are passed to the function
-as a rvalue-reference or a universal reference.
-
 \begin{lstlisting}[
   language=c++,
   caption=Compile-time unroller,
@@ -373,6 +364,17 @@ void for_constexpr(Body body) {
       std::integral_constant<int, D>{});
 }
 \end{lstlisting}
+
+The function proceed to compute the proper
+integral constant sequence from the Start,
+End and D compile-time integral constant. As
+\lstinline{std::integral_sequence<N...>} enumerates values
+from 0 to N , we need to pass the start index and iteration
+1 pragma are compiler-dependent and can be ignored
+increment as separate constants. The actual index is then
+computed at the unrolling site. To prevent unwanted copies
+and ensure inlining, all elements are passed to the function
+as a rvalue-reference or a universal reference.
 
 A sample usage of the \lstinline{for_constexpr} function is given
 in listing \ref{lst:tuple-printing} in a function printing

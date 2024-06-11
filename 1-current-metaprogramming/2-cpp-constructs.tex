@@ -241,8 +241,7 @@ int foo(std::tuple<T1, T2>) {
 
 // sfinae
 template <typename T>
-std::enable_if<std::is_integral_v<T>, void>
-foo() {
+std::enable_if<std::is_integral_v<T>, void> foo() {
   return T{};
 }
 
@@ -298,15 +297,12 @@ computation. It produces the same output as \lstinline{fibonacci_t} in
   label=lbl:constexpr-fibonacci
 ]{}
 constexpr unsigned fibonacci(unsigned n) {
-  unsigned n0 = 1;
-  unsigned n1 = 0;
-
+  unsigned n0 = 1, n1 = 0;
   for (unsigned i = 0; i < n; i++) {
     unsigned n1_copy = n1;
     n1 = n0 + n1;
     n0 = n1_copy;
   }
-
   return n1;
 }
 \end{lstlisting}
@@ -395,14 +391,6 @@ mathematical expressions into high performance code\cite{veldhuizen:1995}.
 There are two main libraries that are able to do this: Eigen \cite{eigen}
 and Blaze \cite{blazelib}.
 
-\begin{figure}[h]
-\includegraphics[width=\textwidth]{images/expressiontemplates.pdf}
-\caption{
-  Expression template evaluation illustration\cite{falcou-hdr}
-}
-\label{fig:expression-template-illustration}
-\end{figure}
-
 Figure \ref{fig:expression-template-illustration} shows how mathematical
 expressions can be encoded via \glspl{et}: an operation involving matrices
 generates a type hierarchy that represents the operation itself,
@@ -441,6 +429,14 @@ the requirement of adding \lstinline{__device__} qualifiers in front of
 all Blaze functions used in CUDA kernels.
 
 \end{itemize}
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{images/expressiontemplates.pdf}
+\caption{
+  Expression template evaluation illustration\cite{falcou-hdr}
+}
+\label{fig:expression-template-illustration}
+\end{figure}
 
 To implement these optimizations in Blaze \cite{blazelib},
 \glspl{et} and assignment function overloading are equally essential
@@ -499,6 +495,8 @@ Listing \ref{lst:mp11-example} shows a basic mp11 use case: we first define a
 list of arbitrary integers, and then we find the position of the first element
 of value 6 in the list.
 
+\clearpage%
+
 \begin{lstlisting}[
   language=c++,
   caption=Brigand code example,
@@ -541,14 +539,6 @@ in compilation environments that do not provide \cpp23 compatible compilers
 and standard libraries such as older versions of Debian
 or Red Hat Enterprise Linux.
 
-It implements the same containers and algorithms as the \cpp standard library,
-although all of them usable in \glspl{consteval}. For example,
-\lstinline{std::deque} is not usable in \glspl{consteval} whereas
-its \textbf{C'est} equivalent (\lstinline{cest::deque}) is.
-It was instrumental for this thesis as the research work I present here started
-a long time before \cpp23 was adopted and standard libraries as well as
-compilers started implementing it.
-
 \begin{lstlisting}[
   language=c++,
   caption=\textbf{C'est} code example,
@@ -565,6 +555,14 @@ find_pos(int element,
 constexpr std::size_t pos_of_6 =
     find_pos(6, {0, 2, 4, 6, 8, 10});
 \end{lstlisting}
+
+It implements the same containers and algorithms as the \cpp standard library,
+although all of them usable in \glspl{consteval}. For example,
+\lstinline{std::deque} is not usable in \glspl{consteval} whereas
+its \textbf{C'est} equivalent named \lstinline{cest::deque} is.
+It was instrumental for this thesis as the research work I present here started
+a long time before \cpp23 was adopted and standard libraries as well as
+compilers started implementing it.
 
 Similar to previous examples, listing \ref{lst:cest-example} shows a
 compile-time program in which we find the index of the first element of value 6.
@@ -687,10 +685,10 @@ and its designed has since been updated.
 \begin{lstlisting}[
   language=c++
 ]{}
-using blaze::DynamicVector;
-using blaze::StaticVector;
-
 int main() {
+  using blaze::DynamicVector;
+  using blaze::StaticVector;
+
   StaticVector<int, 3UL> a{4, -2, 5};
   DynamicVector<int> b(3UL);
 
@@ -714,11 +712,9 @@ computing performance.
 \begin{lstlisting}[
   language=c++
 ]{}
-using namespace nt2;
-
 int main() {
-  table<double> x;
-  table<double> y = ones(4, 4);
+  nt2::table<double> x;
+  nt2::table<double> y = nt2::ones(4, 4);
 
   x = 40.0 * y + 2.0;
 
