@@ -12,7 +12,7 @@ performance of \cpp metaprogramming techniques, and compare techniques
 against each other.
 
 The project was designed to be an easy to install,
-and easy to use alternative to current compile time benchmarking tools.
+and an easy to use alternative to current compile time benchmarking tools.
 The public API is based on CMake as the project is aimed at \cpp software
 developers and researchers. Therefore, using familiar tools
 lowers barriers to entry to those who might want to contribute to it.
@@ -22,9 +22,9 @@ lowers barriers to entry to those who might want to contribute to it.
 }
 \label{lbl:ctbench-cmake-api}
 
-The public API of ctbench is meant to be as stable as reasonable by relying on
-CMake as a base language. It is relatively simple, and all of it is implemented
-in a single CMake script file. It declares the following:
+ctbench is meant to be used as a CMake package, and its \gls{api} is meant to be
+as stable as possible. The \gls{api} is relatively simple, and all of it is
+implemented in a single CMake script file which provides the following:
 
 \begin{itemize}
 
@@ -37,8 +37,10 @@ of user-defined sizable benchmark cases:
   \lstinline{ctbench_add_benchmark} takes a user-defined benchmark name,
   a \cpp source file, as well as benchmark range parameters: iteration begin,
   end, and step parameters, as well as the number of samples per benchmark
-  iteration. Benchmark iteration targets declared using this function are
-  compiled with their sized passed as the \lstinline{BENCHMARK_SIZE} define.
+  iteration. Benchmark iteration targets declared with this function are
+  compiled with their sizes passed as the \lstinline{BENCHMARK_SIZE} define
+  (\ie Clang will be invoked successively with parameters
+  \lstinline{-DBENCHMARK_SIZE=0} ... \lstinline{-DBENCHMARK_SIZE=N}).
 
   \item
   \lstinline{ctbench_add_benchmark_for_range}, provides an interface similar to
@@ -128,7 +130,7 @@ performance analysis.
 \begin{itemize}
 \item
 
-  It provides a set of data structures is provided to handle profiling data:
+  A set of data structures is provided to handle profiling data:
 
   \lstinline{benchmark_instance_t} contains several data file paths to several
   repetitions of the same benchmark instantiated at the same size, as well
@@ -196,7 +198,7 @@ struct plotter_base_t {
 \end{lstlisting}
 
   To implement a new plotting strategy, one simply needs to create a structure
-  that implements that takes a \lstinline{benchmark_set_t} and a
+  that takes a \lstinline{benchmark_set_t} and a
   JSON configuration structure as an input.
 
   This level of modularity is central to the design of ctbench

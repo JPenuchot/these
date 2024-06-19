@@ -44,6 +44,8 @@ The implementation of the \gls{ast} are available in appendix \ref{app:bf-ast}
 where you can observe that all the types are implemented as they would be
 for a regular Brainfuck parser, except all their methods are \gls{constexpr}.
 
+\clearpage%
+
 \begin{lstlisting}[
   language=c++,
   caption=Definition of the \gls{ast} visitor function,
@@ -119,7 +121,7 @@ remove the \gls{ir} transformation step, which gave the \gls{pbg} backend.
 
 \begin{lstlisting}[
   language=c++,
-  caption=\gls{et} backend \acrlong{ir},
+  caption=\gls{et} backend \gls{ir},
   label=lst:bf-et-ir
 ]{}
 template <typename... Nodes> struct et_block_t {
@@ -168,7 +170,7 @@ cover in detail in this subsection.
 
 \begin{lstlisting}[
   language=c++,
-  caption=\gls{pbg} \acrlong{ir} type definitions,
+  caption=\gls{pbg} \gls{ir} type definitions,
   label=lst:flat-ir-typedef
 ]{}
 /// Represents a single instruction token
@@ -215,6 +217,8 @@ are materialized by indexes to the blocks within that vector of vectors,
 and a second phase that merges these blocks together into a single vector,
 and replaces the block indexes by the beginning position of their subrange
 in the result of the merging process.
+
+\clearpage%
 
 \begin{lstlisting}[
   language=c++,
@@ -263,13 +267,28 @@ Specialized overloads of the \lstinline{block_gen} function follow the same
 inteface: they are invoked with a node and the state of the block generation
 process as a mutable reference.
 
+Listing \ref{lst:flat-block_gen-impl} shows the implementation of
+\lstinline{block_gen} overloads for all types derived from
+\lstinline{node_interface_t}.
+
+The most important one is the overload for \lstinline{ast_block_t}.
+It transfers each block in the \lstinline{blocks} vector
+of the \lstinline{block_gen_state_t} structure by allocating them in the vector,
+and calling \lstinline{block_gen} recursively for each node in the source block
+to effectively transfer them into the destination block.
+
+Once the vector of blocks is generated, the \lstinline{flatten} function
+is responsible for transforming the contents of \lstinline{block_gen_state_t}
+into such a representation.
+
+\clearpage%
+
 \begin{lstlisting}[
   language=c++,
-  caption=\lstinline{block_gen} implementation,
+  caption=Specialized \lstinline{block_gen} overloads,
   label={lst:flat-block_gen-impl}
 ]{}
-/// block_gen for a single AST token. Basically just a
-/// push_back.
+/// block_gen for a single AST token.
 constexpr void block_gen(ast_token_t const &tok,
                          block_gen_state_t &s) {
   s.blocks[s.block_pos].push_back(
@@ -285,18 +304,15 @@ constexpr void block_gen(ast_block_t const &blo,
   s.blocks.emplace_back();
 
   // Preallocating
-  s.blocks[s.block_pos].reserve(
-      blo.content.size() + 1);
+  s.blocks[s.block_pos].reserve(blo.content.size() + 1);
   s.total_size += blo.content.size() + 1;
 
   // Adding block descriptor as a prefix
   s.blocks[s.block_pos].push_back(
-      flat_block_descriptor_t{
-          blo.content.size()});
+      flat_block_descriptor_t{blo.content.size()});
 
   // Flattening instructions
-  for (ast_node_ptr_t const &node :
-       blo.content) {
+  for (ast_node_ptr_t const &node : blo.content) {
     block_gen(node, s);
   }
 
@@ -314,19 +330,16 @@ constexpr void block_gen(ast_while_t const &whi,
 }
 \end{lstlisting}
 
-Listing \ref{lst:flat-block_gen-impl} shows the implementation of
-\lstinline{block_gen} overloads for all types derived from
-\lstinline{node_interface_t}.
+Listing \ref{lst:flat-flatten-impl} shows the implementation of
+\lstinline{flatten}, which simply calls \lstinline{block_gen},
+chains the blocks together, and translates block indexes to account for
+the new layout.
 
-The most important one is the overload for \lstinline{ast_block_t}.
-It transfers each block in the \lstinline{blocks} vector
-of the \lstinline{block_gen_state_t} structure by allocating them in the vector,
-and calling \lstinline{block_gen} recursively for each node in the source block
-to effectively transfer them in the destination block.
+The postfix serialization layout (ie. the fact that blocks are laid out
+one after the other, and not one inside the other) ensures that
+traversing the \gls{ast} remains trivial.
 
-Once the vector of blocks is generated, the \lstinline{flatten} function
-is responsible for transforming the contents of \lstinline{block_gen_state_t}
-into such a representation.
+\clearpage%
 
 \begin{lstlisting}[
   language=c++,
@@ -374,19 +387,19 @@ flatten(ast_node_ptr_t const &parser_input) {
 }
 \end{lstlisting}
 
-Listing \ref{lst:flat-flatten-impl} shows the implementation of
-\lstinline{flatten}, which simply calls \lstinline{block_gen},
-chains the blocks together, and translates block indexes to account for
-the new layout.
-
-The postfix serialization layout (ie. the fact that blocks are laid out
-one after the other, and not one inside the other) ensures that
-traversing the \gls{ast} remains trivial. Note that derializing the blocks
-into an infix representation would essentially get us back to the
-unparsed representation of Brainfuck programs.
 
 From there, the only thing that needs to be done is to evaluate this
 dynamic array into a static one to make it usable as an \gls{nttp}.
+
+Listing \ref{lst:flat-parse-to-fixed-flat-ast-implementation} shows the
+implementation of the final function that takes a string as a program
+and transforms it into a \lstinline{fixed_flat_ast_t}.
+
+So far, this is the only function that takes a template parameter as an input,
+and thus where the distinction between \gls{constexpr} programming and \gls{tmp}
+begins.
+
+\clearpage%
 
 \begin{lstlisting}[
   language=c++,
@@ -410,14 +423,6 @@ constexpr auto parse_to_fixed_flat_ast() {
   return arr;
 }
 \end{lstlisting}
-
-Listing \ref{lst:flat-parse-to-fixed-flat-ast-implementation} shows the
-implementation of the final function that takes a string as a program
-and transforms it into a \lstinline{fixed_flat_ast_t}.
-
-So far, this is the only function that takes a template parameter as an input,
-and thus where the distinction between \gls{constexpr} programming and \gls{tmp}
-begins.
 
 All the remaining work consists in implementing a function that takes the
 serialized \gls{ast} as a template parameter and generates a program from it.
@@ -450,11 +455,10 @@ We will explore two ways to implement the \gls{ast} traversal:
 one based on a monolithic implementation based on function overloading
 to differentiate each type of node, and another one based on
 \lstinline{if constexpr}.
+\\
 
-% Monolithic vs overloaded backend implementation
-\begin{itemize}
-\item
-The overloaded version consists in a code generation entry point function
+
+The \textbf{overloaded} version consists in a code generation entry point function
 that selects instruction-specific code generation functions depending
 on the type of token stored in the current instruction.
 
@@ -593,15 +597,12 @@ is the \lstinline{flat_while_t} overload.
   },
   label=lst:ol-codegen-while
 ]{}
-/// Code generation implementation
-/// for a while block
-template <auto const &Ast,
-          size_t InstructionPos = 0>
+/// Code generation implementation for a while block
+template <auto const &Ast, size_t InstructionPos = 0>
 constexpr auto codegen(flat_while_t) {
   return [](program_state_t &s) {
     while (s.data[s.i]) {
-      codegen<Ast, get<flat_while_t>(
-                       Ast[InstructionPos])
+      codegen<Ast, get<flat_while_t>(Ast[InstructionPos])
                        .block_begin>()(s);
     }
   };
@@ -612,14 +613,8 @@ The \lstinline{codegen} implementation for a while block
 \ref{lst:ol-codegen-while} is trivial: it returns a function that runs a while
 loop as defined by the Brainfuck language specification, and the body itself is
 the code generation result for the block element it points to.
-
-This implementation is a good way to show how code generation from a \gls{nttp}
-can be implemented for a serialized \gls{ast}.
-
-\item
-A monolithic implementation of \lstinline{codegen} can be implemented by
-replacing overloading with \lstinline{if constexpr} and
-\lstinline{std::holds_alternative}.
+This implementation is a good way to illustrate code generation from a
+\gls{nttp} for a serialized \gls{ast}.
 
 \begin{lstlisting}[
   language=c++,
@@ -658,35 +653,36 @@ constexpr auto codegen() {
 }
 \end{lstlisting}
 
+A \textbf{monolithic} implementation of \lstinline{codegen} can be implemented by
+replacing overloading with \lstinline{if constexpr} and
+\lstinline{std::holds_alternative}.
+
 Listing \ref{lst:icx-codegen} shows the \lstinline{if constexpr} based
 code generation implementation. Note that bits of code were cut to make
 the listing shorter, but they are the same as the overloaded \lstinline{codegen}
 overload function bodies. This \lstinline{codegen} implementation remains
 functionally identical to the previous one.
 
-\end{itemize}
-
 \subsubsection{
-  Small synthetic variable-size benchmarks
+  Variable-sized benchmarks
 }
 \label{lbl:compile-time-eval}
 
 We first begin by running two variable-sized benchmarks, consisting in
-measuring compiler execution time as the \gls{ast} widens, and as the \gls{ast} deepens.
+measuring compiler execution time as the \gls{ast} widens, and as the \gls{ast}
+deepens.
+\\
 
 The first variable-sized benchmark consists in generating a valid BF \gls{ast} by
 concatenating strings to generate a succession of BF while loops in a
 \gls{constexpr} string. This benchmark was instantiated with sizes going from 1 to
 10 with a step of 1, with 10 timing iterations for each size.
-
 The second benchmark generates a string with
-nested loops, making the \gls{ast} deeper as the benchmark size increases instead
-of making it wider as in the previous case.
+nested loops, making the \gls{ast} deeper as the benchmark size increases
+instead of making it wider as in the previous case. Both benchmarks generate
+programs of the same size.
 
-Both benchmarks generate programs of the same size so comparisons can be made
-properly.
-
-\begin{figure}
+\begin{figure}[h]
 \includegraphics[scale=0.5]{images/bf-consecutive_loops.png}
 \includegraphics[scale=0.5]{images/bf-imbricated_loops.png}
 \includegraphics[scale=0.5]{images/bf-graph-legend.png}
@@ -697,7 +693,7 @@ properly.
 \end{figure}
 
 Figure \ref{fig:bf-bench}
-both highlight considerably higher compiler execution times for the expression
+highlights considerably higher compiler execution times for the expression
 template based backend, high enough to suggest that the use of expression
 templates induces an overhead higher than parsing and generating Brainfuck
 programs using the \gls{pbg} backend. However the \gls{pbg}
@@ -705,9 +701,10 @@ backend still has a compile time overhead much higher than the flat backend,
 which shows near constant compiler execution times on these small scale
 benchmarks.
 
-Finally, \gls{ast} deepening has a much higher impact on compile times than \gls{ast}
-widening with the expression template backends, whereas the other backends seem
-to scale similarly as the \gls{ast} grows wider or deeper.
+Finally, \gls{ast} deepening has a much higher impact on compile times than
+\gls{ast} widening with the expression template backends,
+whereas the other backends seem to scale similarly as the \gls{ast}
+grows wider or deeper.
 
 \subsubsection{
   Large Brainfuck programs
@@ -725,7 +722,7 @@ verifying their output.
 \item A Mandelbrot set fractal viewer (11672 tokens).
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[h]
 \begin{tabular}{|c|c|c|c|}
 \hline
 Backend           & Hello World & Hello World x2  & Mandelbrot \\
@@ -779,7 +776,7 @@ However, it might not be the least difficult to implement.
 The code examples do not reflect the time spent debugging \gls{constexpr}
 allocated memory errors. While the \gls{pbg} may be a decent route for
 rapid prototyping to compile simple embedded expressions or programs,
-its poor performance scaling might be problematic.
+its poor performance scaling might be an issue.
 
 Judging from the implementation, the initial hypothesis was that its
 compilation time complexity as a function of program size would be quadratic

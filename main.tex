@@ -164,7 +164,7 @@
 }
 
 \newglossaryentry{pbg}{
-  name=pass-by-generator,
+  name=pass by generator,
   description=empty
 }
 
@@ -241,11 +241,11 @@
 \color{Prune}
 
 \fontsize{22}{26}\selectfont
-  \Huge Techniques avanc\'ees de g\'en\'eration de code pour le parall\'elisme\\
+  \Huge Techniques avanc\'ees de g\'en\'eration de code pour la performance\\
 
 \normalsize
 \color{black}
-\Large{\textit{Advanced techniques for parallel code generation}} \\
+\Large{\textit{Advanced techniques for high performance code generation}} \\
 %*****************************************************
 
 
@@ -304,8 +304,9 @@ Ma\^itresse de conf\'erences, Affiliation & \\
 
 Merci \`a \textbf{Christine Paulin} d'assurer la pr\'esidence du jury,
 aux rapporteurs \textbf{David Hill} et \textbf{Thierry G\'eraud},
-ainsi qu'aux examinatrices \textbf{Sarah Cohen-Boulakia}
-et \textbf{Amina Guermouche}.
+ainsi qu'\`a \textbf{Amina Guermouche} d'examiner la th\`ese avec
+Christine Paulin.
+
 Je tiens \'egalement \`a faire part de ma reconnaissance envers
 \textbf{Sarah Cohen-Boulakia} pour la cr\'eation du Magist\`ere d'Informatique
 qui m'a permis de d\'ecouvrir la recherche dans un cadre tr\`es privil\'egi\'e.
@@ -313,22 +314,22 @@ qui m'a permis de d\'ecouvrir la recherche dans un cadre tr\`es privil\'egi\'e.
 Merci \'egalement \`a \textbf{Jean-Thierry Laprest\'e} et
 \textbf{Daniel \'Etiemble} pour leurs relectures.
 
-Bien s\^ur \textbf{Jo\"el Falcou}, pour son accompagnement bienveillant,
-valorisant, et d\'evou\'e depuis mon premier stage de recherche.
+Merci, bien s\^ur, \`a \textbf{Jo\"el Falcou}, pour son accompagnement
+bienveillant, valorisant, et d\'evou\'e depuis mon premier stage de recherche.
 
 % Merci les collegues et les parents
 
-\textbf{Amal Khabou}, dont l'aide m'a \'et\'e pr\'ecieuse pour la pr\'eparation
+Merci \`a \textbf{Amal Khabou}, dont l'aide m'a \'et\'e pr\'ecieuse pour la pr\'eparation
 de ma premi\`ere conf\'erence.
 
-\textbf{Hartmut Kaiser}, pour son accueil \`a LSU,
+Merci \`a \textbf{Hartmut Kaiser}, pour son accueil \`a LSU,
 \textbf{Adrian et Cory Lemoine}, qui m'ont aid\'e \`a
 traverser un \'ev\'enement difficile et marquant pendant mon s\'ejour,
-et bien s\^ur \textbf{le reste de l'\'equipe Ste||ar} pour les amiti\'es
+et bien s\^ur \textbf{au reste de l'\'equipe Ste||ar} pour les amiti\'es
 que j'ai pu y nouer, et la gentillesse de chaque personne que j'y ai
 rencontr\'ee.
 
-\textbf{Paul Keir}, pour sa collaboration amicale et bienveillante.
+Merci \`a \textbf{Paul Keir}, pour sa collaboration amicale et bienveillante.
 
 Merci \`a \textbf{mes parents},
 pour m'avoir transmis la passion de l'informatique,
@@ -358,8 +359,8 @@ pour le financement de ma th\`ese.
 
 \begin{mdframed}[linecolor=Prune,linewidth=1]
 
-\textbf{Titre:} Techniques avanc\'ees de g\'en\'eration de code pour le
-parall\'elisme
+\textbf{Titre:} Techniques avanc\'ees de g\'en\'eration de code pour
+la performance
 
 \noindent \textbf{Mots clés:}
 M\'etaprogrammation, compilation, C++, HPC, parall\'elisme, constexpr, SIMD,
@@ -369,55 +370,33 @@ templates, langage d\'edi\'e
 \vspace{-.5cm}
 \begin{multicols}{2}
 \noindent \textbf{Résumé:}
-% As a response to an increasing demand for computing performance,
-% hardware manufacturers propose new parallel hardware architectures
-% of very different nature, each with their own API and programming model.
 En r\'eponse \`a la demande croissante de puissance de calcul,
-les constructeurrs de mat\'eriel proposent de nouvelles architectures
-parall\`eles de tr\`es diff\'erentes natures, et ayant chacune ses propres
+les constructeurs de mat\'eriel proposent de nouvelles architectures
+parall\`eles de tr\`es diff\'erentes natures, et ayant chacune leurs propres
 API et mod\`ele de programmation.
 
-% This makes high performance applications more complex to develop
-% with traditional programming practices, especially when multiple architectures
-% are targeted.
 Cela rend les applications haute performance plus complexes \`a d\'evelopper
 avec des m\'ethodes de programmation traditionnelles, d'autant plus lorsque
 plusieurs architectures sont cibl\'ees.
 
-% As a response, libraries leveraging compile-time code generation were developed
-% to facilitate portable high performance programming with high level abstractions
-% such as Domain-Specific Embedded Languages (DSELs).
 En r\'eponse \`a cette demande, des biblioth\`eques exploitant la
 g\'en\'eration de code \`a la compilation furent d\'evelopp\'ees pour faciliter
 la programmation haute performance avec des abstractions de haut niveau tels
 que les langages d\'edi\'es externes.
 
-% In this thesis, we first explore existing metaprogramming practices across
-% a wide variety of languages, then evaluate current C++ template metaprogramming
-% techniques in the framework of BLAS-like kernel generation.
 Dans cette th\`ese, nous explorons en premier temps les techniques de
 m\'etaprogrammation existant \`a travers un large panel de langages, puis nous
 \'evaluons les techniques actuelles de m\'etaprogrammation de templates C++
 dans le cadre de la g\'en\'eration de noyaux de calculs de type BLAS.
 
-% We then cover new metaprogramming techniques based on compile-time
-% C++ code execution by implementing compile-time parsers for two languages:
-% Brainfuck, and a language called Tiny Math Language (TML).
 Nous couvrons ensuite de nouvelles techniques de m\'etaprogrammation bas\'ees
 sur l'ex\'ecution de code C++ \`a la compilation en impl\'ementant des parsers
 pour deux langages: Brainfuck, et un langage appel\'e Tiny Math Language (TML).
-% The Brainfuck parser is provided with several code generation backends
-% to study and compare different code generation techniques, whereas TML is used
-% to study code generation using portable high performance computing libraries.
 Le parser Brainfuck est fourni avec plusieurs backends de g\'en\'eration de code
 pour \'etudier diff\'erentes techniques de g\'en\'eration de code, tandis que
 TML est utilis\'e pour \'etudier la g\'en\'eration de code en utilisant des
 biblioth\`eques portables haute performance.
 
-% In order to assess the compile-time impact of these various metaprogramming
-% techniques, we propose a new benchmarking methodology that leverages
-% Clang's built-in profiler, enabling compile-time performance scaling analysis
-% beyond black-box benchmarking.
 Pour \'evaluer l'impact de ces diverses techniques de m\'etaprorgammation,
 nous proposons une nouvelle m\'ethodologie de benchmarking qui exploite
 le profiler int\'egr\'e de Clang, ce qui permet l'analyse de performance
@@ -440,7 +419,7 @@ en temps de compilation au-del\`a des mesures de performance en bo\^ite noire.
 \small
 \begin{mdframed}[linecolor=Prune,linewidth=1]
 
-\textbf{Title:} Advanced techniques for parallel code generation
+\textbf{Title:} Advanced techniques for high performance code generation
 
 \noindent \textbf{Keywords:}
 Metaprogramming, compilation, C++, HPC, parallelism, constexpr, SIMD,
@@ -472,7 +451,7 @@ to study and compare different code generation techniques, whereas TML is used
 to study code generation using portable high performance computing libraries.
 
 In order to assess the compile-time impact of these various metaprogramming
-techniques, we propose a new benchmarking methodology that leverages
+techniques, we propose a new benchmarking methodology that uses
 Clang's built-in profiler, enabling compile-time performance scaling analysis
 beyond black-box benchmarking.
 \end{multicols}
@@ -584,7 +563,6 @@ compilation time analysis, but to provide a repeatable process
 along with a robust implementation to improve compilation time
 performance analysis as a whole.
 
-
 % The use of a GitHub CI for building and testing the project guarantees that
 % project remains functional at all times on all supported platforms.
 % As of writing, the project is continuously built and tested for Ubuntu 23.04
@@ -604,6 +582,8 @@ and vcpkg\footnote{\url{https://vcpkg.io/en/packages}}.
 \subfile{2-compilation-time-analysis/2-ctbench-design.tex}
 \subfile{2-compilation-time-analysis/3-ctbench-in-action.tex}
 
+\clearpage%
+
 \section{
   Conclusion
 }
@@ -619,6 +599,11 @@ ctbench answers that need as a simple, powerful, and extensible
 open-source solution that is peer-reviewed and distributed as a reusable
 software package.
 
+Such level of detail and granularity in the analysis of compile-time benchmarks
+was never reached before, and may help us set better practices to improve the
+compile-time performance of metaprograms, and give better insight on compiler
+performance as well.
+
 \chapter{
   Constexpr parsing for HPC
 }
@@ -633,29 +618,26 @@ software package.
 
 \section{Introduction}
 
-% TODO: Ca fait pas 15 fois que je repete ca? Abrege frere
-
 \cpp is often touted as a \textit{Zero-Cost Abstraction} langage due to some of
-its design philosophy and its ability to compile abstraction to a very efficient
-binary code. Some more radical techniques can be used to force the compiler to
-interpret \cpp code as a \gls{dsel}. \Gls{tmp} is such a technique
-and it spawned a large corpus of related idioms from compile time function
-evaluation to lazy evaluation via \glspl{et}.
+its design philosophy and its ability to compile high level abstractions into
+very efficient binary code. Some more radical techniques can be used to
+force the compiler to interpret \cpp code as a \gls{dsel}.
 
-In the field of High Performance Computing, \cpp users are often driven to use
+In the field of \acrlong{hpc}, \cpp users are often driven to use
 libraries built on top of those idioms like Eigen\cite{eigen} or
 Blaze\cite{blazelib,iglberger2012_2}. They all suffer from a major limitation:
 by being tied to the natural \cpp syntax, they can't express nor embed arbitrary
 languages.
 
-In this chapter, we try to demonstrate that the new features of \cpp23 related to
-compile time programming are able to help developers designing \glspl{dsel} with
-arbitrary syntax by leveraging \gls{constexpr} computations, compile time dynamic
-objects and lazy evaluation through lambda functions. After contextualizing our
-contribution in the general \glspl{dsel} domain, this thesis will explain the core
-new techniques enabled by \cpp23 and how we can apply to build two different
-\glspl{dsel} with their own non-\cpp syntax. We'll also explore the performances of
-said \glspl{dsel} in term of compile time to assess their usability in \gls{hpc} code.
+In this chapter, we try to demonstrate that the new features of \cpp23 related
+to compile time programming are able to help developers designing \glspl{dsel}
+with arbitrary syntax by leveraging \gls{constexpr} computations, compile time
+dynamic objects and lazy evaluation through lambda functions.
+After contextualizing our contribution in the general \glspl{dsel} domain,
+this chapter will explain the core new techniques enabled by \cpp23
+and how we can apply to build two different \glspl{dsel} with their own
+non-\cpp syntax. We'll also explore the performances of those \glspl{dsel}
+in term of compile time to assess their usability in parallel programming.
 
 \subfile{3-new-approaches-to-metaprogramming/1-technical-background.tex}
 \subfile{3-new-approaches-to-metaprogramming/2-constexpr-codegen-techniques.tex}
@@ -715,7 +697,7 @@ even for very low level tasks where the reduction of abstraction overhead
 is critical to achieve decent performance.
 
 Before moving on to \gls{constexpr} programming, we adressed the lack of
-tooling for the scientific study of compilation times with ctbench.
+tools for the scientific study of compilation times with ctbench.
 We proposed a new compile-time study methodology based on Clang's built-in
 profiler that help us understand the impacts of metaprograms on each step
 of the compilation process. While it offers limited benchmarking capabilities

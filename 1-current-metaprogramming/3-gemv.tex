@@ -215,9 +215,8 @@ b += 3;
 The main strategies to get efficient small-scale \gls{blas}
 functions are on one hand the usage of the specific
 instructions set (mainly \gls{simd} instructions set) of the target
-architecture that is vectorization and on the other hand the
-controlled unrolling of the inner loop to ensure proper register
-and pipeline usage.
+architecture, and on the other hand the controlled unrolling of the inner loop
+to ensure proper register and pipeline usage.
 
 \paragraph{
   Vectorization
@@ -542,7 +541,7 @@ scalar-like syntax using regular operators.
 
 It is important to notice how close the actual unrolled code
 is to an equivalent code that would use regular for loops. This
-verisimilitude shows that modern metaprogramming matured
+strong similarity shows that modern metaprogramming matured
 enough so that the frontier between regular runtime programming
 and compile-time computation and code generation is
 very thin. The effort to fix bugs in such code or to upgrade

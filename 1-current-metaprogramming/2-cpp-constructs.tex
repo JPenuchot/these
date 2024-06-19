@@ -163,7 +163,7 @@ arbitrary number of parameters, as long as types and values
 are not mixed together. Parameter packs also exist for function parameters,
 which can be useful for template parameter deduction.
 
-For example a type template definition like
+A type template definition like
 \lstinline|template<typename ... Ts> tuple_t{};| can be used to store an
 arbitrary list of types as a single type.
 
@@ -262,11 +262,13 @@ Compile time logic can be achieved in many \cpp constructs.
 
 \textbf{Computation using types}, also known as type-based metaprogramming.
 Types can be used to represent scalar values, arrays, and many more
-kinds of data structures including expression trees. They can also
+kinds of data structures including expression trees.
+They can also be used to represent functions, and whole programs can be built
+and executed at compile-time using type templates as their only building block.
 
   \item
 
-\textbf{Computation using values} thanks to \glspl{nttp}.
+\textbf{Computation using values}, thanks to \glspl{nttp}.
 They allow a slightly more explicit way to write metaprograms,
 as values are represented by values instead of types.
 Not all values are accepted as \gls{nttp}.
@@ -275,7 +277,7 @@ could be used as \gls{nttp}.
 
   \item
 
-\textbf{Computation using \gls{constexpr} functions} since \cpp11,
+\textbf{Computation using \gls{constexpr} functions}, since \cpp11,
 although only a limited subset of \cpp can run in \glspl{consteval}.
 Memory allocations have been allowed in this context only since \cpp20.
 
@@ -450,7 +452,7 @@ optimizations are provided through assignment function overloading
 to call \gls{blas} routines instead of using regular element-wise assignment.
 \\
 
-\acrlong{et} are an important building block for \cpp math libraries that
+\Glspl{et} are an important building block for \cpp math libraries that
 enable the creation of high level, portable \glspl{dsel} that resolve into
 high performance code thanks to a combination of metaprogramming techniques.
 In the next section, we will see a collection of libraries that go beyond the
@@ -467,10 +469,10 @@ implementation of arbitrary compile-time programs.
 }
 
 As previously said, \cpp templates can be used as a compile-time
-functional language. Over time a range of libraries emerged, aiming to provide
-functionalities similar to regular language such as containers and algorithms
-for use in template metaprograms. Notable examples of such libraries are
-MPL\cite{mpl}, Brigand\cite{brigand}, and mp11 \cite{mp11}.
+functional language. Over time a range of metaprogramming libraries emerged,
+aiming to provide functionalities similar to regular ones, such as containers
+and algorithms for use in template metaprograms. Notable examples of such
+libraries are MPL \cite{mpl}, Brigand \cite{brigand}, and mp11 \cite{mp11}.
 
 \begin{lstlisting}[
   language=c++,
@@ -516,7 +518,7 @@ Brigand metaprogramming library.
 
 All these libraries either enable \gls{tmp}, or use \gls{tmp} to achieve
 a specific goal. However with the introduction of \gls{constexpr} programming,
-a new range of compile-time libraries aim to provide new capabilities
+a new range of compile-time libraries aims to provide new capabilities
 for this new metaprogramming paradigm.
 
 \subsection{
@@ -680,7 +682,7 @@ int main() {
 "Smart Expression Templates" which extends upon the concept of
 expression templates implemented by Eigen. It aims to provide a more performant
 and extensible \gls{hpc} library. However, Eigen is not set in stone
-and its designed has since been updated.
+and its design has since been updated.
 
 \begin{lstlisting}[
   language=c++

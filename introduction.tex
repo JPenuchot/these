@@ -14,90 +14,100 @@ tuned implementations that can be achieved by either specializing
 implementations for the target platforms, or using libraries that provide
 specialized abstractions at various levels and for various domains.
 
-Years after its introduction, Moore's law is still doing alive and well:
-transistor count is still doubling every year despite people claiming
-it is not alive anymore. This is due to a common confusion between
-transistor count and computing power. While transistor count has been steadily
-increasing, the throughput computing performance of single \gls{cpu} cores
-has not.
+Years after its introduction, Moore's law is still alive and well:
+even though computing power itself does not evolve as quickly,
+transistor count is still doubling every three year.
+While transistor count has been increasing almost exponentially,
+the throughput computing performance of single \gls{cpu} cores has not.
 This lead to the conclusion that "free lunch" is over, and future
 high performance applications must adapt to increasingly parallel architectures
 to increase compute throughput
-\cite{concurrency-revolution, doi:10.1142/S0129626404001829}.
+\cite{concurrency-revolution, doi:10.1142/S0129626404001829}:
 
-Flynn's taxonomy \cite{flynn-taxonomy} describes four well known categories
-to describe serial and parallel computer architectures\footnotemark{}:
-
-\footnotetext{Source of the graphs:
-\url{https://en.wikipedia.org/wiki/Flynn's_taxonomy}}
-
-\begin{center}
-\begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
-
-\raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/SISD}}
-&
-\textbf{\gls{sisd}}, where a computer only has a single processor with no
-vector registers.
-
-\end{tabular}
-\end{center}
-
-\begin{center}
-\begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
-
-\raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/SIMD}}
-&
-\textbf{\gls{simd}}, which is a parallelism that can be implemented inside
-a single \gls{cpu} core by having vector registers. These registers can hold
-several values, and single instructions can operate on the vectors themselves.
-
-\end{tabular}
-\end{center}
-
-\begin{center}
-\begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
-
-\raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/MISD}}
-&
-\textbf{\gls{misd}}, which is primarily used for fault tolerance by having
-execution redundancy.
-
-\end{tabular}
-\end{center}
-
-\begin{center}
-\begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
-
-\raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/MIMD}}
-&
-\textbf{\gls{mimd}}, which consists in having several processors or cores
-executing different proccesses. This category of parallelism itself has several
-sub-categories depending on the memory topology:
-
+% TODO
 \begin{itemize}
-\item \textbf{Shared memory}, where processing units share a single
-pool of memory. Multi-threading is an example of such a topology as
-CPU cores share the same pool of RAM.
-
-\item \textbf{Distributed memory}, where processing units have their own
-memories and cannot access other memory pools.
-
-\item \textbf{Distributed shared memory}, where processing units have their
-own memory pools and can access other memory pools indirectly.
+\item SIMD
+\item Multi-therading
+\item NUMA architectures
+\item GPU computing
+\item Other accelerators: FPGA, ASIC, DSP
+\item Multi-accelerator architectures
+\item Distributed computing
 \end{itemize}
 
-\end{tabular}
-\end{center}
-
-This is just a high level overview of the new computer architecture landscape
-high performance software engineers have to navigate in.
-In an ideal world, every architecture within the same category
-should be programmable with same languages, tools, and libraries.
-But in reality, hardware architectures within a same category
-cannot run the same programs.
-For example, CUDA is not compatible with AMD \glspl{gpu}, \gls{avx} instructions
-are not available on ARM processors, oneAPI \gls{gpu} libraries developed by
-Intel are not compatible with its competitors' hardware, and so on.
+% Flynn's taxonomy \cite{flynn-taxonomy} describes four well known categories
+% to describe serial and parallel computer architectures\footnotemark{}:
+%
+% \footnotetext{Source of the graphs:
+% \url{https://en.wikipedia.org/wiki/Flynn's_taxonomy}}
+%
+% \begin{center}
+% \begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
+%
+% \raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/SISD}}
+% &
+% \textbf{\gls{sisd}}, where a computer only has a single processor with no
+% vector registers.
+%
+% \end{tabular}
+% \end{center}
+%
+% \begin{center}
+% \begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
+%
+% \raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/SIMD}}
+% &
+% \textbf{\gls{simd}}, which is a parallelism that can be implemented inside
+% a single \gls{cpu} core by having vector registers. These registers can hold
+% several values, and single instructions can operate on the vectors themselves.
+%
+% \end{tabular}
+% \end{center}
+%
+% \begin{center}
+% \begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
+%
+% \raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/MISD}}
+% &
+% \textbf{\gls{misd}}, which is primarily used for fault tolerance by having
+% execution redundancy.
+%
+% \end{tabular}
+% \end{center}
+%
+% \begin{center}
+% \begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
+%
+% \raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/MIMD}}
+% &
+% \textbf{\gls{mimd}}, which consists in having several processors or cores
+% executing different proccesses. This category of parallelism itself has several
+% sub-categories depending on the memory topology:
+%
+% \begin{itemize}
+% \item \textbf{Shared memory}, where processing units share a single
+% pool of memory. Multi-threading is an example of such a topology as
+% CPU cores share the same pool of RAM.
+%
+% \item \textbf{Distributed memory}, where processing units have their own
+% memories and cannot access other memory pools.
+%
+% \item \textbf{Distributed shared memory}, where processing units have their
+% own memory pools and can access other memory pools indirectly.
+% \end{itemize}
+%
+% \end{tabular}
+% \end{center}
+%
+% This is just a high level overview of the new computer architecture landscape
+% high performance software engineers have to navigate in.
+% In an ideal world, every architecture within the same category
+% should be programmable with the same languages, tools, and libraries.
+% But actually, hardware architectures within a same category
+% cannot run the same programs.
+% For example, CUDA is not compatible with AMD \glspl{gpu}, \gls{avx} instructions
+% are not available on ARM processors, oneAPI \gls{gpu} libraries developed by
+% Intel are not compatible with its competitors' hardware, and so on.
 
 To adapt to this variety of hardware and \glspl{api}, new abstractions
 were developed in the form of software libraries, compiler extensions,
@@ -132,7 +142,7 @@ the complexity of \cpp metaprograms.
 
 % Exposing the objectives + outlining the plan
 
-This trend, as well as new \cpp compile-time capabilities, raise new questions:
+This trend, as well as new \cpp compile-time capabilities, raises new questions:
 how can we leverage compile-time \cpp code execution to improve the quality
 and performance of \cpp metaprograms, especially \glspl{dsel} implementations
 for \acrlong{hpc} code generation? Eventually, can we use them to parse

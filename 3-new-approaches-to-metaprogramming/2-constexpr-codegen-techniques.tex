@@ -1,36 +1,7 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
-\section{
-  Constexpr abstract syntax trees and code generation
-}
-\label{lbl:ast-codegen}
-
-The addition of \gls{constexpr} memory and virtual function calls allows
-\gls{constexpr} implementation of \glspl{ast}, akin to those found
-in modern \cpp compiler frontends like Clang.
-However, these \glspl{ast} cannot be used directly as \glspl{nttp}
-for generating structures and functions.
-
-This section will cover the implementation of \gls{constexpr} \glspl{ast},
-and techniques to work around the limitations that prevent their direct use as
-\glspl{nttp} either through functional wrapping techniques, or through
-their convertion of into values that satisfy \gls{nttp} requirements.
-
-\subsection{
-  Code generation from pointer tree data structures
-}
-
-\label{lbl:ptr-tree-codegen}
-
-In this subsection, we introduce three techniques that will allow us to use
-a pointer tree generated from a \gls{constexpr} function as a template parameter
-for code generation.
-
-To illustrate them, we use a minimalistic use case.
-A generator function returns a pointer tree representation of addition and
-constant nodes, which we will use to generate functions that evaluate
-the tree itself.
+\clearpage%
 
 \begin{lstlisting}[
   language=C++,
@@ -85,6 +56,39 @@ constexpr tree_ptr_t gen_tree() {
 }
 \end{lstlisting}
 
+\clearpage%
+
+\section{
+  Constexpr abstract syntax trees and code generation
+}
+\label{lbl:ast-codegen}
+
+The addition of \gls{constexpr} memory and virtual function calls allows
+\gls{constexpr} implementation of \glspl{ast}, akin to those found
+in modern \cpp compiler frontends like Clang.
+However, these \glspl{ast} cannot be used directly as \glspl{nttp}
+for generating structures and functions.
+
+This section will cover the implementation of \gls{constexpr} \glspl{ast},
+and techniques to work around the limitations that prevent their direct use as
+\glspl{nttp} either through functional wrapping techniques, or through
+their convertion of into values that satisfy \gls{nttp} requirements.
+
+\subsection{
+  Code generation from pointer tree data structures
+}
+
+\label{lbl:ptr-tree-codegen}
+
+In this subsection, we introduce three techniques that will allow us to use
+a pointer tree generated from a \gls{constexpr} function as a template parameter
+for code generation.
+
+To illustrate them, we use a minimalistic use case.
+A generator function returns a pointer tree representation of addition and
+constant nodes, which we will use to generate functions that evaluate
+the tree itself.
+
 Listing \ref{lst:tree_generation} shows the type definitions, a concept to
 match tree generator functions, as well as the generator function itself.
 This is a common way to represent trees in \cpp, but the limits mentioned in
@@ -108,14 +112,14 @@ as embedded compilation of Brainfuck programs, and of \LaTeX math formulae
 into high performance math computation kernels.
 
 \subsubsection{
-  PBG - Pass-By-Generator
+  Pass By Generator (PBG)
 }
 
 \label{lbl:pbg-technique}
 
 One way to use dynamically allocated data structures as template parameters
 is to pass their generator functions instead of their values.
-You may have noted in listing \ref{lst:cx-examples} that depsite
+You may have noted in listing \ref{lst:cx-examples} that despite
 \lstinline{generate}'s return value being non-literal, the function itself
 can be passed as a \gls{nttp}.
 
@@ -126,7 +130,7 @@ defined at compile-time.
 \begin{lstlisting}[
   language=C++,
   label=lst:pass-by-generator-example,
-  caption=Pass-by-generator
+  caption=Code generation with the pass by generator technique
 ]{}
 /// Accumulates the value from a tree returned by TreeGenerator.
 /// TreeGenerator() is expected to return a std::unique_ptr<tree_t>.
@@ -173,9 +177,11 @@ And while it is very quick to implement, there are still difficulties
 related to \gls{constexpr} memory constraints and compiler or library support.
 
 Note that GCC 13.2.1 is still unable to compile such code.
-And while Clang 17.0.6 supports it, getting a this technique to work can be
+And while Clang 17.0.6 supports it, getting this technique to compile can be
 difficult as \gls{constexpr} memory rules are enforced in an erratic way,
 and often with poorly explained compiler errors.
+
+\clearpage%
 
 For example, if the expression in an \lstinline{if constexpr}
 condition involves \gls{constexpr} allocated memory, the result of the condition
@@ -203,13 +209,13 @@ expression is not a constant expression, despite the condition expression being
 usable to initialize a \gls{constexpr} variable.
 
 \subsubsection{
-  PBG + ET - Pass-By-Generator and Expression Template IR
+  Pass by generator and expression templates
 }
 
 \label{lbl:pbg-et-technique}
 
 Another method consists in transforming \gls{constexpr} \glspl{ast}
-into an \acrlong{et} \acrlongpl{ir}. This serves as a proof that making
+into \glspl{et} as an \gls{ir}. This serves as a proof that making
 \gls{constexpr} programming interoperable with older metaprogramming
 paradigms is feasible, but it will also help us assess the viability
 of using the \gls{pbg} method in coordination with \glspl{et}.
@@ -234,15 +240,15 @@ representation from listing \ref{lst:tree_generation}. It is meant to be
 a one to one reimplementation of its value-based equivalent.
 
 From there, we can implement a metaprogram that transforms a \gls{constexpr}
-a \gls{ast} into this new type-based representation.
+\gls{ast} into this new type-based representation.
+
+\clearpage%
 
 \begin{lstlisting}[
   language=C++,
   caption=AST to Expression Template transformation,
   label=lst:to_expression_template-impl
 ]{}
-/// Accumulates the value from a tree returned by TreeGenerator.
-/// TreeGenerator() is expected to return a std::unique_ptr<tree_t>.
 template <tree_generator auto Fun>
 constexpr auto to_expression_template() {
   static_assert(Fun() != nullptr, "Ill-formed tree");
@@ -250,46 +256,54 @@ constexpr auto to_expression_template() {
   constexpr node_kind_t Kind = Fun()->kind;
 
   if constexpr (Kind == add_v) {
-    // Recursive type generation using the pass-by-generator technique
-    using TypeLeft = decltype(to_expression_template<[]() {
-      return static_cast<add_t &&>(*Fun()).left;
-    }>());
-    using TypeRight = decltype(to_expression_template<[]() {
-      return static_cast<add_t &&>(*Fun()).right;
-    }>());
+    using TypeLeft =
+        decltype(to_expression_template<[]() {
+          return static_cast<add_t &&>(*Fun()).left;
+        }>());
+    using TypeRight =
+        decltype(to_expression_template<[]() {
+          return static_cast<add_t &&>(*Fun()).right;
+        }>());
 
     return et_add_t<TypeLeft, TypeRight>{};
   }
 
   else if constexpr (Kind == constant_v) {
-    constexpr auto Value = static_cast<constant_t &>(*Fun()).value;
+    constexpr auto Value =
+        static_cast<constant_t &>(*Fun()).value;
     return et_constant_t<Value>{};
   }
 }
 
 template <int Value>
-constexpr auto codegen_impl(et_constant_t<Value> /*unused*/) {
+constexpr auto
+codegen_impl(et_constant_t<Value> /*unused*/) {
   return []() { return Value; };
 }
 
-template <typename ExpressionLeft, typename ExpressionRight>
+template <typename ExpressionLeft,
+          typename ExpressionRight>
 constexpr auto
-codegen_impl(et_add_t<ExpressionLeft, ExpressionRight> /*unused*/) {
+codegen_impl(et_add_t<ExpressionLeft,
+                      ExpressionRight> /*unused*/) {
   auto eval_left = codegen_impl(ExpressionLeft{});
   auto eval_right = codegen_impl(ExpressionRight{});
   return [=]() { return eval_left() + eval_right(); };
 }
 
-template <tree_generator auto Fun> constexpr auto codegen() {
-  using ExpressionTemplate = decltype(to_expression_template<Fun>());
+template <tree_generator auto Fun>
+constexpr auto codegen() {
+  using ExpressionTemplate =
+      decltype(to_expression_template<Fun>());
   return codegen_impl(ExpressionTemplate{});
-}
 \end{lstlisting}
+
+\clearpage%
 
 As shown in listing \ref{lst:to_expression_template-impl}, it is very similar
 to the transformation code in \ref{lbl:pbg-technique} since it relies on
 the same technique to traverse the \gls{ast}.
-However, its output is not a \cpp lambda but an \acrlong{et}, and as such
+However, its output is not a \cpp lambda but an \gls{et}, and as such
 proves that \gls{constexpr} programming is interoperable with existing
 type-based paradigms, even when \gls{constexpr} allocated memory is involved.
 
@@ -310,7 +324,7 @@ This transformation might sound odd at first: the generated \glspl{ast} are
 dynamic structures that need dynamic memory allocation, and static arrays
 have a fixed size. However, because the size of the output is known
 at compile time, it is possible to determine the size of the serialized
-\gls{ast} in a first step to deterine the size of the array,
+\gls{ast} in a first step to determine the size of the array,
 and then transfer the serialized content into the array.
 \\
 
@@ -339,8 +353,8 @@ constexpr std::size_t null_index = std::size_t(0) - 1;
 \end{lstlisting}
 
 The first step consists in implementing the \gls{ir} nodes which are similar
-to the \gls{ast} nodes.
-Pointers are replaced with \lstinline{std::size_t} indexes,
+to the \gls{ast} nodes in which pointers are replaced with
+\lstinline{std::size_t} indexes,
 and \lstinline{nullptr} is replaced with an arbitrary value called
 \lstinline{null_index}, as shown in listing \ref{lst:flat_struct_def}.
 This \gls{ir} also replaces heritage polymorphism with the use of
@@ -427,14 +441,67 @@ The elements contained in the resulting array are \glspl{litval} since they do
 not hold pointers to dynamic memory, therefore the array itself is a
 \gls{litval} as well.
 
+To complete the implementation, we must implement a code generation function
+that accepts a serialized tree as an input as shown in listing
+\ref{lst:flat_codegen}. Note that this function is almost identical to
+the one shown in listing \ref{lst:pass-by-generator-example}.
+The major difference is that \lstinline{TreeGenerator} is called only
+twice regardless of the size of the tree. This allows much better scaling
+as we will see in \ref{lbl:compile-time-eval}.
+The downside is that it requires the implementation of an ad hoc data
+structure and a serialization function, which might be more or less complex
+depending on the complexity of the original tree structure.
+
+\subsection{
+  Using algorithms with serialized outputs
+}
+\label{lbl:codegen-from-rpn}
+
+\begin{figure}[h]
+\begin{tabular}{|l|l|l|}
+\hline
+Current token & Action & Stack \\
+\hline
+\lstinline|2| & Stack \lstinline|2| & \lstinline|2| \\
+\lstinline|3| & Stack \lstinline|3| & \lstinline|2|, \lstinline|3| \\
+\lstinline|2| & Stack \lstinline|2| & \lstinline|2|, \lstinline|3|, \lstinline|2| \\
+\lstinline|*| & Multiply \lstinline|2| and \lstinline|3| & \lstinline|2|, \lstinline|6| \\
+\lstinline|+| & Add \lstinline|2| and \lstinline|6| & \lstinline|8| \\
+\hline
+\end{tabular}
+\centering
+\caption{\gls{rpn} formula reading example}
+\label{fig:rpn-reading-example}
+\end{figure}
+
+Parsing algorithms may output serialized data. In this case, the serialization
+step described in \ref{lbl:flat-technique} is not needed, and the result
+can be converted into a static array.
+This makes the code generation process rather straightforward as no complicated
+transformation is needed, while still scaling decently as we will see in
+\ref{lbl:compile-time-eval} where we will be using a
+Shunting Yard parser \cite{shunting-yard} to parse math formulae to a
+\gls{rpn}, which is its postfix notation.
+
+Once converted into its postfix notation,
+a formula can be read using the following method:
+reading symbols in order,
+putting constants and variables on the top of a stack, and
+when a function $f$ or operator of arity $N$ is being read,
+unstacking $N$ values and stack the result of $f$ applied
+to the $N$ operands.
+
+Figure \ref{fig:rpn-reading-example} shows a formula reading example with
+the formula \lstinline{2 + 3 * 2}, or \lstinline{2 3 2 * +} in
+reverse polish notation. Starting from there,
+we will see how code can be generated using RPN representations
+of addition trees in \cpp.
+
 \begin{lstlisting}[
   language=C++,
   label=lst:flat_codegen,
   caption=Code generation implementation for the flat backend
 ]{}
-/// Generates code from a tree serialized into a static array,
-/// with CurrentIndex being the index of the starting node which
-/// defaults to 0, ie. the top node of the whole tree.
 template <auto const &Tree, std::size_t Index>
 constexpr auto codegen_aux() {
   static_assert(Index != null_index, "Ill-formed tree (null index)");
@@ -462,71 +529,20 @@ constexpr auto codegen_aux() {
 template <tree_generator auto Fun>
 static constexpr auto tree_as_array = serialize_as_array<Fun>();
 
-/// Takes a tree generator function as non-type template parameter
-/// and generates the lambda associated to it.
 template <tree_generator auto Fun> constexpr auto codegen() {
   return codegen_aux<tree_as_array<Fun>, 0>();
 }
 \end{lstlisting}
 
-To complete the implementation, we must implement a code generation function
-that accepts a serialized tree as an input as shown in listing
-\ref{lst:flat_codegen}. Note that this function is almost identical to
-the one shown in listing \ref{lst:pass-by-generator-example}.
-The major difference is that \lstinline{TreeGenerator} is called only
-twice regardless of the size of the tree. This allows much better scaling
-as we will see in \ref{lbl:compile-time-eval}.
-The downside is that it requires the implementation of an ad hoc data
-structure and a serialization function, which might be more or less complex
-depending on the complexity of the original tree structure.
+\clearpage%
 
-\subsection{
-  Using algorithms with serialized outputs
-}
-\label{lbl:codegen-from-rpn}
+In listing \ref{lst:rpn_base_definitions}, we have the type definitions for an
+RPN representation of an addition tree as well as \lstinline{gen_rpn_tree} which
+returns an RPN equivalent of \lstinline{gen_tree}'s result.
 
-Parsing algorithms may output serialized data. In this case, the serialization
-step described in \ref{lbl:flat-technique} is not needed, and the result
-can be converted into a static array.
-This makes the code generation process rather straightforward as no complicated
-transformation is needed, while still scaling decently as we will see in
-\ref{lbl:compile-time-eval} where we will be using a
-Shunting Yard parser \cite{shunting-yard} to parse math formulae to a
-\gls{rpn}, which is its postfix notation.
-
-Once converted into its postfix notation,
-a formula can be read using the following method:
-
-\begin{itemize}
-\item read symbols in order,
-\item put constants and variables on the top of a stack,
-\item when a function $f$ or operator of arity $N$ is being read,
-      unstack $N$ values and stack the result of $f$ applied
-      to the $N$ operands.
-\end{itemize}
-
-\begin{figure}
-\begin{tabular}{|l|l|l|}
-\hline
-Current token & Action & Stack \\
-\hline
-\lstinline|2| & Stack \lstinline|2| & \lstinline|2| \\
-\lstinline|3| & Stack \lstinline|3| & \lstinline|2|, \lstinline|3| \\
-\lstinline|2| & Stack \lstinline|2| & \lstinline|2|, \lstinline|3|, \lstinline|2| \\
-\lstinline|*| & Multiply \lstinline|2| and \lstinline|3| & \lstinline|2|, \lstinline|6| \\
-\lstinline|+| & Add \lstinline|2| and \lstinline|6| & \lstinline|8| \\
-\hline
-\end{tabular}
-\caption{\gls{rpn} formula reading example}
-\label{fig:rpn-reading-example}
-\end{figure}
-
-Figure \ref{fig:rpn-reading-example} shows a formula reading example with
-the formula \lstinline{2 + 3 * 2}, or \lstinline{2 3 2 * +} in
-reverse polish notation.
-
-Starting from there, we will see how code can be generated using
-RPN representations of addition trees in \cpp.
+Similar to the flat backend, an \lstinline{eval_as_array} takes care
+of evaluating the \lstinline{std::vector} result into a statically
+allocated array.
 
 \begin{lstlisting}[
   language=C++,
@@ -542,71 +558,13 @@ struct rpn_constant_t {
 struct rpn_add_t {};
 
 /// Type for RPN representation of an arbitrary symbol
-using rpn_node_t = std::variant<rpn_constant_t, rpn_add_t>;
+using rpn_node_t =
+    std::variant<rpn_constant_t, rpn_add_t>;
 
 /// RPN equivalent of gen_tree
 constexpr std::vector<rpn_node_t> gen_rpn_tree() {
-  return {rpn_constant_t{1}, rpn_constant_t{2}, rpn_add_t{},
-          rpn_constant_t{3}, rpn_add_t{}};
-}
-\end{lstlisting}
-
-In listing \ref{lst:rpn_base_definitions}, we have the type definitions for an
-RPN representation of an addition tree as well as \lstinline{gen_rpn_tree} which
-returns an RPN equivalent of \lstinline{gen_tree}'s result.
-
-Similar to the flat backend, an \lstinline{eval_as_array} takes care
-of evaluating the \lstinline{std::vector} result into a statically
-allocated array.
-
-\begin{lstlisting}[
-  language=C++,
-  caption=Codegen implementation for RPN formulae,
-  label=lst:rpn_codegen
-]{}
-/// Codegen implementation.
-/// Reads tokens one by one, updates the stack consequently
-/// by consuming and/or stacking operands.
-/// Operands are functions that evaluate parts of the subtree.
-template <auto const &RPNTree, std::size_t Index = 0>
-constexpr auto codegen_impl(kumi::product_type auto stack) {
-  // The end result is the last top stack operand
-  if constexpr (Index == RPNTree.size()) {
-    static_assert(stack.size() == 1, "Invalid tree");
-    return kumi::back(stack);
-  }
-
-  else if constexpr (std::holds_alternative<rpn_constant_t>(
-                         RPNTree[Index])) {
-    // Append the constant operand
-    auto new_operand = [=]() {
-      return get<rpn_constant_t>(RPNTree[Index]).value;
-    };
-    return codegen_impl<RPNTree, Index + 1>(
-        kumi::push_back(stack, new_operand));
-  }
-
-  else if constexpr (std::holds_alternative<rpn_add_t>(
-                         RPNTree[Index])) {
-    // Fetching 2 top elements and popping them off the stack
-    auto left = kumi::get<stack.size() - 1>(stack);
-    auto right = kumi::get<stack.size() - 2>(stack);
-    auto stack_remainder = kumi::pop_back(kumi::pop_back(stack));
-
-    // Append new operand and process next element
-    auto new_operand = [=]() { return left() + right(); };
-    return codegen_impl<RPNTree, Index + 1>(
-        kumi::push_back(stack_remainder, new_operand));
-  }
-}
-
-/// Stores static array representations of RPN generators' results.
-template <auto Fun>
-static constexpr auto rpn_as_array = eval_as_array<Fun>();
-
-/// Code generation function.
-template <auto Fun> constexpr auto codegen() {
-  return codegen_impl<rpn_as_array<Fun>, 0>(kumi::tuple{});
+  return {rpn_constant_t{1}, rpn_constant_t{2},
+          rpn_add_t{}, rpn_constant_t{3}, rpn_add_t{}};
 }
 \end{lstlisting}
 
@@ -634,6 +592,60 @@ corresponding to the symbol being read.
 
 Once all symbols are read, there should be only one operand remaining
 on the stack: the function that evaluates the whole tree.
+
+\clearpage%
+
+\begin{lstlisting}[
+  language=C++,
+  caption=Codegen implementation for RPN formulas,
+  label=lst:rpn_codegen
+]{}
+template <auto const &RPNTree, std::size_t Index = 0>
+constexpr auto
+codegen_impl(kumi::product_type auto stack) {
+  // The end result is the last top stack operand
+  if constexpr (Index == RPNTree.size()) {
+    static_assert(stack.size() == 1, "Invalid tree");
+    return kumi::back(stack);
+  }
+
+  else if constexpr (std::holds_alternative<
+                         rpn_constant_t>(
+                         RPNTree[Index])) {
+    // Append the constant operand
+    auto new_operand = [=]() {
+      return get<rpn_constant_t>(RPNTree[Index]).value;
+    };
+    return codegen_impl<RPNTree, Index + 1>(
+        kumi::push_back(stack, new_operand));
+  }
+
+  else if constexpr (std::holds_alternative<rpn_add_t>(
+                         RPNTree[Index])) {
+    // Fetching 2 top elements and popping them off the
+    // stack
+    auto left = kumi::get<stack.size() - 1>(stack);
+    auto right = kumi::get<stack.size() - 2>(stack);
+    auto stack_remainder =
+        kumi::pop_back(kumi::pop_back(stack));
+
+    // Append new operand and process next element
+    auto new_operand = [=]() { return left() + right(); };
+    return codegen_impl<RPNTree, Index + 1>(
+        kumi::push_back(stack_remainder, new_operand));
+  }
+}
+
+template <auto Fun>
+static constexpr auto rpn_as_array = eval_as_array<Fun>();
+
+template <auto Fun> constexpr auto codegen() {
+  return codegen_impl<rpn_as_array<Fun>, 0>(
+      kumi::tuple{});
+}
+\end{lstlisting}
+
+\clearpage%
 
 \subsection{
   Conclusion

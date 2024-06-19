@@ -24,6 +24,8 @@ This section will cover advanced technicalities of \gls{constexpr} programming,
 including \gls{constexpr} memory allocation and the restrictions that make
 \gls{constexpr} allocated memory difficult to use for \cpp code generation.
 
+\clearpage%
+
 \subsection{
   \gls{constexpr} functions and \gls{constexpr} variables
 }
@@ -79,6 +81,8 @@ constexpr auto b = generate().size();     // OK
 // constexpr auto c = foo<generate()>();  // ERROR
 constexpr auto d = foo<&generate>();      // OK
 \end{lstlisting}
+
+\clearpage%
 
 Let's have a closer look at the four assignment cases:
 

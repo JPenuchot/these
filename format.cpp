@@ -1,8 +1,10 @@
-template <typename = void> constexpr auto foo() {
-  return
-      []<std::size_t... Is>(std::index_sequence<Is...>) {
-        return sum(ct_uint_t<Is>{}...);
-      }(std::make_index_sequence<BENCHMARK_SIZE>{});
+/// Code generation implementation for a while block
+template <auto const &Ast, size_t InstructionPos = 0>
+constexpr auto codegen(flat_while_t) {
+  return [](program_state_t &s) {
+    while (s.data[s.i]) {
+      codegen<Ast, get<flat_while_t>(Ast[InstructionPos])
+                       .block_begin>()(s);
+    }
+  };
 }
-
-constexpr std::size_t result = decltype(foo())::value;
