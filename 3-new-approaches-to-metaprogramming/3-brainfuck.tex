@@ -76,7 +76,7 @@ in appendix \ref{app:bf-parser}.
 
 On the surface: the parser takes a pair of begin and end iterators as an input.
 It parses Brainfuck tokens until it reaches the end iterator or a while end
-token, and returns a pair containing an iteretor pointing after the last parsed
+token, and returns a pair containing an iterator pointing after the last parsed
 token and the parsing result.
 
 When a while begin token is reached, it calls itself recursively and resumes
@@ -84,7 +84,7 @@ parsing at the position of the iterator returned by the callee, which is right
 after the while block.
 
 The main parsing function implementation (including the function prototype)
-is very condensed: it fits in 40 lines of code with a max line width set to 84.
+is very compact: it fits in 40 lines of code with a max line width set to 84.
 It is no different from a regular Brainfuck parsing function except for it being
 \gls{constexpr}, and it can actually be used as a regular \cpp program.
 
@@ -115,7 +115,7 @@ compilation time performance.
 }
 
 The first backend implemented in the poacher project was the \gls{et} backend,
-where the AST is transformed a type-based \gls{ir}
+where the AST is transformed into a type-based \gls{ir}
 as described in \ref{lbl:pbg-et-technique}. It was later simplified to
 remove the \gls{ir} transformation step, which gave the \gls{pbg} backend.
 
@@ -137,7 +137,7 @@ template <typename... Nodes> struct et_while_t {
 template <token_t Token> struct et_token_t {};
 \end{lstlisting}
 
-The implementation of these two backends do not differ significantly from
+The implementations of these two backends do not differ significantly from
 the ones described in \ref{lbl:pbg-technique} and \ref{lbl:pbg-et-technique}:
 the generators that evaluate each node are passed as template parameters,
 only to work around the fact that pointers to \gls{constexpr} allocated memory
@@ -165,7 +165,7 @@ The case of Brainfuck introduces a notable difference compared to the simple
 use case seen in \ref{lbl:flat-technique}: while \gls{ast} nodes in Brainfuck
 can have an arbitrary number of children nodes, as opposed to add nodes in
 the simple use case I presented earlier. This introduces a few technical
-differences with regard to seerialization and code generation, which I will
+differences with regard to serialization and code generation, which I will
 cover in detail in this subsection.
 
 \begin{lstlisting}[
@@ -262,9 +262,9 @@ constexpr void block_gen(ast_node_ptr_t const &p,
 Listing \ref{lst:flat-block_gen-generic} shows the implementation of the generic
 version of \lstinline{block_gen}. It consists in a forward declaration
 followed by node-specific implementations which call the generic version
-recursivelythanks to the  \lstinline{visit} function.
+recursively thanks to the  \lstinline{visit} function.
 Specialized overloads of the \lstinline{block_gen} function follow the same
-inteface: they are invoked with a node and the state of the block generation
+interface: they are invoked with a node and the state of the block generation
 process as a mutable reference.
 
 Listing \ref{lst:flat-block_gen-impl} shows the implementation of
@@ -331,7 +331,7 @@ constexpr void block_gen(ast_while_t const &whi,
 \end{lstlisting}
 
 Listing \ref{lst:flat-flatten-impl} shows the implementation of
-\lstinline{flatten}, which simply calls \lstinline{block_gen},
+\lstinline{flatten} which calls \lstinline{block_gen},
 chains the blocks together, and translates block indexes to account for
 the new layout.
 
@@ -491,7 +491,7 @@ Listing \ref{lst:ol-codegen-entrypoint} shows the implementation
 of the entry point function whose only purpose is to unwrap the type
 of the current element and use it to call the appropriate code generation
 function depending on the instruction type.
-The dispatch is done automatically though function overloading.
+The dispatch is done automatically through function overloading.
 
 \begin{lstlisting}[
   language=c++,
@@ -533,7 +533,7 @@ represented by a token that isn't a while block delimiter.
 
 The dispatch over the tokens is done using \lstinline{if constexpr},
 but it could have been done using a variable template with
-a series of specializations.
+template specializations for each case.
 
 Note that the token passed as a regular parameter is only used for the overload
 selection. The token value used to evaluate conditions in the
@@ -796,6 +796,6 @@ requiring additional effort to implement the \gls{et}
 
 As a broad conclusion for compile time Brainfuck code generation,
 it can be said that using \gls{nttp}-based techniques to generate code
-is preferable to avoid compilation times increasing dramatically.
+is preferable in order to avoid compilation times to increase dramatically.
 
 \end{document}

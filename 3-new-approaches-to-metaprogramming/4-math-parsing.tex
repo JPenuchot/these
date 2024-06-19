@@ -7,7 +7,7 @@
   Math parsing and high performance code generation
 }
 
-Thanks to the previous experiments, we now that using serialized structures
+Thanks to the previous experiments, we know that using serialized structures
 as \glspl{nttp} is preferable to keep compilation times lower.
 As such, we will be generating code from mathematical expressions using
 a parsing algorithm that transforms infix formulas into their \gls{rpn}
@@ -62,7 +62,7 @@ I will start by introducing a simple demonstrator language: \gls{tml}.
 It is a very basic language for simple math that can read math formulas
 containing integers, \lstinline{x} and \lstinline{y} variables,
 \lstinline{sin} and \lstinline{max} functions, a small set of infix operators
-(\lstinline{+}, \lstinline{-}, \lstinline{*}, \lstinline{/}, and\lstinline{^}),
+(\lstinline{+}, \lstinline{-}, \lstinline{*}, \lstinline{/}, \lstinline{^}),
 as well as \lstinline|{}| and \lstinline{()} as parenthesis pairs.
 
 \begin{lstlisting}[
@@ -109,7 +109,7 @@ parse(std::string_view const &formula) {
 
 Using the Sunting Yard implementation from
 appendix \ref{app:shunting-yard-impl}, we can specify variable identifiers,
-function identifiers, infix operators (with precendence), and parenthesis
+function identifiers, infix operators (with precedence), and parenthesis
 as shown in listing \ref{lst:tml-parser} to define a simple math language
 that can be parsed by a \gls{constexpr} function.
 

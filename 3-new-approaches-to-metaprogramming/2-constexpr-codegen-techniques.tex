@@ -577,21 +577,26 @@ by a \lstinline{kumi::tuple}. It is a standard-like tuple type with additional
 element access, extraction, and modification functions.
 We are using it to store functions that evaluate parts of the subtree.
 
-Symbols are read in order, and the stack is updated depending on the symbol:
+The algorithm reads \textbf{symbols} (\ie functions, operators, constants, and
+variables) one by one from a \textbf{symbol queue}, and generates
+\textbf{operands} (\ie \cpp lambdas that return a result) that are stored on an
+\textbf{operand stack}. For each \textbf{symbol} being read from the queue:
 
 \begin{itemize}
-\item When a terminal is read, a function that evaluates its value is stacked.
-In this case terminals are simply constants, but they can be anything a \cpp
-lambda can return such as a variable or another function's result.
+\item If a \textbf{constant} or \textbf{variable} is read, a lambda that
+evaluates its value is added to the operand stack.
+Since the operands are \cpp lambdas, they can return
+anything users may want them to return, such as a \cpp variable
+or even another function's result.
 
-\item When a function or operator of arity $N$ is read, $N$ operands will be
-consumed from the top of the stack and a new operand will be stacked.
-The new operand evaluates the consumed operands passed to the function
-corresponding to the symbol being read.
+\item If a \textbf{function} or \textbf{operator} of arity $N$ is read,
+$N$ operands will be consumed from the top of the \textit{operand stack}
+to generate a new one. This new operand evaluates the consumed operands passed
+to the function corresponding to the symbol being read from the queue.
 \end{itemize}
 
-Once all symbols are read, there should be only one operand remaining
-on the stack: the function that evaluates the whole tree.
+Once all symbols are read, there should be only one \textbf{operand} remaining
+on the operand stack: a function that evaluates the whole formula.
 
 \clearpage%
 
@@ -651,7 +656,7 @@ template <auto Fun> constexpr auto codegen() {
   Conclusion
 }
 
-We now have a set of methods that allow us to convert \gls{constexpr}
+We now have a set of methods that allows us to convert \gls{constexpr}
 \glspl{ast} into \cpp code, each with their flaws and advantages with regard
 to compilation times, implementation difficulty, or simply final code size.
 So far, all of them require advanced \cpp knowledge and tinkering to get
@@ -666,7 +671,7 @@ We can alreaady notice a few differences between those techniques:
 and they induce errors that are harder to diagnose despite the implementation
 being seemingly straightforward.
 The Flat backend however, requires more work to serialize the \gls{ast},
-but serializing a pointer tree does not require as much advanced \cpp knowledge.
+but serializing a pointer tree does not require much advanced \cpp knowledge.
 Moreover, the serialization code can be executed, debugged, and tested in a
 regular run-time environment.
 
