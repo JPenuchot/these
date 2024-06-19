@@ -443,8 +443,8 @@ kernels are useful for some batched computations\cite{hpcs20}.
 Here, we consider the matrix-vector multiplication routine
 for general dense matrices, \gls{gemv}, which performs either
 $y := \alpha A x + \beta y$ or $y := \alpha A T x + \beta y$,
-where $A$ is an $m \times n$ matrix, $\alpha$ and $\beta$ are scalars,
-and $y$ and $x$ are vectors. In this section,
+where $A$ is an $m \times n$ column-major matrix, $\alpha$ and $\beta$
+are scalars, and $y$ and $x$ are vectors. In this section,
 we focus on matrices of small sizes ranging from
 4 to 512 as this range of sizes encompasses the size of
 most L1 cache memory, thus allowing a maximal throughput
