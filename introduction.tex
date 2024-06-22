@@ -23,27 +23,37 @@ This lead to the conclusion that "free lunch" is over, and future
 high performance applications must adapt to increasingly parallel architectures
 to increase compute throughput
 \cite{concurrency-revolution, doi:10.1142/S0129626404001829}.
-\\
 
-The high performance computing landscape is increasingly diverse at all levels:
-
-\begin{itemize}
-\item
+\begin{center}
+\begin{tabular}{p{0.6\textwidth} p{0.3\textwidth}}
 \textbf{Vector registers and instructions} allow single instructions allow
 instructions to be executed on several values at a time. This is known as
 the \textbf{\gls{simd}} execution model. It is featured across all major
 instruction set architectures:
-\textbf{AVX} and \textbf{SSE} on x86,
-\textbf{NEON} and \textbf{SVE} on ARM,
-\textbf{VSX} on PowerPC, and
-\textbf{RVV} on RISC-V.
+\textbf{AVX} and \textbf{SSE} on x86, \textbf{NEON} and \textbf{SVE} on ARM,
+\textbf{VSX} on PowerPC, and \textbf{RVV} on RISC-V.
+&
+\raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/SIMD}}
+\end{tabular}
+\end{center}
 
-\item \textbf{Multi-core architectures} enables multiple CPU cores to execute
+\\
+
+\begin{center}
+\begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
+\raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/MISD}}
+&
+\textbf{Multi-core architectures} enables multiple CPU cores to execute
 different tasks simultaneously. These cores may or may not share the same
 memory pool. If so, the architecture is qualified as a \textbf{\gls{uma}}.
 Otherwise, the architecture is qualified as a \textbf{\gls{numa}}.
+\end{tabular}
+\end{center}
 
-\item \textbf{\glspl{gpu}} can be used for general purpose
+{\footnotesize Source of the graphs:
+\url{https://en.wikipedia.org/wiki/Flynn's_taxonomy}}
+
+\textbf{\glspl{gpu}} can be used for general purpose
 computing. They can execute "warps" in parallel. Warps are similar to threads,
 except for the fact that they must be synchronous at all time for their
 execution to be carried simultaneously. When warps are not synchronous,
@@ -78,8 +88,8 @@ However, vector instructions on \glspl{cpu} are often used direclty through
 intrinsics, whereas \gls{gpu} computing \glspl{api} offer much richer constructs
 to write compute kernels.
 
-\item Other accelerators such as FPGAs, ASICs, DSPs, and many more.
-\end{itemize}
+Other accelerators such as FPGAs, ASICs, DSPs, and many more.
+
 
 % Flynn's taxonomy \cite{flynn-taxonomy} describes four well known categories
 % to describe serial and parallel computer architectures\footnotemark{}:
