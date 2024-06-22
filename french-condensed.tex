@@ -1,0 +1,268 @@
+\documentclass[main]{subfiles}
+\begin{document}
+
+\chapter*{Techniques avanc\'ees de g\'en\'eration de code pour la performance}
+
+\section*{R\'esum\'e en Fran\c{c}ais}
+
+Depuis le d\'ebut de l'informatique les architectures des ordinateurs n'ont
+cess\'e de croitre en complexit\'e. Le nombre de transistor dans ces derniers
+double encore aujourd'hui tous les 3 ans, et la fin de ce doublement
+quasi-exponentiel n'est pour le moment pas en vue.
+En revanche, la capacit\'e de traitement s\'equencielle a connu un brusque
+ralentissement avec la fin de l'augmentation des fr\'equences des processeurs:
+on parle de la fin du <<free lunch>>.
+
+La conception des processeurs a donc \'evolu\'e vers des architectures
+parall\`eles, qui permettent de d\'ecouper des traitements en sous-t\^aches
+pour les faire ex\'ecuter simultan\'ement par plusieurs unit\'es de traitement.
+La nature et la granularit\'e du d\'ecoupage peut varier selon les
+architectures:
+
+\begin{itemize}
+\item
+\textbf{Le mod\`ele SIMD} consiste \`a avoir, au sein d'un c\oe{}ur de
+processeur, des registres vectoriels permettant d'ex\'ecuter
+\textbf{une instruction} sur plusieurs valeurs dans un seul registre,
+de mani\`ere simultan\'ee.
+
+\item
+\textbf{Le mod\`ele multi-c\oe{}ur} permet \`a plusieurs c\oe{}urs ind\'ependants de
+fonctionner en parall\`ele. Ces c\oe{}urs partagent la m\^eme m\'emoire dans le
+cas des architectures \`a m\'emoire unifi\'ee, mais il est \'egalement possible
+d'avoir plusieurs processeurs ind\'ependants ne partageant pas de m\'emoire
+et n\'ecessitant donc d'effectuer des transferts de l'un \`a l'autre dans le cas
+des architectures \`a m\'emoire non unifi\'ee.
+
+\item
+\textbf{Les processeurs graphiques (GPU)} permettent d'ex\'ecuter des <<warps>> en
+parall\`ele, \`a condition que ceux-ci soient toujours synchrones. Dans le cas
+o\`u des warps se d\'esynchronisent, ces derniers doivent s'attendre avant de
+poursuivre leur ex\'ecution parall\`ele. Ce mod\`ele est tr\`es proche
+du mod\`ele SIMD.
+\end{itemize}
+
+De nombreuses mani\`eres d'ex\'ecuter du code de mani\`ere parall\`ele existent,
+et peuvent co-habiter au sein d'un m\^eme ordinateur, ce dernier pouvant faire
+partie d'un cluster.
+
+La diversit\'e des architectures n\'ecessite de nouvelles adaptations pour que
+les applications dites <<haute performance>> puissent s'ex\'ecuter
+le plus rapidement possible sur le plus d'architectures possibles.
+De nouvelles techniques de programmation ont vu le jour, permettant d'\'ecrire
+des programmes dont le code peut \^etre sp\'ecialis\'e lors de la compilation
+en fonction de donn\'ees connues lors de la compilation;
+c'est le principe de l'\'evaluation partielle. D'autres techniques permettent
+de manipuler des programmes en entr\'ee comme en sortie lors de la compilation,
+nous parlerons dans ce cas de \textbf{m\'etaprogrammation}.
+
+La m\'etaprogrammation permet donc de compiler des programmes en ex\'ecutables
+optimis\'es pour des architectures cibl\'ees. On retrouve ces techniques cette
+pratique dans de nombreux langages, l'exemple historique le plus notable \'etant
+Lisp, paru en 1960, dont le syst\`eme de macros permet d'utiliser
+l'int\'egralit\'e du langage Lisp pour g\'en\'erer des programmes Lisp.
+Le langage C, lui, permet d'injecter des tokens lors de la phase de
+preprocessing qui pr\'ec\`ede l'analyse syntaxique du code. En \cpp,
+des techniques de m\'etaprogrammation plus riches bas\'ees sur son syst\`eme de
+\textbf{templates} permet de d\'efinir des structures et fonctions
+param\'etriques, dont les param\`etres (des types ou des valeurs) sont
+connus \`a la compilation. Le langage \'evoluera par la suite pour permettre
+d'\'evaluer du code \cpp \`a la compilation pour construire des param\`etres de
+templates.
+
+Ces techniques, en plus des aspects <<haute performance>> du langage \cpp,
+on fait na\^itre un \'ecosyst\`eme de biblioth\`eques m\'etaprogramm\'ees
+permettant d'optimiser automatiquement des programmes pour des architectures
+tr\`es diverses: les architectures SIMD, les processeurs multi-coeurs, les GPU,
+ou tout autre type d'acc\'el\'erateur programmable.
+
+Certaines de ces biblioth\`eques utilisent la m\'etaprogrammation pour proposer
+des langages d\'edi\'es, reposant la plupart du temps sur la surcharge
+d'op\'erateurs pour impl\'ementer des langages bas\'es sur la syntaxe \cpp.
+D'autres, comme Compile Time Regular Expressions, utilisent
+la m\'etaprogrammation de templates pour impl\'ementer des analyseurs
+syntaxiques permettant de reconna\^itre des langages arbitraires.
+
+Depuis peu, la m\'emoire dynamique peut \^etre utilis\'ee dans les fonctions
+ex\'ecut\'ees \`a la compilation d'un programme \cpp. Nous souhaitons \'etudier
+l'impact de cette nouvelle fonctionnalit\'e sur l'impl\'ementation d'analyseurs
+syntaxiques de langages arbitraires, autant sur la conception des analyseurs
+syntaxiques que sur leur performance en temps de compilation.
+Comment peut-on exploiter la m\'emoire dynamique dans l'\'evaluation de code
+\cpp \`a la compilation pour l'int\'egration de langages d\'edi\'es de syntaxes
+arbitraires pour la programmation <<haute performance>> ?
+
+\subsection*{G\'en\'eration de code SIMD performant}
+
+Pour r\'epondre \`a ces questions, nous commencerons d'abord par montrer
+l'efficacit\'e de la m\'etaprogrammation \cpp pour la programmation
+<<haute performance>> \`a travers l'impl\'ementation d'une version
+g\'en\'erique d'une routine d'alg\`ebre lin\'eaire tr\`es r\'epandue:
+la multiplication matrice-vecteur, avec une matrice en disposition
+<<column-major>>.
+
+L'impl\'ementation repose sur une couche d'abstraction pour les registres et
+instructions SIMD permettant de conna\^itre leur taille \`a la compilation.
+En exploitant cette donn\'ee, nous pouvons g\'en\'erer des noyaux de calcul
+s'adaptant \`a la taille de ces derniers pour assurer un niveau de performance
+tr\`es \'elev\'e pour une multitude de jeux d'instructions SIMD: SSE4.2 et AVX2
+pour x86, et NEON pour ARM.
+
+Nous comparons ensuite les performances du code g\'en\'er\'e avec des
+impl\'ementations en assembleur d\'eclin\'ees pour chaque micro-architecture
+fournies par la biblioth\`eque OpenBLAS en l'appliquant sur des matrices de
+tailles allant de $4 \times 4$ \`a $512 \times 512$.
+Malgr\'e des r\'esultats peu concluants en SSE4.2, les r\'esultats se montrent
+tr\`es positifs en AVX2 o\`u nous obtenons des r\'esultats sup\'erieurs ou
+\'equivalents \`a OpenBLAS. Quant \`a ARM, les r\'esultats nous y obtenons
+des performances sup\'erieures \`a celles d'OpenBLAS quelle que soit la taille
+de la matrice.
+\\
+
+Ce chapitre a fait l'objet d'une publication scientifique \`a la conf\'erence
+internationale \textbf{High Performance Computation \& Simulation 2018}.
+
+\subsection*{
+  Nouvelle m\'ethodologie pour l'analyse des temps de compilation
+}
+
+Nous proposons ensuite une nouvelle m\'ethodologie pour l'analyse des temps
+de compilation des m\'etaprogrammes \cpp, ainsi que des outils impl\'ementant
+cette m\'ethodologie de mani\`ere reproductible. Cette m\'ethodologie
+repose sur l'utilisation des donn\'ees de profiling de Clang pour permettre
+des analyses cibl\'ees, et permet de r\'ealiser des \'etudes de temps
+de compilation sur des m\'etaprogrammes param\'etrables, et donc d'observer
+les temps de compilation en fonction de la taille de ces derniers.
+
+Le projet d'outillage \textbf{ctbench} qui l'accompagne repose sur CMake
+comme langage d'interface principal car il est tr\`es largement utilis\'e
+au sein de la communaut\'e \cpp. Il permet de g\'en\'erer des graphes dans
+diff\'erents formats, y compris vectoriels, avec un syst\`eme de param\'etrage
+lui permettant de cibler et grouper des cat\'egories d'\'ev\'enements
+dans le processus de compilation.
+Le moteur de g\'en\'eration des graphes est modulaire
+et permet l'ajout de nouveaux types de graphes via une interface
+de programmation clairement document\'ee. Il s'accompagne d'une biblioth\`eque
+\cpp pour exploiter les hi\'erarchies de fichiers g\'en\'er\'ees
+par \textbf{ctbench}.
+
+Cette nouvelle m\'ethodologie permet de mieux comprendre l'impact des
+techniques de m\'etaprogrammation sur les temps de compilation en permettant
+d'observer finement chaque \'etape de la compilation \'etant donn\'e que les
+mesures du profiler de Clang sont accompagn\'ees de m\'etadonn\'ees relatives
+aux symboles \cpp trait\'es lors de la compilation.
+\\
+
+Ce chapitre a fait l'objet d'une publication scientifique au
+\textbf{Journal of Open Source Software}, et d'une pr\'esentation
+\`a \textbf{CPPP 2021}.
+
+\subsection*{
+  Des nouvelles m\'ethodes pour la g\'en\'eration de code
+}
+
+\cpp20 a rendu possible l'allocation de m\'emoire dynamique dans les programmes
+\cpp ex\'ecut\'es \`a la compilation. Toutefois, la m\'emoire allou\'ee
+ne peut \^etre utilis\'ee directement comme param\`etre de template et
+il faut donc trouver des solutions pour exploiter son contenu autrement.
+
+Une premi\`ere solution consiste \`a passer, pour chaque \'el\'ement contenu
+dans une structure dynamique, une fonction qui renvoie ledit \'el\'ement.
+Cette option a un co\^ut car les r\'esultats interm\'ediaires ne peuvent pas
+\^etre stock\'es, ainsi la fonction g\'en\'erant la structure devra \^etre
+rappel\'ee pour chaque \'el\'ement de la structure. Cette mani\`ere de passer
+les \'el\'ements d'une structure arbitraire en param\`etre de template est
+baptis\'ee <<pass by generator>>, et permet de g\'en\'erer du code \`a partir
+d'une structure dynamique sans n\'ecessiter de repr\'esentation interm\'ediaire.
+Elle peut toutefois \^etre utilis\'ee pour g\'en\'erer une repr\'esentation
+interm\'ediaire sous forme d'arborescence de templates de types (appel\'ees
+<<expression templates>>), ce qui est commun dans les bibiloth\`eques de
+m\'etaprogrammation \cpp.
+
+Une autre solution consiste \`a s\'erialiser une structure dynamique pour
+la convertir en tableau de taille fixe, en rempla\c{c}ant les pointeurs vers
+les sous-\'el\'ements par des indices pointant \`a l'int\'erieur du tableau
+dans lequel la structure est s\'erialis\'ee. De cette mani\`ere, la structure
+peut \^etre transform\'ee en tableau de taille fixe ne contenant aucun pointeur
+vers de la m\'emoire dynamique allou\'ee \`a la compilation, et ce tableau
+peut \^etre utilis\'e directement en param\`etre de template pour parcourir
+la structure et g\'en\'erer du code.
+Cette technique n\'ecessite plus d'effort, mais on peut s'attendre \`a
+ce qu'elle soit moins co\^uteuse en temps de compilation car elle ne n\'ecessite
+d'appeler la fonction de g\'en\'eration de la structure que deux fois.
+
+\subsection*{
+  \'Etude de cas: int\'egration du langage Brainfuck dans \cpp
+}
+
+Pour \'etudier ces nouvelles techniques de m\'etaprogrammation,
+nous les appliquons pour l'impl\'ementation d'un analyseur syntaxique et
+de g\'en\'erateurs de code pour le langage Brainfuck.
+L'impl\'ementation du parser est triviale, et sa sortie est un arbre syntaxique
+sous forme d'arbres de pointeurs, similaire \`a ce qui est utilis\'e dans les
+compilateurs d\'evelopp\'es en \cpp.
+Les g\'en\'erateurs de code utilisent les techniques pr\'esent\'ees
+dans le chapitre pr\'ec\'edent pour transformer l'AST en code \cpp.
+
+Nous effectuons ensuite des benchmarks pour comparer
+les diff\'erentes solutions: des benchmarks bas\'es sur
+des programmes existants, l'un \'etant un Hello World! et l'autre affichant
+la fractale de Mandelbrot, ainsi que des benchmarks synth\'etiques effectu\'es
+\`a l'aide de \textbf{ctbench} pour \'etudier le passage \`a l'\'echelle
+des diff\'erentes techniques plus en finesse.
+
+Lors de ces benchmarks, nous constatons que la m\'ethode dite
+<<pass by generator>> induit des temps de compilation quadratiques en raison
+du nombre d'appels \`a la fonction de parsing, appell\'ee elle-m\^eme par les
+fonctions g\'en\'eratrices pour chaque n\oe{}ud de l'arbre de syntaxe.
+Cette technique est suffisante pour des programmes de petite taille
+
+La m\'ethode consistant \`a s\'erialiser l'arbre, quant \`a elle, n'appelle
+la fonction de parsing que deux fois. De fait, sa complexit\'e est lin\'eaire
+et permet de compiler l'exemple affichant la fractale de Mandelbrot qui compte
+environ 11000 n\oe{}uds en moins de 20 secondes.
+
+Nous en concluons donc que la s\'erialisation d'une AST permet d'obtenir des
+r\'esultats
+\\
+
+Ce chapitre a fait l'objet d'une pr\'esentation \`a \textbf{Meeting C++ 2022}
+dans le cadre d'un projet commun de recherche avec Paul Keir et Andrew Gozillon.
+
+\subsection*{
+  Application: int\'egration d'un langage math\'ematique dans \cpp
+}
+
+Les conclusions tir\'ees du cas de Brainfuck nous permettent d'impl\'ementer
+un autre analyseur syntaxique pour un langage math\'ematique que nous appelons
+Tiny Math Language (TML). Nous d\'ecidons d'impl\'ementer un parser bas\'e sur
+l'algorithme Shunting yard d'Edsger Dijkstra dont la sortie est la formule
+en notation polonaise inverse. Cette repr\'esentation permet ensuite de
+g\'en\'erer le programme correspondant \`a l'aide d'un m\'etaprogramme template
+stockant les r\'esultats interm\'ediaires dans une pile sous forme de tuple.
+
+L'analyseur syntaxique est facilement param\'etrable: il permet de d\'efinir des
+fonctions, op\'erateurs (avec leur associativit\'e et leur pr\'ecedence),
+des parenth\`eses, et des variables.
+
+Nous d\'ecidons ensuite d'utiliser le parser et le g\'en\'erateur de code
+pour mesurer les temps de compilation pour des formules math\'ematiques
+de 1 \`a 41 symboles. Dans un premier cas, nous l'utilisons pour effectuer une
+s\'erie d'addition sur des entiers natifs.
+Dans un autre cas, nous l'utilisons pour effectuer des op\'erations sur des
+vecteurs de la biblioth\`eque \textbf{Blaze}. Par surcharge d'op\'erateurs,
+les types de Blaze g\'en\`erent l'arborescence de formules math\'ematiques
+pour ensuite g\'en\'erer le code les \'evaluant. Ce cas repr\'esente donc
+l'utilisation \`a la compilation d'un parser pour la g\'en\'eration de code
+<<hautes performances>>.
+Enfin nous introduisons un troisi\`eme cas consistant simplement \`a
+g\'en\'erer les formules Blaze sans utiliser le parser en amont.
+
+Dans tous les cas mesur\'es, nous obtenons des temps de compilation
+inf\'erieurs \`a 20 secondes, y compris pour des formules de 41 symboles.
+La complexit\'e  li\'ee au parsing et \`a la g\'en\'eration de code
+est quadratique, mais les temps de compilation demeurent raisonnables
+dans la mesure ou une formule Blaze comptant un seul symbole n\'ecessite
+environ 5 secondes de temps de compilation.
+
+\end{document}

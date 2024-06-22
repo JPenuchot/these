@@ -462,6 +462,8 @@ The \textbf{overloaded} version consists in a code generation entry point functi
 that selects instruction-specific code generation functions depending
 on the type of token stored in the current instruction.
 
+\clearpage%
+
 \begin{lstlisting}[
   language=c++,
   caption=Overloaded \lstinline{codegen} entry point function,
@@ -500,8 +502,6 @@ The dispatch is done automatically through function overloading.
   },
   label=lst:ol-codegen-token
 ]{}
-/// Code generation implementation
-/// for a single instruction
 template <auto const &Ast,
           size_t InstructionPos = 0>
 constexpr auto codegen(flat_token_t) {
@@ -631,7 +631,6 @@ constexpr auto codegen() {
                     Instr)) {
     constexpr flat_token_t Token =
         get<flat_token_t>(Instr);
-
     // Single token code generation...
   }
 

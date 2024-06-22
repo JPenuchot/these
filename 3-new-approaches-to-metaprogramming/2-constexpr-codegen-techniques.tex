@@ -598,8 +598,6 @@ to the function corresponding to the symbol being read from the queue.
 Once all symbols are read, there should be only one \textbf{operand} remaining
 on the operand stack: a function that evaluates the whole formula.
 
-\clearpage%
-
 \begin{lstlisting}[
   language=C++,
   caption=Codegen implementation for RPN formulas,
@@ -627,8 +625,8 @@ codegen_impl(kumi::product_type auto stack) {
 
   else if constexpr (std::holds_alternative<rpn_add_t>(
                          RPNTree[Index])) {
-    // Fetching 2 top elements and popping them off the
-    // stack
+    // Fetching 2 top elements
+    // and popping them off the stack
     auto left = kumi::get<stack.size() - 1>(stack);
     auto right = kumi::get<stack.size() - 2>(stack);
     auto stack_remainder =
