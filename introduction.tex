@@ -22,36 +22,63 @@ the throughput computing performance of single \gls{cpu} cores has not.
 This lead to the conclusion that "free lunch" is over, and future
 high performance applications must adapt to increasingly parallel architectures
 to increase compute throughput
-\cite{concurrency-revolution, doi:10.1142/S0129626404001829}:
+\cite{concurrency-revolution, doi:10.1142/S0129626404001829}.
+\\
 
-% TODO
-\begin{itemize}
-\item \textbf{SIMD} cores for parallel processing
+The high performance computing landscape is increasingly diverse at all levels:
 
 \begin{itemize}
-\item \textbf{AVX} and \textbf{SSE} on x86
-\item \textbf{NEON} and \textbf{SVE} on ARM
-\item \textbf{VSX} on PowerPC
+\item
+\textbf{Vector registers and instructions} allow single instructions allow
+instructions to be executed on several values at a time. This is known as
+the \textbf{\gls{simd}} execution model. It is featured across all major
+instruction set architectures:
+\textbf{AVX} and \textbf{SSE} on x86,
+\textbf{NEON} and \textbf{SVE} on ARM,
+\textbf{VSX} on PowerPC, and
+\textbf{RVV} on RISC-V.
+
+\item \textbf{Multi-core architectures} enables multiple CPU cores to execute
+different tasks simultaneously. These cores may or may not share the same
+memory pool. If so, the architecture is qualified as a \textbf{\gls{uma}}.
+Otherwise, the architecture is qualified as a \textbf{\gls{numa}}.
+
+\item \textbf{\glspl{gpu}} can be used for general purpose
+computing. They can execute "warps" in parallel. Warps are similar to threads,
+except for the fact that they must be synchronous at all time for their
+execution to be carried simultaneously. When warps are not synchronous,
+their execution is carried separately until they are synchronous again.
+\glspl{gpu} can be programmed via many \glspl{api},
+including but not limited to:
+
+\begin{itemize}
+\item
+\textbf{CUDA}: NVIDIA's proprietary \cpp-based language and library
+ecosystem, which is the leading solution for \gls{gpu} computing.
+While NVIDIA provides their own proprietary compilers, the Clang/LLVM
+compiler can also compile CUDA programs.
+
+\item
+\textbf{HIP}: AMD's own open-source solution. Its \gls{api} is meant to
+resemble CUDA's and is implemented through an open-source fork of the
+Clang/LLVM compiler.
+
+\item
+\textbf{SYCL}: a \cpp-based open standard for \gls{gpu} and
+accelerator programming. It is mostly lead by Intel, but it does support
+all major \gls{gpu} brands. The main SYCL implementation is provided by
+Intel OneAPI, which also features an open-source fork of Clang/LLVM.
+
+\item
+\textbf{OpenCL}: a C-based open standard for heterogeneous platforms.
+
 \end{itemize}
+Note that the execution model of \glspl{gpu} are highly vectorized processors.
+However, vector instructions on \glspl{cpu} are often used direclty through
+intrinsics, whereas \gls{gpu} computing \glspl{api} offer much richer constructs
+to write compute kernels.
 
-\item \textbf{Multi-threading}
-
-\begin{itemize}
-\item \textbf{NUMA} and \textbf{UMA} architectures
-\end{itemize}
-
-\item \textbf{GPU computing}
-
-\begin{itemize}
-\item \textbf{CUDA}
-\item \textbf{SYCL}
-\item \textbf{HIP}
-\item \textbf{OpenCL}
-\end{itemize}
-
-\item \textbf{Other accelerators: FPGA, ASIC, DSP}
-\item \textbf{Multi-accelerator architectures}
-\item \textbf{Distributed computing}
+\item Other accelerators such as FPGAs, ASICs, DSPs, and many more.
 \end{itemize}
 
 % Flynn's taxonomy \cite{flynn-taxonomy} describes four well known categories
