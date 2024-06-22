@@ -675,7 +675,7 @@ The Brainfuck example shows that using \gls{constexpr} programming to embed
 large programs written in foreign languages in \cpp can be achieved.
 \gls{ast} serialization makes it possible to store parsing results
 and avoid running into quadratic compilation time issues, as long as
-the code generation methods being .
+the code generation methods do not rely on heavy metaprogramming methods.
 
 The case of \gls{tml} also shows that \gls{ast} serialization
 by itself is not a magic bullet to avoid running into compilation time
