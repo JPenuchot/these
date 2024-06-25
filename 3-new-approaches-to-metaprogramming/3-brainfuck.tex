@@ -12,6 +12,11 @@ context of compile time parsing and code generation for the Brainfuck language.
 Therefore use data structures and code generation techniques introduced in
 subsection \ref{lbl:ptr-tree-codegen}.
 
+We chose Brainfuck as a first language for several reasons: the language
+generates approximately one \gls{ast} node per character which makes the size
+estimation of an \gls{ast} trivial, and the simplicity of the language allows us
+to focus solely on code generation technicalities.
+
 \subsection{
   Constexpr Brainfuck parser and AST
 }
@@ -390,7 +395,6 @@ flatten(ast_node_ptr_t const &parser_input) {
 
 From there, the only thing that needs to be done is to evaluate this
 dynamic array into a static one to make it usable as an \gls{nttp}.
-
 Listing \ref{lst:flat-parse-to-fixed-flat-ast-implementation} shows the
 implementation of the final function that takes a string as a program
 and transforms it into a \lstinline{fixed_flat_ast_t}.
@@ -530,7 +534,6 @@ constexpr auto codegen(flat_token_t) {
 In listing \ref{lst:ol-codegen-token} we can see the implementation of a
 code generation function for simple instructions, \ie any instruction
 represented by a token that isn't a while block delimiter.
-
 The dispatch over the tokens is done using \lstinline{if constexpr},
 but it could have been done using a variable template with
 template specializations for each case.
