@@ -4,7 +4,6 @@
 This thesis is about metaprogramming techniques for parallel code generation.
 It aims to study the boundary between compile-time parsing of
 \glspl{dsel} and high performance code generation in \cpp.
-
 The main motivation is to provide tools, libraries, and guidelines for embedding
 mathematical languages in \cpp with the hope that it can be useful to build a
 cohesive set of tools to make generic \gls{hpc} more accessible
@@ -13,6 +12,11 @@ architectures emerge over time. Developing high performance programs requires
 tuned implementations that can be achieved by either specializing
 implementations for the target platforms, or using libraries that provide
 specialized abstractions at various levels and for various domains.
+
+% TODO rephraser?
+\section*{
+  Towards more parallelism
+}
 
 Years after its introduction, Moore's law is still alive and well:
 even though computing power itself does not evolve as quickly,
@@ -26,7 +30,7 @@ to increase compute throughput
 
 \begin{center}
 \begin{tabular}{p{0.6\textwidth} p{0.3\textwidth}}
-\textbf{Vector registers and instructions} allow single instructions allow
+\textbf{Vector registers and instructions}\footnotemark{} allow single instructions allow
 instructions to be executed on several values at a time. This is known as
 the \textbf{\gls{simd}} execution model. It is featured across all major
 instruction set architectures:
@@ -48,7 +52,7 @@ Otherwise, the architecture is qualified as a \textbf{\gls{numa}}.
 \end{tabular}
 \end{center}
 
-{\footnotesize Source of the graphs:
+\footnotetext{Source of the graphs:
 \url{https://en.wikipedia.org/wiki/Flynn's_taxonomy}}
 
 \textbf{\glspl{gpu}} can be used for general purpose
@@ -56,8 +60,16 @@ computing. They can execute "warps" in parallel. Warps are similar to threads,
 except for the fact that they must be synchronous at all time for their
 execution to be carried simultaneously. When warps are not synchronous,
 their execution is carried separately until they are synchronous again.
+This is known as the \gls{simt} execution model \cite{nvidia-tesla}.
 \glspl{gpu} can be programmed via many \glspl{api},
 including but not limited to:
+
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{images/nvidia-fermi}
+\caption{NVIDIA GeForce 8800 architecture (Source: NVIDIA)}
+\label{fig:nvidia-fermi}
+\end{figure}
 
 \begin{itemize}
 \item
@@ -65,6 +77,9 @@ including but not limited to:
 ecosystem, which is the leading solution for \gls{gpu} computing.
 While NVIDIA provides their own proprietary compilers, the Clang/LLVM
 compiler can also compile CUDA programs.
+
+\item
+\textbf{OpenCL}: a C-based open standard for heterogeneous platforms.
 
 \item
 \textbf{HIP}: AMD's own open-source solution. Its \gls{api} is meant to
@@ -77,91 +92,15 @@ accelerator programming. It is mostly lead by Intel, but it does support
 all major \gls{gpu} brands. The main SYCL implementation is provided by
 Intel OneAPI, which also features an open-source fork of Clang/LLVM.
 
-\item
-\textbf{OpenCL}: a C-based open standard for heterogeneous platforms.
-
 \end{itemize}
 Note that the execution model of \glspl{gpu} are highly vectorized processors.
 However, vector instructions on \glspl{cpu} are often used direclty through
 intrinsics, whereas \gls{gpu} computing \glspl{api} offer much richer constructs
 to write compute kernels.
 
-And finally, other accelerators such as FPGAs, ASICs, DSPs, and many more
-add up to the diversity of modern computer architectures.
-
-% Flynn's taxonomy \cite{flynn-taxonomy} describes four well known categories
-% to describe serial and parallel computer architectures\footnotemark{}:
-%
-% \footnotetext{Source of the graphs:
-% \url{https://en.wikipedia.org/wiki/Flynn's_taxonomy}}
-%
-% \begin{center}
-% \begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
-%
-% \raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/SISD}}
-% &
-% \textbf{\gls{sisd}}, where a computer only has a single processor with no
-% vector registers.
-%
-% \end{tabular}
-% \end{center}
-%
-% \begin{center}
-% \begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
-%
-% \raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/SIMD}}
-% &
-% \textbf{\gls{simd}}, which is a parallelism that can be implemented inside
-% a single \gls{cpu} core by having vector registers. These registers can hold
-% several values, and single instructions can operate on the vectors themselves.
-%
-% \end{tabular}
-% \end{center}
-%
-% \begin{center}
-% \begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
-%
-% \raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/MISD}}
-% &
-% \textbf{\gls{misd}}, which is primarily used for fault tolerance by having
-% execution redundancy.
-%
-% \end{tabular}
-% \end{center}
-%
-% \begin{center}
-% \begin{tabular}{ p{0.3\textwidth} p{0.65\textwidth} }
-%
-% \raisebox{-.925\height}{\includesvg[width=0.3\textwidth]{images/MIMD}}
-% &
-% \textbf{\gls{mimd}}, which consists in having several processors or cores
-% executing different proccesses. This category of parallelism itself has several
-% sub-categories depending on the memory topology:
-%
-% \begin{itemize}
-% \item \textbf{Shared memory}, where processing units share a single
-% pool of memory. Multi-threading is an example of such a topology as
-% CPU cores share the same pool of RAM.
-%
-% \item \textbf{Distributed memory}, where processing units have their own
-% memories and cannot access other memory pools.
-%
-% \item \textbf{Distributed shared memory}, where processing units have their
-% own memory pools and can access other memory pools indirectly.
-% \end{itemize}
-%
-% \end{tabular}
-% \end{center}
-%
-% This is just a high level overview of the new computer architecture landscape
-% high performance software engineers have to navigate in.
-% In an ideal world, every architecture within the same category
-% should be programmable with the same languages, tools, and libraries.
-% But actually, hardware architectures within a same category
-% cannot run the same programs.
-% For example, CUDA is not compatible with AMD \glspl{gpu}, \gls{avx} instructions
-% are not available on ARM processors, oneAPI \gls{gpu} libraries developed by
-% Intel are not compatible with its competitors' hardware, and so on.
+\section*{
+  The need for new abstractions
+}
 
 To adapt to this variety of hardware and \glspl{api}, new abstractions
 were developed in the form of software libraries, compiler extensions,
@@ -196,6 +135,10 @@ the complexity of \cpp metaprograms.
 
 % Exposing the objectives + outlining the plan
 
+\section*{
+  Thesis outline
+}
+
 This trend, as well as new \cpp compile-time capabilities, raises new questions:
 how can we leverage compile-time \cpp code execution to improve the quality
 and performance of \cpp metaprograms, especially \glspl{dsel} implementations
@@ -215,12 +158,10 @@ In the second part we will focus on \textbf{ctbench}, a tool for the scientific
 study of \cpp metaprograms compile-time performance. It implements a new
 benchmarking methodology that enables the study of metaprogram performance
 at scale, and through the lens of Clang's built-in profiler.
-
 We will then use it to study novel \cpp metaprogramming techniques based on
 compile-time \cpp execution. The study will be conducted on two embedded
 languages that are parsed and transformed into \cpp code, within the \cpp
 compilation process itself.
-
 The first language is Brainfuck, which is provided with several code generation
 backends to compare different code generation techniques. The second one
 is a simple math language called Tiny Math Language. It demonstrates

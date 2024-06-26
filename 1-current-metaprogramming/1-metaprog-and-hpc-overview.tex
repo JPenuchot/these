@@ -8,7 +8,7 @@
 Metaprogramming is not an new concept. It perpetuates itself in contemporary
 languages, with some being more widespread than others.
 
-I will focus on partial specialization, which consists in separating
+I will focus on partial evaluation, which consists in separating
 static parts of programs from the dynamic parts in order to interpret
 the static parts at compile time and leave only the dynamic parts for the
 program's execution \cite{10.1145/243439.243447, 10.1023/A:1010095604496}.
@@ -16,7 +16,7 @@ When the target architecture is known during the compilation, partial evaluation
 can be leveraged to optimize critical parts of high performance applications
 by specializing (or tuning) these parts for it.
 
-In \cpp, templates serve as an interface for partial specialization.
+In \cpp, templates serve as an interface for partial evaluation.
 However, many other ways to implement it exist across a wide range of languages
 spanning more than half a century.
 
@@ -84,7 +84,7 @@ of its single input parameter.
 
 \begin{lstlisting}[
   language=caml,
-  caption={Run-time specialization of the power function in MetaOCaml\protect\footnotemark{}},
+  caption={Definition of the power function in MetaOCaml\protect\footnotemark{}},
   label={lst:metaocaml-spower}
 ]{}
 let rec spower : int -> int code -> int code =
@@ -137,9 +137,6 @@ Here we can find an example taken from The Rust Programming Language
 book \cite{rust-book} where a simplified version of the \lstinline{vec!} macro,
 which initializes a vector and pre-fills it with a static number of values,
 is defined:
-
-Listing \ref{lst:rust-vec-macro} shows how the \lstinline{vec!} standard macro
-can be defined. Note that the Rust standard library preallocates
 
 \begin{lstlisting}[
   language=rust,

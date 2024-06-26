@@ -366,8 +366,9 @@ void for_constexpr(Body body) {
 
 The function proceed to compute the proper
 integral constant sequence from the Start,
-End and D compile-time integral constant. As
-\lstinline{std::integral_sequence<N...>} enumerates values
+End and D compile-time integral constant.
+
+As \lstinline{std::integral_sequence<N...>} enumerates values
 from 0 to N , we need to pass the start index and iteration
 1 pragma are compiler-dependent and can be ignored
 increment as separate constants. The actual index is then
@@ -572,7 +573,7 @@ the median time as an approximation of the most frequent
 measured time.
 
 \subsection{
-  On X86 Intel processor
+  Results for X86 Intel processor
 }
 
 \begin{figure}[h]
@@ -640,7 +641,7 @@ about architecture to decide the level of unrolling to apply for
 a given size on a given architecture.
 
 \subsection{
-  On ARM processor
+  Results for ARM processor
 }
 
 The comparison between our automatically generated code

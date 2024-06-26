@@ -204,6 +204,7 @@
 \newacronym{misd}{MISD}{Multiple Instruction Single Data stream}
 \newacronym{simd}{SIMD}{Single Instruction Multiple Data stream}
 \newacronym{sisd}{SISD}{Single Instruction Single Data stream}
+\newacronym{simt}{SIMT}{Single Instruction Multiple Threads}
 
 \newacronym{numa}{NUMA}{Non-Unified Memory Architecture}
 \newacronym{uma}{UMA}{Unified Memory Architecture}
@@ -515,7 +516,7 @@ macros, long before \cpp templates came to exist.
 It still persists as an advanced but widespread practice across many languages,
 ranging from basic preprocessing to dynamic code generation and compilation.
 
-Template metaprogramming has been the de facto standard for \cpp metaprogramming
+Template metaprogramming has been the de facto standard for \cpp meta-programming
 as many libraries use it to implement high performance or highly specialized
 libraries that benefit from compile-time evaluation and code generation.
 This is especially true for \gls{hpc} libraries that benefit the most from
@@ -704,6 +705,8 @@ tackle the challenge of portability in the context of \acrlong{hpc},
 even for very low level tasks where the reduction of abstraction overhead
 is critical to achieve decent performance.
 
+\section*{...}
+
 Before moving on to \gls{constexpr} programming, we adressed the lack of
 tools for the scientific study of compilation times with ctbench.
 We proposed a new compile-time study methodology based on Clang's built-in
@@ -734,7 +737,8 @@ between \gls{constexpr} programming and existing high performance libraries
 relying on \glspl{et}. It also showed that using value-based representations for
 code generation is not always trivial as the use of tuples was necessary to
 store partial results during the code generation phase.
-\\
+
+\clearpage%
 
 Allowing the direct use of \gls{constexpr} allocated memory as \acrlongpl{nttp}
 could help greatly reduce the implementation complexity of compile-time code
@@ -781,19 +785,16 @@ methods, and could be achievable without waiting for a new \cpp release.
 % let qr_decomposition = m3.qr();
 % \end{lstlisting}
 
-
-\clearpage
-\printglossaries
-
 \clearpage
 \printbibliography
 
+\part*{Glossaries and Appendices}
+
+\printglossaries
+
 \begin{appendices}
-\chapter{Appendix}
-\end{appendices}
-
 \appendix
-
 \subfile{3-new-approaches-to-metaprogramming/appendix.tex}
+\end{appendices}
 
 \end{document}

@@ -474,6 +474,10 @@ aiming to provide functionalities similar to regular ones, such as containers
 and algorithms for use in template metaprograms. Notable examples of such
 libraries are MPL \cite{mpl}, Brigand \cite{brigand}, and mp11 \cite{mp11}.
 
+Listing \ref{lst:mp11-example} shows a basic mp11 use case: we first define a
+list of arbitrary integers, and then we find the position of the first element
+of value 6 in the list.
+
 \begin{lstlisting}[
   language=c++,
   caption=boost.mp11 code example,
@@ -493,11 +497,10 @@ using pos_of_6 =
     mp_find_if<my_list, equals_to<6>::apply>; // 3
 \end{lstlisting}
 
-Listing \ref{lst:mp11-example} shows a basic mp11 use case: we first define a
-list of arbitrary integers, and then we find the position of the first element
-of value 6 in the list.
-
 \clearpage%
+
+Listing \ref{lst:brigand-example} shows the exact same task done with the
+Brigand metaprogramming library.
 
 \begin{lstlisting}[
   language=c++,
@@ -512,9 +515,6 @@ using pos_of_6 = brigand::size<brigand::find<
                           brigand::integral_constant<
                               int, 6>>>>; // 3
 \end{lstlisting}
-
-Listing \ref{lst:brigand-example} shows the exact same task donw with the
-Brigand metaprogramming library.
 
 All these libraries either enable \gls{tmp}, or use \gls{tmp} to achieve
 a specific goal. However with the introduction of \gls{constexpr} programming,

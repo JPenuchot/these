@@ -108,6 +108,35 @@ s'adaptant \`a la taille de ces derniers pour assurer un niveau de performance
 tr\`es \'elev\'e pour une multitude de jeux d'instructions SIMD: SSE4.2 et AVX2
 pour x86, et NEON pour ARM.
 
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{1-current-metaprogramming/images/gemv-fig2}
+\caption{
+  Performance de GEMV sur processeur Intel i5-7200
+  avec le jeu d'instructions SSE4.2
+}
+\label{fig:gemv-sse-bench-fr}
+\end{figure}
+
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{1-current-metaprogramming/images/gemv-fig3}
+\caption{
+  Performance de GEMV sur processeur Intel i5-7200
+  avec le jeu d'instructions AVX2
+}
+\label{fig:gemv-avx-bench-fr}
+\end{figure}
+
+\begin{figure}[h]
+\fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{1-current-metaprogramming/images/gemv-fig4}
+\caption{
+  Performance de GEMV sur processeur ARM Cortex A57
+}
+\label{fig:gemv-arm-bench-fr}
+\end{figure}
+
 Nous comparons ensuite les performances du code g\'en\'er\'e avec des
 impl\'ementations en assembleur d\'eclin\'ees pour chaque micro-architecture
 fournies par la biblioth\`eque OpenBLAS en l'appliquant sur des matrices de
@@ -116,7 +145,8 @@ Malgr\'e des r\'esultats peu concluants en SSE4.2, les r\'esultats se montrent
 tr\`es positifs en AVX2 o\`u nous obtenons des r\'esultats sup\'erieurs ou
 \'equivalents \`a OpenBLAS. Quant \`a ARM, les r\'esultats nous y obtenons
 des performances sup\'erieures \`a celles d'OpenBLAS quelle que soit la taille
-de la matrice.
+de la matrice (voir figures \ref{fig:gemv-sse-bench-fr},
+\ref{fig:gemv-avx-bench-fr} et \ref{fig:gemv-arm-bench-fr}).
 \\
 
 Ce chapitre a fait l'objet d'une publication scientifique \`a la conf\'erence
@@ -220,7 +250,23 @@ Cette technique est suffisante pour des programmes de petite taille
 La m\'ethode consistant \`a s\'erialiser l'arbre, quant \`a elle, n'appelle
 la fonction de parsing que deux fois. De fait, sa complexit\'e est lin\'eaire
 et permet de compiler l'exemple affichant la fractale de Mandelbrot qui compte
-environ 11000 n\oe{}uds en moins de 20 secondes.
+environ 11000 n\oe{}uds en moins de 20 secondes (voir figure
+\ref{fig:bf-compile-times-fr}).
+
+\begin{figure}[h]
+\begin{tabular}{|c|c|c|c|}
+\hline
+Backend           & Hello World & Hello World x2  & Mandelbrot \\
+\hline
+Flat (Monolithique) & 0.63        & 0.80            & 18.16 \\
+Flat (Surcharg\'e)  & 0.66        & 0.90            & 28.51 \\
+\gls{pbg}           & 3.55        & 12.73           & \'Echec (timeout) \\
+\gls{et}            & 19.18       & 74.51           & \'Echec (timeout) \\
+\hline
+\end{tabular}
+\caption{Mesures de temps de compilation pour Brainfuck}
+\label{fig:bf-compile-times-fr}
+\end{figure}
 
 Nous en concluons donc que la s\'erialisation d'une AST permet d'obtenir des
 r\'esultats
@@ -253,13 +299,21 @@ Dans un autre cas, nous l'utilisons pour effectuer des op\'erations sur des
 vecteurs de la biblioth\`eque \textbf{Blaze}. Par surcharge d'op\'erateurs,
 les types de Blaze g\'en\`erent l'arborescence de formules math\'ematiques
 pour ensuite g\'en\'erer le code les \'evaluant. Ce cas repr\'esente donc
-l'utilisation \`a la compilation d'un parser pour la g\'en\'eration de code
+l'utilisation \`a la compilation d'un parser pour la g\'en\'eration de code dit
 <<hautes performances>>.
 Enfin nous introduisons un troisi\`eme cas consistant simplement \`a
 g\'en\'erer les formules Blaze sans utiliser le parser en amont.
 
-Dans tous les cas mesur\'es, nous obtenons des temps de compilation
-inf\'erieurs \`a 20 secondes, y compris pour des formules de 41 symboles.
+\begin{figure}[h]
+% \fontsize{8}{10}\selectfont
+\includesvg[width=\textwidth]{3-new-approaches-to-metaprogramming/images/shunting-yard.addition-series}
+\caption{Benchmarks de parsing et de g\'en\'eration de code}
+\label{fig:tml-ctbench-fr}
+\end{figure}
+
+Dans tous les cas mesur\'es (figure \ref{fig:tml-ctbench-fr}), nous obtenons
+des temps de compilation inf\'erieurs \`a 20 secondes, y compris pour des
+formules de 41 symboles.
 La complexit\'e  li\'ee au parsing et \`a la g\'en\'eration de code
 est quadratique, mais les temps de compilation demeurent raisonnables
 dans la mesure ou une formule Blaze comptant un seul symbole n\'ecessite

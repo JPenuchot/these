@@ -132,9 +132,11 @@ defined at compile-time.
   label=lst:pass-by-generator-example,
   caption=Code generation with the pass by generator technique
 ]{}
-/// Accumulates the value from a tree returned by TreeGenerator.
-/// TreeGenerator() is expected to return a std::unique_ptr<tree_t>.
-template <tree_generator auto Fun> constexpr auto codegen() {
+/// Accumulates the value from a tree returned by
+/// TreeGenerator. TreeGenerator() is expected to return a
+/// std::unique_ptr<tree_t>.
+template <tree_generator auto Fun>
+constexpr auto codegen() {
   static_assert(Fun() != nullptr, "Ill-formed tree");
 
   constexpr node_kind_t Kind = Fun()->kind;
@@ -316,8 +318,8 @@ very high compilation times, as we will see in \ref{lbl:bf-parsing-and-codegen}.
 
 \label{lbl:flat-technique}
 
-To overcome the performance issues of the previously introduced techniques,
-we can try a different approach. Instead of passing trees as they are,
+Alternatively, we can use value-based metaprogramming to generate code.
+Instead of passing trees as they are,
 they can be transformed into static arrays which can be used as \glspl{nttp}.
 
 This transformation might sound odd at first: the generated \glspl{ast} are
@@ -346,9 +348,10 @@ struct flat_add_t {
 };
 
 /// Serialized representation of a node
-using flat_node_t = std::variant<flat_add_t, flat_constant_t>;
+using flat_node_t =
+    std::variant<flat_add_t, flat_constant_t>;
 
-/// Defining max std::size_t value as an equivalent to std::nullptr.
+/// null_index replaces std::nullptr.
 constexpr std::size_t null_index = std::size_t(0) - 1;
 \end{lstlisting}
 
@@ -420,7 +423,6 @@ in transferring the serialized data into a static array.
   label=lst:serialize_as_array,
   caption=Definition of \lstinline{serialize_as_array}
 ]{}
-/// Evaluates a tree generator function into a serialized array.
 template <tree_generator auto Fun>
 constexpr auto serialize_as_array() {
   constexpr std::size_t Size = serialize(Fun()).size();
@@ -504,12 +506,16 @@ of addition trees in \cpp.
 ]{}
 template <auto const &Tree, std::size_t Index>
 constexpr auto codegen_aux() {
-  static_assert(Index != null_index, "Ill-formed tree (null index)");
+  static_assert(Index != null_index,
+                "Ill-formed tree (null index)");
 
-  if constexpr (std::holds_alternative<flat_add_t>(Tree[Index])) {
-    constexpr auto top = std::get<flat_add_t>(Tree[Index]);
+  if constexpr (std::holds_alternative<flat_add_t>(
+                    Tree[Index])) {
+    constexpr auto top =
+        std::get<flat_add_t>(Tree[Index]);
 
-    // Recursive code generation for left and right children
+    // Recursive code generation for left and right
+    // children
     auto eval_left = codegen_aux<Tree, top.left>();
     auto eval_right = codegen_aux<Tree, top.right>();
 
@@ -517,19 +523,23 @@ constexpr auto codegen_aux() {
     return [=]() { return eval_left() + eval_right(); };
   }
 
-  else if constexpr (std::holds_alternative<flat_constant_t>(
-                         Tree[Index])) {
-    constexpr auto top = std::get<flat_constant_t>(Tree[Index]);
+  else if constexpr (std::holds_alternative<
+                         flat_constant_t>(Tree[Index])) {
+    constexpr auto top =
+        std::get<flat_constant_t>(Tree[Index]);
     constexpr int Value = top.value;
     return []() { return Value; };
   }
 }
 
-/// Stores serialized representations of tree generators' results.
+/// Stores serialized representations
+/// of tree generators' results.
 template <tree_generator auto Fun>
-static constexpr auto tree_as_array = serialize_as_array<Fun>();
+static constexpr auto tree_as_array =
+    serialize_as_array<Fun>();
 
-template <tree_generator auto Fun> constexpr auto codegen() {
+template <tree_generator auto Fun>
+constexpr auto codegen() {
   return codegen_aux<tree_as_array<Fun>, 0>();
 }
 \end{lstlisting}
@@ -674,7 +684,7 @@ Moreover, the serialization code can be executed, debugged, and tested in a
 regular run-time environment.
 
 So far, it seems that the \gls{pbg} method is more suitable for prototyping,
-whereas the serialization method is more suitable in larger metaprograms that
+whereas the serialization method is a better fit for larger meta-programs that
 might benefit from having better readability and performance at scale.
 
 \end{document}

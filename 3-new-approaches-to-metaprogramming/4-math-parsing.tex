@@ -337,10 +337,11 @@ to generate high performance directly (\ie without \gls{tml} parsing),
 to generate code without Blaze but with integers instead.
 \end{itemize}
 
+% TODO: refaire avec des points?
 \begin{figure}[h]
 % \fontsize{8}{10}\selectfont
 \includesvg[width=\textwidth]{images/shunting-yard.addition-series}
-\caption{Code generation parsing benchmarks}
+\caption{Parsing and code generation benchmarks}
 \label{fig:tml-ctbench}
 \end{figure}
 
@@ -378,8 +379,8 @@ make a program clearer, or simply to mitigate the quadratic complexity
 of \gls{tml} code generation.
 
 Overall, this prototype \gls{dsel} proves the viability of compile time parsing
-for high performance code generation in \cpp23 using as little \gls{tmp}
-as possible.
+for high performance code generation in \cpp23 using as little type-based
+metaprogramming as possible.
 However \gls{tml} code generation does not scale as well as Brainfuck
 code generation using the Flat backend, which scaled linearly as shown in
 \ref{lbl:bf-large-program-benches}. A hypothesis for this higher complexity
