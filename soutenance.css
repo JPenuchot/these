@@ -1,0 +1,96 @@
+/* Dracula color scheme */
+
+{
+  --background: #282a36;
+  --current-line: #44475a;
+  --selection: #44475a;
+  --foreground: #f8f8f2;
+  --comment: #6272a4;
+  --cyan: #8be9fd;
+  --green: #50fa7b;
+  --orange: #ffb86c;
+  --pink: #ff79c6;
+  --purple: #bd93f9;
+  --red: #ff5555;
+  --yellow: #f1fa8c;
+}
+
+/* General */
+
+:root {
+  width: 1920px;
+  height: 1080px;
+  font-size: 40px;
+  padding: 40px;
+  padding-top: 20px;
+  font-family: Jetbrains Mono;
+  color: var(--foreground);
+  background-color: var(--background);
+}
+
+/* Titles */
+
+h1 {
+  font-size: 60px;
+  color: var(--cyan);
+  padding-left: 80px;
+}
+
+h2 {
+  font-size: 50px;
+  color: var(--pink);
+}
+
+h3 {
+  color: var(--yellow);
+}
+
+/* Highlights */
+
+a       { color: var(--yellow); }
+strong  { color: var(--orange); }
+em      { color: var(--cyan); }
+
+/* Inline code */
+
+code { font-family: Jetbrains Mono; }
+
+pre {
+  font-family: Jetbrains Mono;
+  display: block;
+  border-radius: 10px;
+  border: solid 2px var(--cyan);
+  padding: 10px;
+  font-size: 30px;
+  width: 1500px;
+}
+
+.hljs-meta        { color: var(--pink); }
+.hljs-comment     { color: var(--comment); }
+.hljs-meta-string { color: var(--yellow); }
+.hljs-keyword     { color: var(--pink); }
+.hljs-title       { color: var(--green); }
+
+section::after {
+  color: var(--comment);
+  content: attr(data-marpit-pagination) '/' attr(data-marpit-pagination-total);
+}
+
+/* Tables */
+
+table, th, td{
+  border: solid var(--cyan);
+  border-collapse: collapse;
+}
+
+td {
+  color: var(--purple);
+}
+
+/* Images */
+
+img{
+  background: white;
+  border: solid var(--cyan);
+  border-radius: 10px;
+}
