@@ -16,5 +16,6 @@
 *.pdf
 *.run.xml
 *.toc
+*.xdv
 scratchpad/
 svg-inkscape/
