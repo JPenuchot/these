@@ -1,17 +1,9 @@
-/// Serialized representation of a constant
-struct flat_constant_t {
-  int value;
-};
+constexpr std::vector<std::vector<int>> get_vector() {
+  return {{1, 2, 3}, {4, 5, 6}};
+}
 
-/// Serialized representation of an addition
-struct flat_add_t {
-  std::size_t left;
-  std::size_t right;
-};
+// Pas bien:
+// constexpr std::vector<int> subvec_0 = get_vector()[0];
 
-/// Serialized representation of a node
-using flat_node_t =
-    std::variant<flat_add_t, flat_constant_t>;
-
-/// null_index replaces std::nullptr.
-constexpr std::size_t null_index = std::size_t(0) - 1;
+// Bien:
+constexpr auto get_subvec_0 = []() { return get_vector()[0]; }

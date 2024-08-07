@@ -1,6 +1,6 @@
 /* Dracula color scheme */
 
-{
+section {
   --background: #282a36;
   --current-line: #44475a;
   --selection: #44475a;
@@ -32,13 +32,13 @@
 
 h1 {
   font-size: 60px;
-  color: var(--cyan);
+  color: var(--pink);
   padding-left: 80px;
 }
 
 h2 {
   font-size: 50px;
-  color: var(--pink);
+  color: var(--cyan);
 }
 
 h3 {
@@ -47,13 +47,27 @@ h3 {
 
 /* Highlights */
 
-a       { color: var(--yellow); }
-strong  { color: var(--orange); }
-em      { color: var(--cyan); }
+a {
+  color: var(--yellow);
+}
+
+strong {
+  color: var(--orange);
+}
+
+em {
+  color: var(--cyan);
+}
+
+blockquote {
+  color: var(--purple);
+}
 
 /* Inline code */
 
-code { font-family: Jetbrains Mono; }
+code {
+  font-family: Jetbrains Mono;
+}
 
 pre {
   font-family: Jetbrains Mono;
@@ -65,11 +79,25 @@ pre {
   width: 1500px;
 }
 
-.hljs-meta        { color: var(--pink); }
-.hljs-comment     { color: var(--comment); }
-.hljs-meta-string { color: var(--yellow); }
-.hljs-keyword     { color: var(--pink); }
-.hljs-title       { color: var(--green); }
+.hljs-meta {
+  color: var(--pink);
+}
+
+.hljs-comment {
+  color: var(--comment);
+}
+
+.hljs-meta-string {
+  color: var(--yellow);
+}
+
+.hljs-keyword {
+  color: var(--pink);
+}
+
+.hljs-title {
+  color: var(--green);
+}
 
 section::after {
   color: var(--comment);
@@ -78,9 +106,12 @@ section::after {
 
 /* Tables */
 
-table, th, td{
+table,
+th,
+td {
   border: solid var(--cyan);
   border-collapse: collapse;
+  padding: 5px;
 }
 
 td {
@@ -89,7 +120,7 @@ td {
 
 /* Images */
 
-img{
+img:not(.emoji) {
   background: white;
   border: solid var(--cyan);
   border-radius: 10px;
