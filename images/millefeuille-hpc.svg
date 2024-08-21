@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="675"
+   height="250"
+   class="svgbob"
+   version="1.1"
+   id="svg10"
+   sodipodi:docname="bob.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview10"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="0.921875"
+     inkscape:cx="175.72881"
+     inkscape:cy="121.49153"
+     inkscape:window-width="1879"
+     inkscape:window-height="1253"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg10" />
+  <style
+     id="style1">.svgbob line, .svgbob path, .svgbob circle, .svgbob rect, .svgbob polygon {
+    stroke: black;
+    stroke-width: 2;
+    stroke-opacity: 1;
+    fill-opacity: 1;
+    stroke-linecap: round;
+    stroke-linejoin: miter;
+}
+.svgbob text {
+    white-space: pre;
+    fill: black;
+    font-family: Iosevka Fixed, monospace;
+    font-size: 14px;
+}
+.svgbob rect.backdrop {
+    stroke: none;
+    fill: white;
+}
+.svgbob .broken {
+    stroke-dasharray: 8;
+}
+.svgbob .filled {
+    fill: black;
+}
+.svgbob .bg_filled {
+    fill: white;
+    stroke-width: 1;
+}
+.svgbob .nofill {
+    fill: white;
+}
+.svgbob .end_marked_arrow {
+    marker-end: url(#arrow);
+}
+.svgbob .start_marked_arrow {
+    marker-start: url(#arrow);
+}
+.svgbob .end_marked_diamond {
+    marker-end: url(#diamond);
+}
+.svgbob .start_marked_diamond {
+    marker-start: url(#diamond);
+}
+.svgbob .end_marked_circle {
+    marker-end: url(#circle);
+}
+.svgbob .start_marked_circle {
+    marker-start: url(#circle);
+}
+.svgbob .end_marked_open_circle {
+    marker-end: url(#open_circle);
+}
+.svgbob .start_marked_open_circle {
+    marker-start: url(#open_circle);
+}
+.svgbob .end_marked_big_open_circle {
+    marker-end: url(#big_open_circle);
+}
+.svgbob .start_marked_big_open_circle {
+    marker-start: url(#big_open_circle);
+}<!--separator-->
+</style>
+  <defs
+     id="defs4">
+    <marker
+       id="arrow"
+       viewBox="-2 -2 8 8"
+       refX="4"
+       refY="2"
+       markerWidth="7"
+       markerHeight="7"
+       orient="auto-start-reverse">
+      <polygon
+         points="0,0 0,4 4,2 "
+         id="polygon1" />
+    </marker>
+    <marker
+       id="diamond"
+       viewBox="-2 -2 8 8"
+       refX="4"
+       refY="2"
+       markerWidth="7"
+       markerHeight="7"
+       orient="auto-start-reverse">
+      <polygon
+         points="0,2 2,0 4,2 2,4 "
+         id="polygon2" />
+    </marker>
+    <marker
+       id="circle"
+       viewBox="0 0 8 8"
+       refX="4"
+       refY="4"
+       markerWidth="7"
+       markerHeight="7"
+       orient="auto-start-reverse">
+      <circle
+         cx="4"
+         cy="4"
+         r="2"
+         class="filled"
+         id="circle2" />
+    </marker>
+    <marker
+       id="open_circle"
+       viewBox="0 0 8 8"
+       refX="4"
+       refY="4"
+       markerWidth="7"
+       markerHeight="7"
+       orient="auto-start-reverse">
+      <circle
+         cx="4"
+         cy="4"
+         r="2"
+         class="bg_filled"
+         id="circle3" />
+    </marker>
+    <marker
+       id="big_open_circle"
+       viewBox="0 0 8 8"
+       refX="4"
+       refY="4"
+       markerWidth="7"
+       markerHeight="7"
+       orient="auto-start-reverse">
+      <circle
+         cx="4"
+         cy="4"
+         r="3"
+         class="bg_filled"
+         id="circle4" />
+    </marker>
+  </defs>
+  <g
+     id="g10"
+     inkscape:label="g10"
+     transform="translate(17.065792,12)">
+    <rect
+       x="1"
+       y="1"
+       width="344"
+       height="32"
+       class="solid nofill"
+       rx="4"
+       id="rect5" />
+    <text
+       x="15"
+       y="21"
+       id="text5">Haut niveau: Intention, plus expressif</text>
+    <rect
+       x="1"
+       y="193"
+       width="328"
+       height="32"
+       class="solid nofill"
+       rx="4"
+       id="rect6" />
+    <text
+       x="15"
+       y="213"
+       id="text6">Bas niveau: Spécificités matérielles</text>
+    <polygon
+       points="20,64 24,76 16,76 "
+       class="filled"
+       id="polygon6"
+       transform="translate(-3,-7)" />
+    <line
+       x1="17"
+       y1="69"
+       x2="17"
+       y2="157"
+       class="solid"
+       id="line6" />
+    <polygon
+       points="24,164 20,176 16,164 "
+       class="filled"
+       id="polygon7"
+       transform="translate(-3,-7)" />
+    <text
+       x="31"
+       y="69"
+       id="text7">Bibliothèques expressives: Blaze, Eigen...</text>
+    <text
+       x="31"
+       y="101"
+       id="text8">Bibliothèques HPC: BLAS, CUBS, cuDNN, EVE, Thrust, LAPACK, OpenMP...</text>
+    <text
+       x="31"
+       y="133"
+       id="text9">Primitives et APIs: Fonctions intrinsèques, noyaux GPU, appels système...</text>
+    <text
+       x="31"
+       y="165"
+       id="text10">Instructions CPU/GPU: ARM, x86, RISC-V, PTX...</text>
+  </g>
+</svg>

@@ -18,9 +18,8 @@ Thèse sous la direction de *Joël Falcou*
 ---
 <!-- paginate: true -->
 
-# Introduction: un millefeuille d'abstractions
+# Le HPC: un millefeuille d'abstractions
 <!-- 10mn -->
-
 
 - **Matériel performant** (architectures multi-coeurs, SIMD, GPUs)
 
@@ -28,21 +27,26 @@ Thèse sous la direction de *Joël Falcou*
 
 <!-- "Abstractions performantes": qui ne pénalisent pas le temps d'exécution -->
 
-```
-Haut niveau: Intention, plus expressif
+![width:1500px](images/millefeuille-hpc.svg)
 
-  /\
-  ||   Bibliothèques expressives: Blaze, Eigen...
-  ||
-  ||   Bibliothèques HPC: BLAS, CUBS, cuDNN, EVE, Thrust, LAPACK, OpenMP...
-  ||
-  ||   Primitives: Fonctions intrinsèques, noyaux GPU, appels système...
-  ||
-  ||   Instructions CPU/GPU: ARM, x86, RISC-V, PTX...
-  \/
+<!-- https://ivanceras.github.io/svgbob-editor/
 
-Bas niveau: Spécificités matérielles
-```
+.------------------------------------------.
+| "Haut niveau: Intention, plus expressif" |
+'------------------------------------------'
+
+  ^ "Bibliothèques expressives: Blaze, Eigen..."
+  |
+  | "Bibliothèques HPC: BLAS, CUBS, cuDNN, EVE, Thrust, LAPACK, OpenMP..."
+  |
+  | "Primitives et APIs: Fonctions intrinsèques, noyaux GPU, appels système..."
+  |
+  v "Instructions CPU/GPU: ARM, x86, RISC-V, PTX..."
+
+.----------------------------------------.
+| "Bas niveau: Spécificités matérielles" |
+'----------------------------------------'
+-->
 
 ---
 
@@ -51,41 +55,43 @@ Bas niveau: Spécificités matérielles
 Perf: le matos s'en occupe, ok.
 On a des outils (SYCL, OpenMP, Thrust)
 
-Peut-on générer plus de code pour le HPC ? Avec quelles perfs ?
+Peut-on générer plus de code pour le HPC ?
+Rendre la programmation haute performance plus portable ?
+Avec quelles perfs ?
 
 ---
 
 ## Performances: les bibliothèques "métier"
 
-Expressivité, que faire?
+Expressivité, que faire ?
 
-Blaze, Eigen... et au-dela?
+Blaze, Eigen... et au-dela ?
 
-Comment je peux avoir des formules en LaTeX math
-(si c'est possible/raisonnable)..?
+Peut-on rendre ces bibliothèques plus simples à maintenir ?
+
+Comment je peux avoir des formules en LaTeX math ou d'autres langages
+**dans C++** (si c'est possible/raisonnable)..?
 
 ---
 
-# Contexte
+# Contexte: pourquoi C++ ?
 <!-- 10mn -->
 
 C++ est la plateforme de choix pour le calcul haute performance
+*et la métaprogrammation*
 
-**Parallélisme**
+**Langages GPGPU**
 
-- OpenMP
-- HPX
+- CUDA, SYCL, et HIP sont basés sur C++
 
-**GPGPU**
+**Bibliothèques HPC**
 
-- CUDA
-- SYCL
-- HIP
+- Parllélisme: OpenMP, HPX, BLAS, FFTW
+- Squelettes algorithmiques: Thrust, rocThrust
 
-**Bibliothèques**
+**Bibliothèques génératives**
 
-- Blaze
-- Eigen
+- CTRE, Eigen, Blaze, EVE, xSIMD, CTPG
 
 ---
 
