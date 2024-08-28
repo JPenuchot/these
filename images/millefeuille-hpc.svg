@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="675"
-   height="250"
+   width="640.86841"
+   height="226"
    class="svgbob"
    version="1.1"
    id="svg10"
-   sodipodi:docname="bob.svg"
+   sodipodi:docname="millefeuille-hpc.svg"
    inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -21,7 +21,7 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#505050"
      inkscape:zoom="0.921875"
-     inkscape:cx="175.72881"
+     inkscape:cx="112.27119"
      inkscape:cy="121.49153"
      inkscape:window-width="1879"
      inkscape:window-height="1253"
@@ -103,7 +103,7 @@
        markerHeight="7"
        orient="auto-start-reverse">
       <polygon
-         points="0,0 0,4 4,2 "
+         points="0,4 4,2 0,0 "
          id="polygon1" />
     </marker>
     <marker
@@ -115,7 +115,7 @@
        markerHeight="7"
        orient="auto-start-reverse">
       <polygon
-         points="0,2 2,0 4,2 2,4 "
+         points="2,0 4,2 2,4 0,2 "
          id="polygon2" />
     </marker>
     <marker
@@ -164,66 +164,61 @@
          id="circle4" />
     </marker>
   </defs>
-  <g
-     id="g10"
-     inkscape:label="g10"
-     transform="translate(17.065792,12)">
-    <rect
-       x="1"
-       y="1"
-       width="344"
-       height="32"
-       class="solid nofill"
-       rx="4"
-       id="rect5" />
-    <text
-       x="15"
-       y="21"
-       id="text5">Haut niveau: Intention, plus expressif</text>
-    <rect
-       x="1"
-       y="193"
-       width="328"
-       height="32"
-       class="solid nofill"
-       rx="4"
-       id="rect6" />
-    <text
-       x="15"
-       y="213"
-       id="text6">Bas niveau: Spécificités matérielles</text>
-    <polygon
-       points="20,64 24,76 16,76 "
-       class="filled"
-       id="polygon6"
-       transform="translate(-3,-7)" />
-    <line
-       x1="17"
-       y1="69"
-       x2="17"
-       y2="157"
-       class="solid"
-       id="line6" />
-    <polygon
-       points="24,164 20,176 16,164 "
-       class="filled"
-       id="polygon7"
-       transform="translate(-3,-7)" />
-    <text
-       x="31"
-       y="69"
-       id="text7">Bibliothèques expressives: Blaze, Eigen...</text>
-    <text
-       x="31"
-       y="101"
-       id="text8">Bibliothèques HPC: BLAS, CUBS, cuDNN, EVE, Thrust, LAPACK, OpenMP...</text>
-    <text
-       x="31"
-       y="133"
-       id="text9">Primitives et APIs: Fonctions intrinsèques, noyaux GPU, appels système...</text>
-    <text
-       x="31"
-       y="165"
-       id="text10">Instructions CPU/GPU: ARM, x86, RISC-V, PTX...</text>
-  </g>
+  <rect
+     x="1"
+     y="1"
+     width="216"
+     height="32"
+     class="solid nofill"
+     rx="4"
+     id="rect5" />
+  <text
+     x="15"
+     y="21"
+     id="text5">Haut niveau: Intention</text>
+  <rect
+     x="1"
+     y="193"
+     width="200"
+     height="32"
+     class="solid nofill"
+     rx="4"
+     id="rect6" />
+  <text
+     x="15"
+     y="213"
+     id="text6">Bas niveau: Matériel</text>
+  <polygon
+     points="24,76 16,76 20,64 "
+     class="filled"
+     id="polygon6"
+     transform="translate(-3,-7)" />
+  <line
+     x1="17"
+     y1="69"
+     x2="17"
+     y2="157"
+     class="solid"
+     id="line6" />
+  <polygon
+     points="20,176 16,164 24,164 "
+     class="filled"
+     id="polygon7"
+     transform="translate(-3,-7)" />
+  <text
+     x="31"
+     y="69"
+     id="text7">Bibliothèques expressives, DSELs: Blaze, Eigen...</text>
+  <text
+     x="31"
+     y="101"
+     id="text8">Bibliothèques HPC: BLAS, CUBS, cuDNN, EVE, Thrust, LAPACK, OpenMP...</text>
+  <text
+     x="31"
+     y="133"
+     id="text9">Primitives et APIs: Fonctions intrinsèques, noyaux GPU, appels système...</text>
+  <text
+     x="31"
+     y="165"
+     id="text10">Instructions CPU/GPU: ARM, x86, RISC-V, PTX...</text>
 </svg>

@@ -18,24 +18,59 @@ Thèse sous la direction de *Joël Falcou*
 ---
 <!-- paginate: true -->
 
-# Le HPC: un millefeuille d'abstractions
+## Plan de la présentation
+
+**Introduction**
+
+- Calcul haute performance
+- Les bibliothèques de calcul haute performance en C++
+- Métaprogrammation et langages dédiés pour le HPC
+
+**Travaux effectués**
+
+- Génération de noyaux de calcul SIMD
+- Langages dédiés arbitraires en C++ et application pour le HPC
+- Mesure et analyse des temps de compilation
+
+**Discussion**
+
+- Outils pour le parsing et la génération de code
+- Evolutions du langage C++
+
+---
+
+# Le calcul haute performance
 <!-- 10mn -->
 
-- **Matériel performant** (architectures multi-coeurs, SIMD, GPUs)
+<br/>
 
-- **Abstractions performantes** (langages et bibliothèques)
+**H**igh-**P**erformance **C**omputing *(HPC)*
+
+<br/>
+
+- **Matériel performant**
+  *processeurs multi-coeurs, SIMD, GPUs*
+
+
+- **Abstractions performantes**
+  *langages, APIs, bibliothèques*
 
 <!-- "Abstractions performantes": qui ne pénalisent pas le temps d'exécution -->
 
-![width:1500px](images/millefeuille-hpc.svg)
+---
 
+## Le millefeuille d'abstractions du HPC
+
+<br/>
+
+![width:1700px](images/millefeuille-hpc.svg)
 <!-- https://ivanceras.github.io/svgbob-editor/
 
-.------------------------------------------.
-| "Haut niveau: Intention, plus expressif" |
-'------------------------------------------'
+.--------------------------.
+| "Haut niveau: Intention" |
+'--------------------------'
 
-  ^ "Bibliothèques expressives: Blaze, Eigen..."
+  ^ "Bibliothèques expressives, DSELs: Blaze, Eigen..."
   |
   | "Bibliothèques HPC: BLAS, CUBS, cuDNN, EVE, Thrust, LAPACK, OpenMP..."
   |
@@ -43,21 +78,85 @@ Thèse sous la direction de *Joël Falcou*
   |
   v "Instructions CPU/GPU: ARM, x86, RISC-V, PTX..."
 
-.----------------------------------------.
-| "Bas niveau: Spécificités matérielles" |
-'----------------------------------------'
+.------------------------.
+| "Bas niveau: Matériel" |
+'------------------------'
 -->
 
 ---
 
-## Performances: le matériel
+## Un paysage de plus en plus complexe
 
-Perf: le matos s'en occupe, ok.
-On a des outils (SYCL, OpenMP, Thrust)
+<br/>
 
-Peut-on générer plus de code pour le HPC ?
-Rendre la programmation haute performance plus portable ?
-Avec quelles perfs ?
+**Le matériel:**
+
+- Plus de *parallélisme(s)*
+- Plus de *spécialisation*
+
+*Exemples récents:* Fujitsu A64FX, Cerebras WSE-3
+
+**Les bibliothèques et applications:**
+
+- Des domaines de plus en plus *diversifiés*
+
+*Quelles abstractions pour s'adapter à l'évolution du matériel?*
+*Comment assurer la portabilité et la pérennité du code haute performance?*
+
+---
+
+## La génération de code pour la performance
+
+<br/>
+
+**Métaprogramme:** programme prenant du code en entrée ou en sortie.
+
+En C++, les bibliothèques HPC utilisent très majoritairement
+la *métaprogrammation de templates*
+<br/>
+
+- **Intérêt:** évaluation partielle, composabilité, nouvelles abstractions
+- **Exemples:** Thrust, CUBS, EVE
+<br/>
+
+Peut-on aller plus loin ?
+*Oui.*
+
+---
+
+## Les langages dédiés pour le calcul haute performance en C++
+
+**D**omain **S**pecific **E**mbedded **L**anguage *(DSEL)*
+<br/>
+
+*Bibliothèques de référence: Blaze et Eigen*
+
+Langages dédiés basés sur de la **surcharge d'opérateurs**,
+utilisant des **expression templates** pour la génération de code.
+
+**Expression templates:** représentation d'expressions algébriques
+sous forme d'arborescences de templates de types.
+<br/>
+
+```c++
+blaze::DynamicVector<int> vec_a({4, -2, 5}), vec_b({2, 5, -3});
+
+auto expr = vec_a + vec_b; // Add<DynamicVector<int>, DynamicVector<int>>
+blaze::DynamicVector<int> vec_c = expr; // Génération de code à l'assignation
+```
+
+---
+
+## Les langages dédiés pour le calcul haute performance en C++
+
+**Problèmes:** difficulté d'implémentation et temps de compilation
+
+*Quelles techniques permettraient de résoudre ces problèmes ?*
+*Quel intérêt pour le HPC ?*
+
+
+- Héritent des problématiques associées aux métaprogrammes de templates
+- DSELs limités à la syntaxe C++ (sauf ctre)
 
 ---
 
@@ -67,15 +166,13 @@ Expressivité, que faire ?
 
 Blaze, Eigen... et au-dela ?
 
-Peut-on rendre ces bibliothèques plus simples à maintenir ?
 
 Comment je peux avoir des formules en LaTeX math ou d'autres langages
 **dans C++** (si c'est possible/raisonnable)..?
 
----
+<!-----
 
 # Contexte: pourquoi C++ ?
-<!-- 10mn -->
 
 C++ est la plateforme de choix pour le calcul haute performance
 *et la métaprogrammation*
@@ -108,7 +205,7 @@ C'est utilisé pour générer du code optimisé à la compilation
 
 gemv, expression templates
 
----
+----->
 
 ## GEMV
 
