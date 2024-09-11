@@ -59,7 +59,7 @@ Thèse sous la direction de *Joël Falcou*
 
 ---
 
-## Le millefeuille d'abstractions du HPC
+## Le millefeuille d'abstractions du HPC en C++
 
 <br/>
 
@@ -72,9 +72,9 @@ Thèse sous la direction de *Joël Falcou*
 
   ^ "Bibliothèques expressives, DSELs: Blaze, Eigen..."
   |
-  | "Bibliothèques HPC: BLAS, CUBS, cuDNN, EVE, Thrust, LAPACK, OpenMP..."
+  | "Bibliothèques HPC: BLAS, CUBS, cuDNN, EVE, Thrust, LAPACK..."
   |
-  | "Primitives et APIs: Fonctions intrinsèques, noyaux GPU, appels système..."
+  | "Primitives, extensions, APIs: Fonctions intrinsèques, noyaux GPU, OpenMP..."
   |
   v "Instructions CPU/GPU: ARM, x86, RISC-V, PTX..."
 
@@ -91,16 +91,15 @@ Thèse sous la direction de *Joël Falcou*
 
 **Le matériel:**
 
-- Plus de *parallélisme(s)*
-- Plus de *spécialisation*
-
-*Exemples récents:* Fujitsu A64FX, Cerebras WSE-3
+- Plus de *parallélisme(s)*: CPUs de plus en plus parallèles, Fujitsu A64FX
+- Plus de *spécialisation*: Cerebras WSE-3, TPU
 
 **Les bibliothèques et applications:**
 
 - Des domaines de plus en plus *diversifiés*
+- Une compatibilité de plus en plus *large*
+<br/>
 
-*Quelles abstractions pour s'adapter à l'évolution du matériel?*
 *Comment assurer la portabilité et la pérennité du code haute performance?*
 
 ---
@@ -116,10 +115,10 @@ la *métaprogrammation de templates*
 <br/>
 
 - **Intérêt:** évaluation partielle, composabilité, nouvelles abstractions
-- **Exemples:** Thrust, CUBS, EVE
+- **Exemples:** Thrust, CUBS, EVE, HPX
 <br/>
 
-Peut-on aller plus loin ?
+Peut-on aller plus haut en niveau d'abstraction ?
 *Oui.*
 
 ---
@@ -136,7 +135,6 @@ utilisant des **expression templates** pour la génération de code.
 
 **Expression templates:** représentation d'expressions algébriques
 sous forme d'arborescences de templates de types.
-<br/>
 
 ```c++
 blaze::DynamicVector<int> vec_a({4, -2, 5}), vec_b({2, 5, -3});
@@ -149,26 +147,43 @@ blaze::DynamicVector<int> vec_c = expr; // Génération de code à l'assignation
 
 ## Les langages dédiés pour le calcul haute performance en C++
 
-**Problèmes:** difficulté d'implémentation et temps de compilation
+Encore plus loin:
+**C**ompile-**T**ime **R**egular **E**xpressions *(CTRE)*, Hana Dusíková
+*DSEL ne reposant pas sur la syntaxe C++ (hors HPC)*
+
+**Problèmes des DSEL pour le HPC:**
+
+- Temps de compilation
+
+- Maîtrise de la métaprogrammation de templates
+
+- DSELs limités à la syntaxe C++
+
 
 *Quelles techniques permettraient de résoudre ces problèmes ?*
 *Quel intérêt pour le HPC ?*
-
-
-- Héritent des problématiques associées aux métaprogrammes de templates
-- DSELs limités à la syntaxe C++ (sauf ctre)
+*Quels outils pour analyser les temps de compilation?*
 
 ---
 
-## Performances: les bibliothèques "métier"
+# Les travaux de cette thèse
 
-Expressivité, que faire ?
+<br/>
 
-Blaze, Eigen... et au-dela ?
+**Portabilité des bibliothèques HPC "classiques"**
 
+- Génération de noyaux de calcul SIMD
 
-Comment je peux avoir des formules en LaTeX math ou d'autres langages
-**dans C++** (si c'est possible/raisonnable)..?
+**Techniques d'implémentation des DSELs**
+
+- Nouvelles méthodes pour leur implémentation
+- DSEL arbitraires appliqués au HPC
+
+**Analyse des temps de compilation**
+
+- Nouvelle méthode de benchmarking pour les métaprogrammes
+
+---
 
 <!-----
 
@@ -207,10 +222,49 @@ gemv, expression templates
 
 ----->
 
-## GEMV
+## Génération de noyaux de calcul SIMD
 
-SIMD auto
-déroulage auto
+<br/>
+<br/>
+
+**Ge**neral **M**atrix-**V**ector multiply *(GEMV)*
+*matrice column-major*
+
+- Implémentée en assembleur dans OpenBLAS
+
+- Optimisée manuellement pour chaque architecture
+<br/>
+
+*Est-il possible de générer ce code au lieu de le réimplémenter
+pour chaque architecture?*
+
+---
+
+### Optimisation de GEMV
+
+**Deux techniques pour son optimisation:**
+
+- Utilisation des instructions vectorielles
+- Déroulage des boucles pour exploiter le pipelining des instructions
+
+*3 étapes en SIMD: Broadcast, produit, réduction*
+![width:800px](1-current-metaprogramming/images/gemv-fig1.svg)
+
+---
+
+### Génération de noyaux GEMV performants
+
+Générer du code pour exploiter ces techniques,
+quelle que soit l'architecture
+
+<br/>
+
+- Exploiter les architectures SIMD de manière portable,
+  et dont la taille est connue à la compilation
+  *boost.simd/EVE*
+
+- Automatiser le déroulage
+  *déroulage automatique par template metaprogramming*
 
 ---
 
