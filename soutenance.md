@@ -1,12 +1,13 @@
 <!-- paginate: skip -->
 
-# Jules Pénuchot
-
-<br/>
 <br/>
 <br/>
 
-> Techniques avancées de génération de code pour la performance
+# Techniques avancées de génération de code pour la performance
+
+<br/>
+
+> Jules Pénuchot
 
 <br/>
 
@@ -14,30 +15,10 @@
 *Equipe ParSys*
 
 Thèse sous la direction de *Joël Falcou*
+Soutenue le 24/09/2024 à l'Université Paris-Saclay
 
 ---
 <!-- paginate: true -->
-
-## Plan de la présentation
-
-**Introduction**
-
-- Calcul haute performance
-- Les bibliothèques de calcul haute performance en C++
-- Métaprogrammation et langages dédiés pour le HPC
-
-**Travaux effectués**
-
-- Génération de noyaux de calcul SIMD
-- Langages dédiés arbitraires en C++ et application pour le HPC
-- Mesure et analyse des temps de compilation
-
-**Discussion**
-
-- Outils pour le parsing et la génération de code
-- Evolutions du langage C++
-
----
 
 # Le calcul haute performance
 <!-- 10mn -->
@@ -56,6 +37,25 @@ Thèse sous la direction de *Joël Falcou*
   *langages, APIs, bibliothèques*
 
 <!-- "Abstractions performantes": qui ne pénalisent pas le temps d'exécution -->
+
+---
+
+## Un paysage de plus en plus complexe
+
+<br/>
+
+**Le matériel:**
+
+- Plus de *parallélisme(s)*: CPUs de plus en plus parallèles, Fujitsu A64FX
+- Plus de *spécialisation*: Cerebras WSE-3, TPU
+
+**Les bibliothèques et applications:**
+
+- Des domaines de plus en plus *diversifiés*
+- Une compatibilité de plus en plus *large*
+<br/>
+
+*Comment assurer la portabilité et la pérennité du code haute performance?*
 
 ---
 
@@ -85,30 +85,21 @@ Thèse sous la direction de *Joël Falcou*
 
 ---
 
-## Un paysage de plus en plus complexe
+## Concilier abstraction et performance
 
-<br/>
+- Il faut des abstractions pour gérer la complexité
+- Il faut qu'elles soient performantes
 
-**Le matériel:**
-
-- Plus de *parallélisme(s)*: CPUs de plus en plus parallèles, Fujitsu A64FX
-- Plus de *spécialisation*: Cerebras WSE-3, TPU
-
-**Les bibliothèques et applications:**
-
-- Des domaines de plus en plus *diversifiés*
-- Une compatibilité de plus en plus *large*
-<br/>
-
-*Comment assurer la portabilité et la pérennité du code haute performance?*
+-> Il faut faire de la metaprog
 
 ---
 
-## La génération de code pour la performance
-
-<br/>
+## La métaprogrammation pour la performance
 
 **Métaprogramme:** programme prenant du code en entrée ou en sortie.
+<br/>
+
+Existe: en LISP, en C, en Rust, en D, etc.
 
 En C++, les bibliothèques HPC utilisent très majoritairement
 la *métaprogrammation de templates*
@@ -119,50 +110,61 @@ la *métaprogrammation de templates*
 <br/>
 
 Peut-on aller plus haut en niveau d'abstraction ?
-*Oui.*
+*Oui, via les Domain Specific Embedded Languages*
 
 ---
 
-## Les langages dédiés pour le calcul haute performance en C++
+## Les Domain Specific Embedded Languages (DSELs)
 
-**D**omain **S**pecific **E**mbedded **L**anguage *(DSEL)*
-<br/>
-
-*Bibliothèques de référence: Blaze et Eigen*
-
-Langages dédiés basés sur de la **surcharge d'opérateurs**,
+En C++, les langages dédiés sont basés sur la **surcharge d'opérateurs**,
 utilisant des **expression templates** pour la génération de code.
 
 **Expression templates:** représentation d'expressions algébriques
 sous forme d'arborescences de templates de types.
 
+<!-- TODO: verifier que ca compile + modifier le type -->
+*Exemple: Blaze*
 ```c++
 blaze::DynamicVector<int> vec_a({4, -2, 5}), vec_b({2, 5, -3});
 
-auto expr = vec_a + vec_b; // Add<DynamicVector<int>, DynamicVector<int>>
+auto expr = vec_a + trans(vec_b); // Add<DynamicVector<int>, DynamicVector<int>>
 blaze::DynamicVector<int> vec_c = expr; // Génération de code à l'assignation
 ```
 
 ---
 
-## Les langages dédiés pour le calcul haute performance en C++
+## Problématiques des DSEL pour le HPC
 
-Encore plus loin:
+<!--Encore plus loin:
 **C**ompile-**T**ime **R**egular **E**xpressions *(CTRE)*, Hana Dusíková
-*DSEL ne reposant pas sur la syntaxe C++ (hors HPC)*
+*DSEL ne reposant pas sur la syntaxe C++ (hors HPC)*-->
 
-**Problèmes des DSEL pour le HPC:**
 
 - Temps de compilation
 
-- Maîtrise de la métaprogrammation de templates
+- Difficulté de la métaprogrammation de templates
 
 - DSELs limités à la syntaxe C++
 
+---
 
-*Quelles techniques permettraient de résoudre ces problèmes ?*
-*Quel intérêt pour le HPC ?*
-*Quels outils pour analyser les temps de compilation?*
+## Problématiques des DSEL pour le HPC
+
+<!--Encore plus loin:
+**C**ompile-**T**ime **R**egular **E**xpressions *(CTRE)*, Hana Dusíková
+*DSEL ne reposant pas sur la syntaxe C++ (hors HPC)*-->
+
+<br/>
+<br/>
+
+- Temps de compilation
+  *Quels outils pour analyser les temps de compilation?*
+
+- Difficulté de la métaprogrammation de templates
+  *Faut-il abstraire la métaprogrammation?*
+
+- DSELs limités à la syntaxe C++
+  *Quel intérêt pour le HPC ?*
 
 ---
 
@@ -174,14 +176,14 @@ Encore plus loin:
 
 - Génération de noyaux de calcul SIMD
 
+**Analyse des temps de compilation**
+
+- Nouvelle méthode de benchmarking pour les métaprogrammes
+
 **Techniques d'implémentation des DSELs**
 
 - Nouvelles méthodes pour leur implémentation
 - DSEL arbitraires appliqués au HPC
-
-**Analyse des temps de compilation**
-
-- Nouvelle méthode de benchmarking pour les métaprogrammes
 
 ---
 
@@ -268,15 +270,177 @@ quelle que soit l'architecture
 
 ---
 
+
+```cpp
+template <typename T, std::size_t M, std::size_t N>
+void gemv(mat<T, M, N> &mat, vec<T, N> &vec, vec<T, N> &r) {
+  constexpr auto Size = eve::wide<T>::static_size;
+  constexpr auto SIMD_M = eve::align(M, eve::under{Size});
+  constexpr auto SIMD_N = eve::align(N, eve::under{Size});
+
+  for_constexpr<0, SIMD_N,Size>([](auto j) {
+    eve::wide<T> pvec(&vec[j]);
+    eve::wide<T> mulp_arr[Size];
+    for_constexpr<0, Size>(
+        [&](auto idx) { mulp_arr[idx] = eve::broadcast<idx>(pvec); });
+
+    for_constexpr<0, SIMD_M>([&](auto I) {
+      eve::wide<T> resp(&res[i + (I * Size)]);
+
+      for_constexpr<0, Size>([&](auto J) {
+        eve::wide<T> matp(&mat(i + (I * Size), j + J));
+        resp = eve::fma(matp, mulp_arr[J], resp);
+        eve::store(resp, &r[i + (I * Size)]);
+      });
+    }
+    // Scalar code follows ...
+}
+```
+---
+
+### Les performances
+
+TODO: Inserer les graphes ARM et x86
+
+---
+
+### Conclusion sur GEMV
+
+Il faut le faire
+
+---
+
+# Les travaux de cette thèse
+
+<br/>
+<br/>
+
+**Portabilité des bibliothèques HPC "classiques"**
+
+**Analyse des temps de compilation**
+
+- Nouvelle méthode de benchmarking pour les métaprogrammes
+
+**Techniques d'implémentation des DSELs**
+
+---
+
 ## L'évaluation directe de code C++ à la compilation
 
-Historique:
 
-* C++11: constexpr
-* C++17: if constexpr
-* C++20: alloc constexpr, std::vector, std::string
-* C++23: std::unique_ptr
-* C23: `#embed`
+- C++98: templates récursifs
+- C++11: parameter pack, constexpr
+- C++17: if constexpr
+- C++20: concepts, alloc constexpr, std::vector, std::string
+- C++23: std::unique_ptr
+- C23: `#embed`
+
+-> Y'a plein de trucs, ca evolue encore
+
+**Comment savoir quelle technique est la plus efficace en temps de compilation?**
+*if constexpr vs SFINAE vs concepts*
+
+<!-- Le temps de compil ne doit pas prendre le pas sur le temps de dev (voire de simulation) -->
+
+Il faut, *comme pour le runtime*, avoir des outils de mesure de performance
+**pour les temps de compilation**.
+
+<!-- **Est-ce qu'il y a pas plus simple?** -->
+
+---
+
+## ctbench
+
+<br/>
+
+**Objectif:** Mesure de temps de compilation via le profiler de Clang
+
+**Orienté C++:** API CMake, configuration JSON, bibliothèque C++
+<br/>
+
+**Fonctionnalités:**
+
+- Permet de **filtrer, agréger, et analyser les évènements de compilation**
+  de manière configurable, puis de tracer des courbes
+
+- Génère des graphes dans plusieurs formats: SVG, PNG, etc.
+
+- S'adapte à d'autres compilateurs *(mesure de temps d'exécution)*
+
+---
+
+## ctbench - exemple
+
+https://github.com/jpenuchot/ctbench
+
+- Entiers sous forme de types
+
+```cpp
+template <std::size_t N> struct ct_uint_t {
+  static constexpr std::size_t value = N;
+};
+```
+
+- Addition d'un pack d'entiers
+
+```cpp
+constexpr auto foo() {
+  return []<std::size_t... Is>(std::index_sequence<Is...>) {
+    return sum(ct_uint_t<Is>{}...);
+  }
+  (std::make_index_sequence<BENCHMARK_SIZE>{});
+}
+
+constexpr std::size_t result = decltype(foo())::value;
+```
+
+---
+
+## ctbench - exemple
+
+- **1e implémentation:** récursion
+```cpp
+template<typename ... Ts> constexpr auto sum();
+template <> constexpr auto sum() { return ct_uint_t<0>{}; }
+template <typename T> constexpr auto sum(T const &) { return T{}; }
+
+template <typename T, typename... Ts>
+constexpr auto sum(T const &, Ts const &...tl) {
+  return ct_uint_t<T::value + decltype(sum(tl...))::value>{};
+}
+```
+
+- **2e implémentation:** expansion de parameter pack
+
+```cpp
+template<typename ... Ts> constexpr auto sum();
+template <> constexpr auto sum() { return ct_uint_t<0>{}; }
+
+template <typename... Ts> constexpr auto sum(Ts const &...) {
+  return ct_uint_t<(Ts::value + ... + 0)>{};
+}
+```
+
+---
+
+![width:1800px](images/ctbench-example.svg)
+*Comparaison du temps de compilation, récursion vs parameter pack*
+
+---
+
+# Les travaux de cette thèse
+
+<br/>
+<br/>
+
+**Portabilité des bibliothèques HPC "classiques"**
+
+**Analyse des temps de compilation**
+
+**Techniques d'implémentation des DSELs**
+
+- Nouvelles méthodes pour leur implémentation
+- DSEL arbitraires appliqués au HPC
 
 ---
 
@@ -293,30 +457,16 @@ Parsing compile-time, mais avec quel niveau de passage à l'échelle?
 
 - Maintenabilité limitée (requiert des connaissances en TMP)
 
-<br/>
+EXEMPLE
+
 
 -> **La programmation constexpr peut-elle apporter du mieux ?**
 
 ---
 
-# Contribution
-<!-- 20mn -->
-
-<br/>
-
 ## poacher
 
-DSELs implémentés en C++ via la **métaprogrammation constexpr** pour le parsing, avec une représentation de code dynamique *(std::unique_ptr)*
-
-<br/>
-
-## ctbench
-
-Méthodologie et outils pour la mesure de **temps de compilation** des métaprogrammes, avec les *données de profiling de Clang*
-
----
-
-## poacher
+NARRATIF
 
 Comment exploiter la programmation constexpr pour implémenter des DSELs ?
 
@@ -343,10 +493,10 @@ Deux langages: Brainfuck, et Tiny Math Language (TML)
 | `[`   | `while(*ptr) {`       |
 | `]`   | `}`                   |
 
-* 1 token = un noeud d'AST
-* Parsing trivial
-* Langage structuré
-* Turing complet
+- 1 token = un noeud d'AST
+- Parsing trivial
+- Langage structuré
+- Turing complet
 
 ---
 
@@ -397,78 +547,6 @@ Problème: comment mesurer efficacement les temps de compilation
 
 ---
 
-## ctbench
-
-Mesure de temps de compilation via le profiler de Clang
-
-Orienté C++: API CMake, configuration JSON, bibliothèque C++
-
-Génère des graphes dans plusieurs formats: SVG, PNG, etc.
-
-S'adapte à d'autres compilateurs *(mesure de temps d'exécution)*
-
-Permet de **filtrer, agréger, et analyser les évènements de compilation**
-de manière configurable, puis de tracer des courbes
-
----
-
-## ctbench - exemple simple
-
-https://github.com/jpenuchot/ctbench
-
-- Entiers sous forme de types
-
-```cpp
-template <std::size_t N> struct ct_uint_t {
-  static constexpr std::size_t value = N;
-};
-```
-
-- Addition d'un pack d'entiers
-
-```cpp
-constexpr auto foo() {
-  return []<std::size_t... Is>(std::index_sequence<Is...>) {
-    return sum(ct_uint_t<Is>{}...);
-  }
-  (std::make_index_sequence<BENCHMARK_SIZE>{});
-}
-
-constexpr std::size_t result = decltype(foo())::value;
-```
-
----
-
-- Récursion
-```cpp
-template<typename ... Ts> constexpr auto sum();
-
-template <> constexpr auto sum() { return ct_uint_t<0>{}; }
-template <typename T> constexpr auto sum(T const &) { return T{}; }
-
-template <typename T, typename... Ts>
-constexpr auto sum(T const &, Ts const &...tl) {
-  return ct_uint_t<T::value + decltype(sum(tl...))::value>{};
-}
-```
-
-- Expansion de parameter pack
-
-```cpp
-template<typename ... Ts> constexpr auto sum();
-
-template <> constexpr auto sum() { return ct_uint_t<0>{}; }
-
-template <typename... Ts> constexpr auto sum(Ts const &...) {
-  return ct_uint_t<(Ts::value + ... + 0)>{};
-}
-```
-
----
-
-![width:1200px](images/ctbench-example.svg)
-
----
 
 BF - 3e tentative
 
