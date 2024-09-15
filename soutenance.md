@@ -235,6 +235,8 @@ gemv, expression templates
 - Implémentée en assembleur dans OpenBLAS
 
 - Optimisée manuellement pour chaque architecture
+
+- Le coût des abstractions est **critique**
 <br/>
 
 *Est-il possible de générer ce code au lieu de le réimplémenter
@@ -298,15 +300,32 @@ void gemv(mat<T, M, N> &mat, vec<T, N> &vec, vec<T, N> &r) {
 ```
 ---
 
-### Les performances
+![width:1300px](1-current-metaprogramming/images/gemv-fig3.svg)
+*Code généré vs OpenBLAS - x86 (Intel i5-7200)*
 
-TODO: Inserer les graphes ARM et x86
+---
+
+![width:1300px](1-current-metaprogramming/images/gemv-fig4.svg)
+*Code généré vs OpenBLAS - ARM (ARM Cortex A57)*
 
 ---
 
 ### Conclusion sur GEMV
 
-Il faut le faire
+<br/>
+
+- Les performances des noyaux générés sont **très bonnes**
+
+- Le code est **compact**
+
+- Le code est **portable**
+<br/>
+
+Mais...
+
+- Les temps de compilation sont **plus longs**
+
+*Quels outils pour les analyser ?*
 
 ---
 
@@ -327,25 +346,22 @@ Il faut le faire
 
 ## L'évaluation directe de code C++ à la compilation
 
+Croissance du support et de l'utilisation de la métaprogrammation:
 
 - C++98: templates récursifs
 - C++11: parameter pack, constexpr
 - C++17: if constexpr
 - C++20: concepts, alloc constexpr, std::vector, std::string
 - C++23: std::unique_ptr
-- C23: `#embed`
 
--> Y'a plein de trucs, ca evolue encore
+Le temps de **compilation** ne doit pas prendre le pas
+sur le temps de **développement**, voire sur le temps **d'exécution**.
 
-**Comment savoir quelle technique est la plus efficace en temps de compilation?**
-*if constexpr vs SFINAE vs concepts*
+**Comment comparer l'efficacité des techniques de métaprogrammation?**
+Exemple: *if constexpr* vs *SFINAE* vs *concepts*
 
-<!-- Le temps de compil ne doit pas prendre le pas sur le temps de dev (voire de simulation) -->
-
-Il faut, *comme pour le runtime*, avoir des outils de mesure de performance
-**pour les temps de compilation**.
-
-<!-- **Est-ce qu'il y a pas plus simple?** -->
+Il faut, *comme pour le runtime*, avoir des outils de mesure et d'analyse
+**des temps de compilation**.
 
 ---
 
@@ -353,10 +369,10 @@ Il faut, *comme pour le runtime*, avoir des outils de mesure de performance
 
 <br/>
 
-**Objectif:** Mesure de temps de compilation via le profiler de Clang
+**Objectif:** Mesure et analyse de temps de compilation via le profiler de Clang
 
-**Orienté C++:** API CMake, configuration JSON, bibliothèque C++
-<br/>
+**Orienté C++:** API CMake, configuration JSON, bibliothèque C++,
+utilisation du préprocesseur pour les benchmarks
 
 **Fonctionnalités:**
 
@@ -369,7 +385,7 @@ Il faut, *comme pour le runtime*, avoir des outils de mesure de performance
 
 ---
 
-## ctbench - exemple
+### ctbench - exemple
 
 https://github.com/jpenuchot/ctbench
 
@@ -396,7 +412,7 @@ constexpr std::size_t result = decltype(foo())::value;
 
 ---
 
-## ctbench - exemple
+### ctbench - exemple
 
 - **1e implémentation:** récursion
 ```cpp
@@ -425,6 +441,16 @@ template <typename... Ts> constexpr auto sum(Ts const &...) {
 
 ![width:1800px](images/ctbench-example.svg)
 *Comparaison du temps de compilation, récursion vs parameter pack*
+
+---
+
+## Conclusion sur ctbench
+
+- On dispose d'outils
+
+- On peut générer des graphes
+
+Mais quels métaprogrammes?
 
 ---
 
