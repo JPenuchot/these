@@ -125,3 +125,10 @@ img:not(.emoji) {
   border: solid var(--cyan);
   border-radius: 10px;
 }
+
+section.centered img:not(.emoji) {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
