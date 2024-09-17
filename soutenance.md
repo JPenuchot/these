@@ -20,40 +20,23 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 ---
 <!-- paginate: true -->
 
-# Le calcul haute performance
-<!-- 10mn -->
-
-<br/>
-
-**H**igh-**P**erformance **C**omputing *(HPC)*
-
-<br/>
-
-- **Matériel performant**
-  *processeurs multi-coeurs, SIMD, GPUs*
-
-
-- **Abstractions performantes**
-  *langages, APIs, bibliothèques*
-
-<!-- "Abstractions performantes": qui ne pénalisent pas le temps d'exécution -->
-
----
-
-## Un paysage de plus en plus complexe
+## Le HPC: un paysage de plus en plus complexe
 
 <br/>
 
 **Le matériel:**
 
-- Plus de *parallélisme(s)*: CPUs de plus en plus parallèles, Fujitsu A64FX
-- Plus de *spécialisation*: Cerebras WSE-3, TPU
+- Plus de *parallélisme(s)*: CPUs multi-coeurs, SIMD, GPUs
+  Exemples: AMD EPYC (192 coeurs), Fujitsu A64FX
+
+- Plus de *spécialisation*: TPU, FPGA
+  Exemples: Cerebras WSE-3
+<!-- TODO: Trouver un modele de FPGGA -->
 
 **Les bibliothèques et applications:**
 
 - Des domaines de plus en plus *diversifiés*
-- Une compatibilité de plus en plus *large*
-<br/>
+- Une compatibilité de plus en plus *large* (ARM, x86, RISC-V...)
 
 *Comment assurer la portabilité et la pérennité du code haute performance?*
 
@@ -87,7 +70,9 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 
 ## Concilier abstraction et performance
 
-- Il faut des abstractions pour gérer la complexité
+<!-- TODO: Revenir dessus -->
+
+- Il faut des abstractionspour gérer la complexité
 - Il faut qu'elles soient performantes
 
 -> Il faut faire de la metaprog
@@ -96,48 +81,58 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 
 ## La métaprogrammation pour la performance
 
-**Métaprogramme:** programme prenant du code en entrée ou en sortie.
+- **Métaprogramme:** programme prenant du code en entrée ou en sortie.
+
+  - Existe: en LISP, en C, en Rust, en D, etc.
+
+
+- En C++, les bibliothèques HPC utilisent très majoritairement
+  la *métaprogrammation de templates*
+
+  - **Intérêt:** évaluation partielle, composabilité, nouvelles abstractions
+  - **Exemples:** Thrust, CUBS, EVE, HPX
 <br/>
 
-Existe: en LISP, en C, en Rust, en D, etc.
-
-En C++, les bibliothèques HPC utilisent très majoritairement
-la *métaprogrammation de templates*
-<br/>
-
-- **Intérêt:** évaluation partielle, composabilité, nouvelles abstractions
-- **Exemples:** Thrust, CUBS, EVE, HPX
-<br/>
-
-Peut-on aller plus haut en niveau d'abstraction ?
-*Oui, via les Domain Specific Embedded Languages*
+*Peut-on aller plus haut en niveau d'abstraction ?*
+**Oui, via les Domain Specific Embedded Languages**
 
 ---
 
 ## Les Domain Specific Embedded Languages (DSELs)
 
-En C++, les langages dédiés sont basés sur la **surcharge d'opérateurs**,
-utilisant des **expression templates** pour la génération de code.
+- En C++, les langages dédiés sont basés sur la **surcharge d'opérateurs**,
+  utilisant des **expression templates** pour la génération de code.
 
-**Expression templates:** représentation d'expressions algébriques
-sous forme d'arborescences de templates de types.
+- **Expression templates:** représentation d'expressions algébriques
+  sous forme d'arborescences de templates de types.
 
 <!-- TODO: verifier que ca compile + modifier le type -->
 *Exemple: Blaze*
 ```c++
-blaze::DynamicVector<int> vec_a({4, -2, 5}), vec_b({2, 5, -3});
+#include <blaze/Blaze.h>
 
-auto expr = vec_a + trans(vec_b); // Add<DynamicVector<int>, DynamicVector<int>>
-blaze::DynamicVector<int> vec_c = expr; // Génération de code à l'assignation
+int main() {
+  blaze::DynamicMatrix<int> mat_a({{4, -2, 5}}), mat_b({{2}, {5}, {-3}});
+
+  // Add<DynamicMatrix<int>, Trans<DynamicMatrix<int>>>
+  auto expr = mat_a + trans(mat_b);
+
+  blaze::DynamicMatrix<int> mat_c = expr; // Génération de code à l'assignation
+}
 ```
 
 ---
 
 ## Problématiques des DSEL pour le HPC
 
+<!-- TODO: Retirer ce slide? -->
+
 <!--Encore plus loin:
 **C**ompile-**T**ime **R**egular **E**xpressions *(CTRE)*, Hana Dusíková
 *DSEL ne reposant pas sur la syntaxe C++ (hors HPC)*-->
+
+<br/>
+<br/>
 
 
 - Temps de compilation
@@ -172,18 +167,18 @@ blaze::DynamicVector<int> vec_c = expr; // Génération de code à l'assignation
 
 <br/>
 
-**Portabilité des bibliothèques HPC "classiques"**
+- **Portabilité des bibliothèques HPC "classiques"**
 
-- Génération de noyaux de calcul SIMD
+  - Génération de noyaux de calcul SIMD
 
-**Analyse des temps de compilation**
+- **Analyse des temps de compilation**
 
-- Nouvelle méthode de benchmarking pour les métaprogrammes
+  - Nouvelle méthode de benchmarking pour les métaprogrammes
 
-**Techniques d'implémentation des DSELs**
+- **Techniques d'implémentation des DSELs**
 
-- Nouvelles méthodes pour leur implémentation
-- DSEL arbitraires appliqués au HPC
+  - Nouvelles méthodes pour leur implémentation
+  - DSEL arbitraires appliqués au HPC
 
 ---
 
@@ -227,51 +222,47 @@ gemv, expression templates
 ## Génération de noyaux de calcul SIMD
 
 <br/>
+
+- **Ge**neral **M**atrix-**V**ector multiply *(GEMV)*
+  *matrice column-major*
+
+  - Implémentée en **assembleur** dans OpenBLAS
+
+  - Optimisée manuellement pour **chaque architecture**
+
+  - Le coût des abstractions est **critique**
 <br/>
 
-**Ge**neral **M**atrix-**V**ector multiply *(GEMV)*
-*matrice column-major*
-
-- Implémentée en assembleur dans OpenBLAS
-
-- Optimisée manuellement pour chaque architecture
-
-- Le coût des abstractions est **critique**
-<br/>
-
-*Est-il possible de générer ce code au lieu de le réimplémenter
-pour chaque architecture?*
-
----
-
-### Optimisation de GEMV
-
-**Deux techniques pour son optimisation:**
-
-- Utilisation des instructions vectorielles
-- Déroulage des boucles pour exploiter le pipelining des instructions
-
-*3 étapes en SIMD: Broadcast, produit, réduction*
-![width:800px](1-current-metaprogramming/images/gemv-fig1.svg)
+**Est-il possible de générer ce code au lieu de le réimplémenter
+pour chaque architecture?**
 
 ---
 
 ### Génération de noyaux GEMV performants
 
-Générer du code pour exploiter ces techniques,
-quelle que soit l'architecture
+- **Deux techniques pour son optimisation:**
+  - Utilisation des instructions vectorielles
+  - Déroulage des boucles pour exploiter le pipelining des instructions
 
-<br/>
+- **Générer du code quelle que soit l'architecture**
 
-- Exploiter les architectures SIMD de manière portable,
-  et dont la taille est connue à la compilation
-  *boost.simd/EVE*
+  - Exploiter les architectures SIMD de manière portable,
+    et dont la taille est connue à la compilation
+    *boost.simd/EVE*
 
-- Automatiser le déroulage
-  *déroulage automatique par template metaprogramming*
+  - Automatiser le déroulage
+    *déroulage automatique par template metaprogramming*
 
 ---
 
+### Optimisation de GEMV
+
+![width:1200px](1-current-metaprogramming/images/gemv-fig1.svg)
+*3 étapes en SIMD: Broadcast, produit, réduction*
+
+---
+
+### Implémentation générique de GEMV
 
 ```cpp
 template <typename T, std::size_t M, std::size_t N>
@@ -281,8 +272,7 @@ void gemv(mat<T, M, N> &mat, vec<T, N> &vec, vec<T, N> &r) {
   constexpr auto SIMD_N = eve::align(N, eve::under{Size});
 
   for_constexpr<0, SIMD_N,Size>([](auto j) {
-    eve::wide<T> pvec(&vec[j]);
-    eve::wide<T> mulp_arr[Size];
+    eve::wide<T> pvec(&vec[j]), mulp_arr[Size];
     for_constexpr<0, Size>(
         [&](auto idx) { mulp_arr[idx] = eve::broadcast<idx>(pvec); });
 
@@ -294,10 +284,10 @@ void gemv(mat<T, M, N> &mat, vec<T, N> &vec, vec<T, N> &r) {
         resp = eve::fma(matp, mulp_arr[J], resp);
         eve::store(resp, &r[i + (I * Size)]);
       });
-    }
-    // Scalar code follows ...
+    } // Scalar code follows ...
 }
 ```
+
 ---
 
 ![width:1300px](1-current-metaprogramming/images/gemv-fig3.svg)
@@ -310,22 +300,22 @@ void gemv(mat<T, M, N> &mat, vec<T, N> &vec, vec<T, N> &r) {
 
 ---
 
-### Conclusion sur GEMV
+### GEMV: conclusions
+
+
+- Grace à la métaprogrammation:
+
+  - Les performances des noyaux générés sont **très bonnes**
+  - Le code est **compact**
+  - Le code est **portable**
+
+- Mais...
+
+  - Les temps de compilation sont **plus longs**
 
 <br/>
 
-- Les performances des noyaux générés sont **très bonnes**
-
-- Le code est **compact**
-
-- Le code est **portable**
-<br/>
-
-Mais...
-
-- Les temps de compilation sont **plus longs**
-
-*Quels outils pour les analyser ?*
+**Quels outils pour les analyser ?**
 
 ---
 
@@ -334,60 +324,54 @@ Mais...
 <br/>
 <br/>
 
-**Portabilité des bibliothèques HPC "classiques"**
+- **Portabilité des bibliothèques HPC "classiques"**
 
-**Analyse des temps de compilation**
+- **Analyse des temps de compilation**
 
-- Nouvelle méthode de benchmarking pour les métaprogrammes
+  - Nouvelle méthode de benchmarking pour les métaprogrammes
 
-**Techniques d'implémentation des DSELs**
+- **Techniques d'implémentation des DSELs**
 
 ---
 
 ## L'évaluation directe de code C++ à la compilation
 
-Croissance du support et de l'utilisation de la métaprogrammation:
+- Croissance du support et de l'utilisation de la métaprogrammation:
 
-- C++98: templates récursifs
-- C++11: parameter pack, constexpr
-- C++17: if constexpr
-- C++20: concepts, alloc constexpr, std::vector, std::string
-- C++23: std::unique_ptr
+  - *C++98:* templates récursifs
+  - *C++11:* parameter pack, constexpr
+  - *C++17:* if constexpr
+  - *C++20:* concepts, alloc constexpr, std::vector, std::string
+  - *C++23:* std::unique_ptr
 
-Le temps de **compilation** ne doit pas prendre le pas
-sur le temps de **développement**, voire sur le temps **d'exécution**.
+- Temps de **compilation** vs temps de **développement** vs temps **d'exécution**
 
-**Comment comparer l'efficacité des techniques de métaprogrammation?**
+- **Comment comparer l'efficacité des techniques de métaprogrammation?**
 Exemple: *if constexpr* vs *SFINAE* vs *concepts*
 
-Il faut, *comme pour le runtime*, avoir des outils de mesure et d'analyse
-**des temps de compilation**.
+- **Besoin d'outils d'analyse des temps de compilation**
 
 ---
 
-## ctbench
+## ctbench - github.com/jpenuchot/ctbench
 
-<br/>
+- **Objectif:** Analyse des temps de compilation via le profiler de Clang
 
-**Objectif:** Mesure et analyse de temps de compilation via le profiler de Clang
-
-**Orienté C++:** API CMake, configuration JSON, bibliothèque C++,
+- **Orienté C++:** API CMake, configuration JSON, bibliothèque C++,
 utilisation du préprocesseur pour les benchmarks
 
-**Fonctionnalités:**
+- **Fonctionnalités:**
 
-- Permet de **filtrer, agréger, et analyser les évènements de compilation**
-  de manière configurable, puis de tracer des courbes
+  - Permet de **filtrer, agréger, et analyser les évènements de compilation**
+    de manière configurable, puis de tracer des courbes
 
-- Génère des graphes dans plusieurs formats: SVG, PNG, etc.
+  - Génère des graphes dans plusieurs formats: SVG, PNG, etc.
 
-- S'adapte à d'autres compilateurs *(mesure de temps d'exécution)*
+  - S'adapte à d'autres compilateurs *(mesure des temps d'exécution)*
 
 ---
 
-### ctbench - exemple
-
-https://github.com/jpenuchot/ctbench
+### Cas d'usage de ctbench
 
 - Entiers sous forme de types
 
@@ -412,7 +396,7 @@ constexpr std::size_t result = decltype(foo())::value;
 
 ---
 
-### ctbench - exemple
+### Cas d'usage de ctbench
 
 - **1e implémentation:** récursion
 ```cpp
@@ -446,11 +430,16 @@ template <typename... Ts> constexpr auto sum(Ts const &...) {
 
 ## Conclusion sur ctbench
 
-- On dispose d'outils
+<!-- TODO: Finir cette conclusion -->
 
-- On peut générer des graphes
+- On dispose d'un outil plus complet
 
-Mais quels métaprogrammes?
+- On peut chercher des metaprogrammes plus complexes: des DSELs arbitraires
+
+- Cet outil peut nous guider dans leur implémentation
+
+  - Estimation globale de l'impact sur le temps de compilation
+  - Comparaison des techniques de métaprogrammation
 
 ---
 
@@ -459,130 +448,227 @@ Mais quels métaprogrammes?
 <br/>
 <br/>
 
-**Portabilité des bibliothèques HPC "classiques"**
+- **Portabilité des bibliothèques HPC "classiques"**
 
-**Analyse des temps de compilation**
+- **Analyse des temps de compilation**
 
-**Techniques d'implémentation des DSELs**
+- **Techniques d'implémentation des DSELs**
 
-- Nouvelles méthodes pour leur implémentation
-- DSEL arbitraires appliqués au HPC
+  - Nouvelles méthodes pour leur implémentation
+  - DSEL arbitraires appliqués au HPC
 
 ---
 
 ## Etat de l'art des DSEL
 
-Parsing compile-time, mais avec quel niveau de passage à l'échelle?
-*(performances et maintenabilité)*
+- **Pour le HPC:** Eigen (2009), Blaze (2012), NT2 (2014)
 
-#### CTRE
+```c++
+#include <blaze/Blaze.h>
 
-- Template metaprogramming
-
-- Performances raisonnables pour des cas de petite taille (Regex)
-
-- Maintenabilité limitée (requiert des connaissances en TMP)
-
-EXEMPLE
-
-
--> **La programmation constexpr peut-elle apporter du mieux ?**
-
----
-
-## poacher
-
-NARRATIF
-
-Comment exploiter la programmation constexpr pour implémenter des DSELs ?
-
-Contraintes sur la mémoire dynamique
-
-Faire le pont entre la programmation constexpr et les templates
-
-Minimiser la métaprogrammation de templates
-
-Deux langages: Brainfuck, et Tiny Math Language (TML)
-
----
-
-## poacher - un exemple simple pour commencer: Brainfuck
-
-| Token | Sémantique            |
-|-------|-----------------------|
-| `>`   | `ptr++;`              |
-| `<`   | `ptr--;`              |
-| `+`   | `++(*ptr);`           |
-| `-`   | `--(*ptr);`           |
-| `.`   | `putchar(*ptr);`      |
-| `,`   | `(*ptr) = getchar();` |
-| `[`   | `while(*ptr) {`       |
-| `]`   | `}`                   |
-
-- 1 token = un noeud d'AST
-- Parsing trivial
-- Langage structuré
-- Turing complet
-
----
-
-## poacher - le parser Brainfuck
-
-C++ ordinaire
-On rajoute constexpr partout
-On fait une AST classique avec std::unique_ptr
-
--> C'est plié
-
----
-
-## poacher - premier backend de génération de code
-
-Vieux réflexe: on génère des expression templates
-
-Problématique: comment transformer des structures qui ne passent pas en NTTP (car elles pointent vers de la mémoire dynamique) en arborescences de types?
-
-On passe pas la mémoire, on passe des lambdas qui génèrent chaque noeud:
-
-```
-constexpr std::vector<std::vector<int>> get_vector() {
-  return {{1, 2, 3}, {4, 5, 6}};
+int main() {
+  blaze::DynamicMatrix<int> mat_a({{4, -2, 5}}), mat_b({{2}, {5}, {-3}});
+  auto expr = mat_a + trans(mat_b);
+  blaze::DynamicMatrix<int> mat_c = expr;
 }
-
-// Pas bien:
-// constexpr std::vector<int> subvec_0 = get_vector()[0];
-
-// Bien:
-constexpr auto get_subvec_0 = []() { return get_vector()[0]; }
 ```
+
+- **Problème:** la syntaxe C++ limite la syntaxe des DSELs pour le HPC
+
+- **Est-il possible de s'affranchir de la syntaxe C++?**
 
 ---
 
-Perfs ???
+## Compile Time Regular Expressions (CTRE)
 
-On peut compiler Hello World (106 noeuds):
+*Hana Dusíková, 2018*
+https://github.com/hanickadot/compile-time-regular-expressions
 
+Analyse d'expressions régulières PCRE et transformation en fonctions C++
+
+```cpp
+std::optional<std::string_view> extract_number(std::string_view s) noexcept {
+  if (auto m = ctre::match<"[a-z]+([0-9]+)">(s)) {
+    return m.get<1>().to_view();
+  } else {
+    return std::nullopt;
+  }
+}
+```
+
+CTRE utilise un **parser d'expressions PCRE** à la compilation
+
+- **Quelles techniques pour généraliser cette idée ?**
+
+- **Peut-on appliquer cette technique aux DSELs pour le HPC ?**
+
+---
+
+### Vers des compilateurs embarqués
+
+- Rappel des nouveautés constexpr
+
+  - Allocation dynamique
+  - Support de la bibliothèque standard (std::vector, std::unique_ptr...)
+
+```cpp
+constexpr std::vector<int> foo() { return {0, 1, 2, 3}; }
+```
+
+**Idée:** peut-on adapter un parser runtime quelconque pour le compile-time ?
+
+- Mémoire dynamique dans les **fonctions constexpr**,
+  mais pas dans les **paramètres de templates**
+
+```cpp
+template <auto Value> struct my_type {};
+my_type<foo()> my_value; // ERREUR
+```
+
+*Comment contourner cette contrainte ?*
+
+---
+
+### Le langage Brainfuck
+
+| Token   | Sémantique            | Token   | Sémantique            |
+|---------|-----------------------|---------|-----------------------|
+| **>**   | `ptr++;`              | **<**   | `ptr--;`              |
+| **+**   | `++(*ptr);`           | **-**   | `--(*ptr);`           |
+| **.**   | `putchar(*ptr);`      | **,**   | `(*ptr) = getchar();` |
+| **[**   | `while(*ptr) {`       | **]**   | `}`                   |
+
+- **Propriétés du langage:**
+  - 1 token = un noeud d'AST
+  - Langage structuré
+
+- *hello-world.bf*
 ```
 ++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]
 >>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.
 ```
 
-On ne peut pas compiler Mandelbrot (~11'000 noeuds)
+---
 
-Problème: comment mesurer efficacement les temps de compilation
+### Un parser Brainfuck constexpr
+
+```cpp
+constexpr std::tuple<ast_block_t, token_vec_t::const_iterator>
+parse_block(token_vec_t::const_iterator parse_begin,
+            token_vec_t::const_iterator parse_end) {
+  std::vector<ast_node_ptr_t> block_content;
+  for (; parse_begin != parse_end; parse_begin++) {
+    if (*parse_begin == while_end_v) {
+      return {std::move(block_content), parse_begin};
+    } else if (*parse_begin == while_begin_v) {
+      auto [while_block_content, while_block_end] =
+          parse_block(parse_begin + 1, parse_end);
+      block_content.push_back(
+          std::make_unique<ast_while_t>(std::move(while_block_content)));
+      parse_begin = while_block_end;
+    } else if (*parse_begin != nop_v) {
+      block_content.push_back(
+          ast_node_ptr_t(std::make_unique<ast_token_t>(*parse_begin)));
+    }
+  }
+  return {ast_block_t(std::move(block_content)), parse_end};
+}
+```
 
 ---
 
+### Génération de programmes Brainfuck
 
-BF - 3e tentative
+- Intuitivement, on souhaite construire des expression templates.
+
+  - *Comment passer la mémoire dynamique en paramètre de templates ?*
+
+  - On passe pas les noeuds, on passe leurs **fonctions génératrices**
+
+```cpp
+constexpr std::vector<int> foo() { {0, 1, 2, 3}; }
+
+template <auto Value> struct my_type {};
+
+// my_type<foo()> my_value; // ERREUR
+my_type<foo> my_value;      // OK
+```
+
+- Visite de l'AST en passant récursivement les génératrices des sous-noeuds
+
+  - Fonction de parsing appelée **autant de fois qu'il y a de noeuds**
+
+  - **Quel est l'impact sur les performances ?**
 
 ---
 
-## TML
+*Temps de compilation en secondes*
+
+| Backend                   | Hello World | Hello World x2  | Mandelbrot |
+|-|-|-|-|
+| **Noeuds d'AST**          | *106* | *212* | *11672*           |
+| Avec expression templates | 19.18 | 74.51 | Failure (timeout) |
+| Sans expression templates | 3.55  | 12.73 | Failure (timeout) |
+
+![width:1400px](images/bf-imbricated-loops-partial-graph.svg)
 
 ---
 
-RPN & Shunting Yard
+### Une alternative au passage par génératrice
+
+```c++
+constexpr std::vector<int> foo() { return {0, 1, 2, 3}; }
+template <auto Value> struct my_type {};
+
+constexpr auto foo_arr() {
+  std::array<int, foo().size()> array;
+  std::ranges::copy(foo(), array.begin());
+  return array;
+}
+
+my_type<foo_arr()> my_value; // OK
+```
+
+- On ne peut pas passer **la mémoire**
+
+- On peut passer **les valeurs**
+
+- `foo()` n'est appelée que 2 fois
+
+- **Pour passer un AST en paramètre de template, il suffit de le sérialiser**
+
+---
+
+| Backend | Hello World | Hello World x2  | Mandelbrot |
+|-|-|-|-|
+| **Noeuds d'AST**  | *106* | *212* | *11672*           |
+| Gen. avec ET      | 19.18 | 74.51 | Failure (timeout) |
+| Gen. sans ET      | 3.55  | 12.73 | Failure (timeout) |
+| Serialisation     | 0.63  | 0.80  | 18.16             |
+
+![width:1400px](images/bf-imbricated-loops-graph.svg)
+
+---
+
+## Application pour le calcul numérique
+
+- **Parser:** algorithme Shunting-Yard (Dijkstra, 1961)
+  - Interprétation triviale
+
+  - Précédence et associativité des opérateurs
+
+  - Sortie en **notation postfix**
+    *Exemple: 2 + 3 -> 2 3 +*
+
+- **Langage mathématique simple:** Tiny Math Language
+
+```cpp
+static constexpr auto formula = "sin((x + 3) / 3 * y ^ 2)";
+blaze::DynamicVector<float> vector_x(16, 1.), vector_y(16, 12.);
+
+auto function = tml::codegen<formula>();
+blaze::DynamicVector<float> result = function(vector_x, vector_y);
+```
 
 ---
 
@@ -590,7 +676,14 @@ Implem constexpr: parser ordinaire + generateur de code a base de lecture RPN
 
 ---
 
-Conclusion - 5mn:
+## poacher - github.com/jpenuchot/poacher
+
+Projet expérimental pour l'implémentation de parsers **constexpr**,
+et de **générateurs de code** associés
+
+- Un langage simple pour **explorer les techniques de génération**
+- Un langage mathématique comme **application HPC**
+- Des **benchmarks reproductibles** via ctbench
 
 On a des nouvelles techniques pour écrire des métaprogrammes
 avec du C++ régulier
@@ -602,3 +695,64 @@ Plusieurs méthodes:
 - Fonctionnent pour le calcul hautes performances
 
 Nouvelle méthodologie pour le benchmarking des temps de compilation
+
+---
+
+# Les publications
+
+- "ctbench - compile-time benchmarking and analysis", 2023
+  Jules Pénuchot, Joël Falcou
+  Journal of Open Source Software
+
+<!--
+@article{Penuchot2023,
+  doi = {10.21105/joss.05165},
+  url = {https://doi.org/10.21105/joss.05165},
+  year = {2023},
+  publisher = {The Open Journal},
+  volume = {8},
+  number = {88},
+  pages = {5165},
+  author = {Jules Penuchot and Joel Falcou},
+  title = {ctbench - compile-time benchmarking and analysis},
+  journal = {Journal of Open Source Software},
+}
+
+@inproceedings{hpcs2018-matvec,
+  author = {Penuchot, Jules and Falcou, Joel and Khabou, Amal},
+  booktitle = {2018 International Conference on High Performance Computing
+               Simulation (HPCS)},
+  title = {Modern Generative Programming for Optimizing Small Matrix-Vector
+           Multiplication},
+  year = {2018},
+  volume = {},
+  number = {},
+  pages = {508-514},
+  doi = {10.1109/HPCS.2018.00086},
+}
+
+@online{ctbench-cppp21,
+  author = {Jules {Penuchot}},
+  title = {ctbench: compile time benchmarking for Clang},
+  year = {2021},
+  url = {https://www.youtube.com/watch?v=1RZY6skM0Rc},
+}
+
+
+@online{meetingcpp22,
+  author = {Paul {Keir} and Joel {Falcou} and Jules {Penuchot} and Andrew {
+            Gozillon}},
+  title = {Meeting C++ - A totally constexpr standard library},
+  year = {2022},
+  url = {https://www.youtube.com/watch?v=ekFPm7e__vI},
+}
+-->
+
+---
+
+
+Conclusion - 5mn:
+
+Benchmarking:
+
+- Il faut encore plus d'outils
