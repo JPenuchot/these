@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="657.6684"
-   height="226"
+   width="680"
+   height="245"
    class="svgbob"
    version="1.1"
    id="svg10"
@@ -20,15 +20,33 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#505050"
-     inkscape:zoom="0.921875"
-     inkscape:cx="112.27119"
-     inkscape:cy="121.49153"
-     inkscape:window-width="1879"
-     inkscape:window-height="1253"
+     inkscape:zoom="2.6203702"
+     inkscape:cx="165.62546"
+     inkscape:cy="188.14136"
+     inkscape:window-width="764"
+     inkscape:window-height="1229"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg10" />
+     inkscape:current-layer="svg10"
+     showgrid="true">
+    <inkscape:grid
+       id="grid1"
+       units="px"
+       originx="10.000005"
+       originy="10"
+       spacingx="1"
+       spacingy="1"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       dotted="false"
+       gridanglex="30"
+       gridanglez="30"
+       visible="true" />
+  </sodipodi:namedview>
   <style
      id="style1">.svgbob line, .svgbob path, .svgbob circle, .svgbob rect, .svgbob polygon {
     stroke: black;
@@ -103,7 +121,7 @@
        markerHeight="7"
        orient="auto-start-reverse">
       <polygon
-         points="0,4 4,2 0,0 "
+         points="0,0 0,4 4,2 "
          id="polygon1" />
     </marker>
     <marker
@@ -115,7 +133,7 @@
        markerHeight="7"
        orient="auto-start-reverse">
       <polygon
-         points="2,0 4,2 2,4 0,2 "
+         points="2,4 0,2 2,0 4,2 "
          id="polygon2" />
     </marker>
     <marker
@@ -165,60 +183,78 @@
     </marker>
   </defs>
   <rect
-     x="1"
-     y="1"
+     style="fill:#44475a;fill-opacity:1;stroke:none"
+     id="rect1"
+     width="680"
+     height="245"
+     x="0"
+     y="0" />
+  <rect
+     x="11.000005"
+     y="11"
      width="216"
      height="32"
      class="solid nofill"
      rx="4"
-     id="rect5" />
+     id="rect5"
+     style="fill:#f8f8f2;fill-opacity:1;stroke:#8be9fd;stroke-opacity:1" />
   <text
-     x="15"
-     y="21"
-     id="text5">Haut niveau: Intention</text>
+     x="25.000004"
+     y="31"
+     id="text5"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal">Haut niveau: Intention</text>
   <rect
-     x="1"
-     y="193"
+     x="11.000005"
+     y="203"
      width="200"
      height="32"
      class="solid nofill"
      rx="4"
-     id="rect6" />
+     id="rect6"
+     style="fill:#f8f8f2;fill-opacity:1;stroke:#8be9fd;stroke-opacity:1" />
   <text
-     x="15"
-     y="213"
-     id="text6">Bas niveau: Matériel</text>
+     x="25.000004"
+     y="223"
+     id="text6"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal">Bas niveau: Matériel</text>
   <polygon
-     points="24,76 16,76 20,64 "
+     points="16,76 20,64 24,76 "
      class="filled"
      id="polygon6"
-     transform="translate(-3,-7)" />
+     transform="translate(7.0000048,3)"
+     style="fill:#f8f8f2;fill-opacity:1;stroke:none;stroke-opacity:1" />
   <line
-     x1="17"
-     y1="69"
-     x2="17"
-     y2="157"
+     x1="27.000004"
+     y1="79"
+     x2="27.000004"
+     y2="167"
      class="solid"
-     id="line6" />
+     id="line6"
+     style="fill:#f8f8f2;fill-opacity:1;stroke:#f8f8f2;stroke-opacity:1" />
   <polygon
-     points="20,176 16,164 24,164 "
+     points="16,164 24,164 20,176 "
      class="filled"
      id="polygon7"
-     transform="translate(-3,-7)" />
+     transform="translate(7.0000048,3)"
+     style="fill:#f8f8f2;fill-opacity:1;stroke:none;stroke-opacity:1" />
   <text
-     x="31"
-     y="69"
-     id="text7">Bibliothèques expressives, DSELs: Blaze, Eigen...</text>
+     x="41.000004"
+     y="79"
+     id="text7"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f8f8f2;fill-opacity:1;stroke:none;stroke-opacity:1">Bibliothèques expressives, DSELs: Blaze, Eigen...</text>
   <text
-     x="31"
-     y="101"
-     id="text8">Bibliothèques HPC: BLAS, CUBS, cuDNN, EVE, Thrust, LAPACK...</text>
+     x="41.000004"
+     y="111"
+     id="text8"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f8f8f2;fill-opacity:1;stroke:none;stroke-opacity:1">Bibliothèques HPC: BLAS, CUBS, cuDNN, EVE, Thrust, LAPACK...</text>
   <text
-     x="31"
-     y="133"
-     id="text9">Primitives, extensions, APIs: Fonctions intrinsèques, noyaux GPU, OpenMP...</text>
+     x="41.000004"
+     y="143"
+     id="text9"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f8f8f2;fill-opacity:1;stroke:none;stroke-opacity:1">Primitives, extensions, APIs: Fonctions intrinsèques, noyaux GPU, OpenMP...</text>
   <text
-     x="31"
-     y="165"
-     id="text10">Instructions CPU/GPU: ARM, x86, RISC-V, PTX...</text>
+     x="41.000004"
+     y="175"
+     id="text10"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#f8f8f2;fill-opacity:1;stroke:none;stroke-opacity:1">Instructions CPU/GPU: ARM, x86, RISC-V, PTX...</text>
 </svg>
