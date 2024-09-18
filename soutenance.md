@@ -27,11 +27,11 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 **Le matériel:**
 
 - Plus de *parallélisme(s)*: CPUs multi-coeurs, SIMD, GPUs
-  Exemples: AMD EPYC (192 coeurs), Fujitsu A64FX
+  Exemples: AMD EPYC, Fujitsu A64FX
 
 - Plus de *spécialisation*: TPU, FPGA
   Exemples: Cerebras WSE-3
-<!-- TODO: Trouver un modele de FPGGA -->
+<!-- TODO: Trouver un modele de FPGA -->
 
 **Les bibliothèques et applications:**
 
@@ -72,7 +72,12 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 
 <!-- TODO: Revenir dessus -->
 
-- Il faut des abstractionspour gérer la complexité
+- Il faut des abstractions pour gérer la complexité
+
+  - Ne pas avoir à réécrire trop de code pour chaque architecture
+
+  - Gérer la complexité des applications
+
 - Il faut qu'elles soient performantes
 
 -> Il faut faire de la metaprog
@@ -83,14 +88,13 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 
 - **Métaprogramme:** programme prenant du code en entrée ou en sortie.
 
-  - Existe: en LISP, en C, en Rust, en D, etc.
-
+  - Existe dans LISP, C, Rust, D, MetaOCaml, etc.
 
 - En C++, les bibliothèques HPC utilisent très majoritairement
-  la *métaprogrammation de templates*
+  **la métaprogrammation de templates**
 
-  - **Intérêt:** évaluation partielle, composabilité, nouvelles abstractions
-  - **Exemples:** Thrust, CUBS, EVE, HPX
+  - **Intérêts:** évaluation partielle, composabilité, nouvelles abstractions
+  - **Exemples:** Thrust, EVE, HPX
 <br/>
 
 *Peut-on aller plus haut en niveau d'abstraction ?*
@@ -100,13 +104,12 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 
 ## Les Domain Specific Embedded Languages (DSELs)
 
-- En C++, les langages dédiés sont basés sur la **surcharge d'opérateurs**,
-  utilisant des **expression templates** pour la génération de code.
+- En C++, les langages dédiés embarqués utilisent la **surcharge d'opérateurs**
+  et les **expression templates** pour la génération de code.
 
 - **Expression templates:** représentation d'expressions algébriques
   sous forme d'arborescences de templates de types.
 
-<!-- TODO: verifier que ca compile + modifier le type -->
 *Exemple: Blaze*
 ```c++
 #include <blaze/Blaze.h>
@@ -125,29 +128,18 @@ int main() {
 
 ## Problématiques des DSEL pour le HPC
 
-<!-- TODO: Retirer ce slide? -->
-
-<!--Encore plus loin:
-**C**ompile-**T**ime **R**egular **E**xpressions *(CTRE)*, Hana Dusíková
-*DSEL ne reposant pas sur la syntaxe C++ (hors HPC)*-->
-
 <br/>
 <br/>
-
 
 - Temps de compilation
 
 - Difficulté de la métaprogrammation de templates
 
-- DSELs limités à la syntaxe C++
+- DSELs pour le calcul numérique limités à la syntaxe C++
 
 ---
 
 ## Problématiques des DSEL pour le HPC
-
-<!--Encore plus loin:
-**C**ompile-**T**ime **R**egular **E**xpressions *(CTRE)*, Hana Dusíková
-*DSEL ne reposant pas sur la syntaxe C++ (hors HPC)*-->
 
 <br/>
 <br/>
@@ -156,10 +148,10 @@ int main() {
   *Quels outils pour analyser les temps de compilation?*
 
 - Difficulté de la métaprogrammation de templates
-  *Faut-il abstraire la métaprogrammation?*
+  *Quelles nouvelle abstractions pour la métaprogrammation ?*
 
-- DSELs limités à la syntaxe C++
-  *Quel intérêt pour le HPC ?*
+- DSELs pour le calcul numérique limités à la syntaxe C++
+  *Quel intérêt d'aller au-delà pour le calcul numérique ?*
 
 ---
 
@@ -201,15 +193,6 @@ C++ est la plateforme de choix pour le calcul haute performance
 **Bibliothèques génératives**
 
 - CTRE, Eigen, Blaze, EVE, xSIMD, CTPG
-
----
-
-C++ permet de plus en plus d'évaluation partielle **à la compilation**
-
-C++98: templates
-C++11: parameter packs
-
-Ouvre le champ pour la métaprogrammation de templates
 
 ---
 
@@ -430,16 +413,21 @@ template <typename... Ts> constexpr auto sum(Ts const &...) {
 
 ## Conclusion sur ctbench
 
-<!-- TODO: Finir cette conclusion -->
+*github.com/jpenuchot/ctbench*
 
-- On dispose d'un outil plus complet
+- On dispose désormais d'un outil pour des **analyses reproductibles**
+  de temps de compilation
 
-- On peut chercher des metaprogrammes plus complexes: des DSELs arbitraires
+- L'outil est facilement **installable et réutilisable**
+
+- On peut chercher des metaprogrammes plus complexes:
+  **des DSELs arbitraires**
 
 - Cet outil peut nous guider dans leur implémentation
 
-  - Estimation globale de l'impact sur le temps de compilation
   - Comparaison des techniques de métaprogrammation
+
+  - Estimation globale de l'impact sur le temps de compilation
 
 ---
 
@@ -468,8 +456,7 @@ template <typename... Ts> constexpr auto sum(Ts const &...) {
 
 int main() {
   blaze::DynamicMatrix<int> mat_a({{4, -2, 5}}), mat_b({{2}, {5}, {-3}});
-  auto expr = mat_a + trans(mat_b);
-  blaze::DynamicMatrix<int> mat_c = expr;
+  blaze::DynamicMatrix<int> mat_c = mat_a + trans(mat_b);
 }
 ```
 
@@ -482,9 +469,9 @@ int main() {
 ## Compile Time Regular Expressions (CTRE)
 
 *Hana Dusíková, 2018*
-https://github.com/hanickadot/compile-time-regular-expressions
+*github.com/hanickadot/compile-time-regular-expressions*
 
-Analyse d'expressions régulières PCRE et transformation en fonctions C++
+Parsing d'expressions régulières PCRE et transformation en fonctions C++
 
 ```cpp
 std::optional<std::string_view> extract_number(std::string_view s) noexcept {
@@ -500,11 +487,11 @@ CTRE utilise un **parser d'expressions PCRE** à la compilation
 
 - **Quelles techniques pour généraliser cette idée ?**
 
-- **Peut-on appliquer cette technique aux DSELs pour le HPC ?**
+- **Peut-on appliquer ces techniques aux DSELs pour le HPC ?**
 
 ---
 
-### Vers des compilateurs embarqués
+### Vers des compilateurs embarqués constexpr
 
 - Rappel des nouveautés constexpr
 
@@ -579,7 +566,7 @@ parse_block(token_vec_t::const_iterator parse_begin,
 
 ### Génération de programmes Brainfuck
 
-- Intuitivement, on souhaite construire des expression templates.
+- **Intuition:** On souhaite traduire des AST en expression templates
 
   - *Comment passer la mémoire dynamique en paramètre de templates ?*
 
@@ -629,9 +616,8 @@ constexpr auto foo_arr() {
 my_type<foo_arr()> my_value; // OK
 ```
 
-- On ne peut pas passer **la mémoire**
-
-- On peut passer **les valeurs**
+- Méthode **triviale et généralisable** pour passer des tableaux dynamiques
+  en paramètres de templates
 
 - `foo()` n'est appelée que 2 fois
 
@@ -639,7 +625,7 @@ my_type<foo_arr()> my_value; // OK
 
 ---
 
-| Backend | Hello World | Hello World x2  | Mandelbrot |
+| Backend | Hello World | Hello World x2 | Mandelbrot |
 |-|-|-|-|
 | **Noeuds d'AST**  | *106* | *212* | *11672*           |
 | Gen. avec ET      | 19.18 | 74.51 | Failure (timeout) |
@@ -653,7 +639,6 @@ my_type<foo_arr()> my_value; // OK
 ## Application pour le calcul numérique
 
 - **Parser:** algorithme Shunting-Yard (Dijkstra, 1961)
-  - Interprétation triviale
 
   - Précédence et associativité des opérateurs
 
@@ -664,19 +649,20 @@ my_type<foo_arr()> my_value; // OK
 
 ```cpp
 static constexpr auto formula = "sin((x + 3) / 3 * y ^ 2)";
-blaze::DynamicVector<float> vector_x(16, 1.), vector_y(16, 12.);
-
 auto function = tml::codegen<formula>();
+
+blaze::DynamicVector<float> vector_x(16, 1.), vector_y(16, 12.);
 blaze::DynamicVector<float> result = function(vector_x, vector_y);
 ```
 
 ---
 
-Implem constexpr: parser ordinaire + generateur de code a base de lecture RPN
+<!-- TODO: perfs -->
 
 ---
 
-## poacher - github.com/jpenuchot/poacher
+## poacher
+*github.com/jpenuchot/poacher*
 
 Projet expérimental pour l'implémentation de parsers **constexpr**,
 et de **générateurs de code** associés
@@ -695,6 +681,29 @@ Plusieurs méthodes:
 - Fonctionnent pour le calcul hautes performances
 
 Nouvelle méthodologie pour le benchmarking des temps de compilation
+
+---
+
+# Conclusions
+
+- Codegen pour la perf:
+
+  - Tres utilis\'e pour les squelettes algorithmiques,
+    tr\`es peu pour les routines haute performance,
+    et encore moins pour du cross-vendor pour les GPU
+  - Usage sous-optimal des ressources humaines,
+    on ~~peut~~ doit faire un BLAS++ avec de la lazy evaluation
+
+- Benchmarking:
+
+  - Il faut encore plus d'outils
+  - Il manque GCC, et le support de ctbench pour Windows
+
+- Codegen:
+
+  - Les difficultés proviennent des limitations sur la memoire dynamique
+  - Contournable par un modele de metaprog plus direct
+  - En attendant: on peut améliorer les DSELs via des générateurs de parsers constexpr
 
 ---
 
@@ -747,12 +756,3 @@ Nouvelle méthodologie pour le benchmarking des temps de compilation
   url = {https://www.youtube.com/watch?v=ekFPm7e__vI},
 }
 -->
-
----
-
-
-Conclusion - 5mn:
-
-Benchmarking:
-
-- Il faut encore plus d'outils
