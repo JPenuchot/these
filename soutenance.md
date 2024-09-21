@@ -22,8 +22,6 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 
 ## Le HPC: un paysage de plus en plus complexe
 
-<br/>
-
 **Le matériel:**
 
 - Plus de *parallélisme(s)*: CPUs multi-coeurs, SIMD, GPUs
@@ -31,14 +29,14 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 
 - Plus de *spécialisation*: TPU, FPGA
   Exemples: Cerebras WSE-3
-<!-- TODO: Trouver un modele de FPGA -->
 
 **Les bibliothèques et applications:**
 
-- Des domaines de plus en plus *diversifiés*
-- Une compatibilité de plus en plus *large* (ARM, x86, RISC-V...)
+- Une compatibilité de plus en plus *large*
 
-*Comment assurer la portabilité et la pérennité du code haute performance?*
+- Des domaines de plus en plus *diversifiés*
+
+*Comment assurer la portabilité et la pérennité du code haute performance ?*
 
 ---
 
@@ -70,17 +68,21 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 
 ## Concilier abstraction et performance
 
-<!-- TODO: Revenir dessus -->
+- Des abstractions **à forte capacité d'adaptation**:
 
-- Il faut des abstractions pour gérer la complexité
+  - Differents jeux d'instructions
 
-  - Ne pas avoir à réécrire trop de code pour chaque architecture
+  - Différents paramètres de tuning (taille de cache, etc.)
 
-  - Gérer la complexité des applications
+  - Différents types de processeurs (CPU/GPU)
 
-- Il faut qu'elles soient performantes
+- Des abstractions **performantes**:
 
--> Il faut faire de la metaprog
+  - Autant que possible, **résolues à la compilation**
+
+<br/>
+
+**Pour ces raisons, on se tourne vers la métaprogrammation**
 
 ---
 
@@ -145,13 +147,13 @@ int main() {
 <br/>
 
 - Temps de compilation
-  *Quels outils pour analyser les temps de compilation?*
+  *Quels outils pour analyser les temps de compilation ?*
 
 - Difficulté de la métaprogrammation de templates
   *Quelles nouvelle abstractions pour la métaprogrammation ?*
 
 - DSELs pour le calcul numérique limités à la syntaxe C++
-  *Quel intérêt d'aller au-delà pour le calcul numérique ?*
+  *Aller au-delà de la syntaxe C++: comment et avec quel impact ?*
 
 ---
 
@@ -224,7 +226,9 @@ pour chaque architecture?**
 ### Génération de noyaux GEMV performants
 
 - **Deux techniques pour son optimisation:**
+
   - Utilisation des instructions vectorielles
+
   - Déroulage des boucles pour exploiter le pipelining des instructions
 
 - **Générer du code quelle que soit l'architecture**
@@ -273,12 +277,16 @@ void gemv(mat<T, M, N> &mat, vec<T, N> &vec, vec<T, N> &r) {
 
 ---
 
-![width:1300px](1-current-metaprogramming/images/gemv-fig3.svg)
+### Performances des noyaux GEMV
+
+![width:1100px](1-current-metaprogramming/images/gemv-fig3.svg)
 *Code généré vs OpenBLAS - x86 (Intel i5-7200)*
 
 ---
 
-![width:1300px](1-current-metaprogramming/images/gemv-fig4.svg)
+### Performances des noyaux GEMV
+
+![width:1100px](1-current-metaprogramming/images/gemv-fig4.svg)
 *Code généré vs OpenBLAS - ARM (ARM Cortex A57)*
 
 ---
@@ -294,7 +302,7 @@ void gemv(mat<T, M, N> &mat, vec<T, N> &vec, vec<T, N> &r) {
 
 - Mais...
 
-  - Les temps de compilation sont **plus longs**
+  - Les temps de compilation sont notablement **plus longs**
 
 <br/>
 
@@ -406,14 +414,17 @@ template <typename... Ts> constexpr auto sum(Ts const &...) {
 
 ---
 
-![width:1800px](images/ctbench-example.svg)
+### Cas d'usage de ctbench - résultats
+
+
+![width:1500px](images/ctbench-example.svg)
 *Comparaison du temps de compilation, récursion vs parameter pack*
 
 ---
 
 ## Conclusion sur ctbench
 
-*github.com/jpenuchot/ctbench*
+- Disponible en open-source: *github.com/jpenuchot/ctbench*
 
 - On dispose désormais d'un outil pour des **analyses reproductibles**
   de temps de compilation
@@ -537,6 +548,32 @@ my_type<foo()> my_value; // ERREUR
 
 ---
 
+### Un parser Brainfuck
+
+```cpp
+std::tuple<ast_block_t, token_vec_t::const_iterator>
+parse_block(token_vec_t::const_iterator parse_begin,
+            token_vec_t::const_iterator parse_end) {
+  std::vector<ast_node_ptr_t> block_content;
+  for (; parse_begin != parse_end; parse_begin++) {
+    if (*parse_begin == while_end_v) {
+      return {std::move(block_content), parse_begin};
+    } else if (*parse_begin == while_begin_v) {
+      auto [while_block_content, while_block_end] =
+          parse_block(parse_begin + 1, parse_end);
+      block_content.push_back(
+          std::make_unique<ast_while_t>(std::move(while_block_content)));
+      parse_begin = while_block_end;
+    } else if (*parse_begin != nop_v) {
+      block_content.push_back(
+          ast_node_ptr_t(std::make_unique<ast_token_t>(*parse_begin)));
+    }
+  }
+  return {ast_block_t(std::move(block_content)), parse_end};
+}
+```
+---
+
 ### Un parser Brainfuck constexpr
 
 ```cpp
@@ -569,7 +606,6 @@ parse_block(token_vec_t::const_iterator parse_begin,
 - **Intuition:** On souhaite traduire des AST en expression templates
 
   - *Comment passer la mémoire dynamique en paramètre de templates ?*
-
   - On passe pas les noeuds, on passe leurs **fonctions génératrices**
 
 ```cpp
@@ -583,11 +619,32 @@ my_type<foo> my_value;      // OK
 
 - Visite de l'AST en passant récursivement les génératrices des sous-noeuds
 
-  - Fonction de parsing appelée **autant de fois qu'il y a de noeuds**
+  - Fonction de parsing appelée **autant de fois qu'il y a de noeuds**.
 
-  - **Quel est l'impact sur les performances ?**
+  - **Quel est l'impact sur les performances ?
+    O(N^2) ?**
 
 ---
+
+### Temps de génération via expression templates
+
+*Temps de compilation en secondes*
+
+| Backend                   | Hello World | Hello World x2  | Mandelbrot |
+|-|-|-|-|
+| **Noeuds d'AST**          | *106* | *212* | *11672*           |
+| Avec expression templates | 19.18 | 74.51 | Failure (timeout) |
+
+- Avec les expression templates:
+  - Temps de compilation insatisfaisants, **quadratiques**
+  - Représentation intermédiaire superflue
+
+- Sans les expression templates ?
+  - Il suffit de **générer le code directement**
+
+---
+
+### Temps de génération sans expression templates
 
 *Temps de compilation en secondes*
 
@@ -597,18 +654,35 @@ my_type<foo> my_value;      // OK
 | Avec expression templates | 19.18 | 74.51 | Failure (timeout) |
 | Sans expression templates | 3.55  | 12.73 | Failure (timeout) |
 
-![width:1400px](images/bf-imbricated-loops-partial-graph.svg)
+- Sans les expression templates:
+  - Gain de performances considérable
+  - **Toujours quadratique**
+
+- Il faut une solution pour passer à l'échelle **sur des grands cas**
+
+*Qu'est-ce qu'il se passe sur des benchmarks de plus petite taille ?*
 
 ---
 
-### Une alternative au passage par génératrice
+### Benchmarks synthétiques de petite taille
+
+- Boucles imbriquées: **[[...]]** *(AST profond)*
+- Boucles consecutives: **[][]...** *(AST large)*
+
+![width:1400px](images/bf-imbricated-loops-partial-graph.svg)
+
+- La **forme** des expression templates influe sur le temps de compilation
+
+---
+
+### Conversion de tableaux dynamiques en tableaux statiques
 
 ```c++
 constexpr std::vector<int> foo() { return {0, 1, 2, 3}; }
 template <auto Value> struct my_type {};
 
 constexpr auto foo_arr() {
-  std::array<int, foo().size()> array;
+  std::array<int, foo().size()> array; // foo().size() est constexpr
   std::ranges::copy(foo(), array.begin());
   return array;
 }
@@ -616,53 +690,79 @@ constexpr auto foo_arr() {
 my_type<foo_arr()> my_value; // OK
 ```
 
-- Méthode **triviale et généralisable** pour passer des tableaux dynamiques
+- Méthode **généralisable** pour passer des tableaux dynamiques
   en paramètres de templates
 
-- `foo()` n'est appelée que 2 fois
+- **Réduction de la complexité**: `foo()` n'est appelée que 2 fois
 
 - **Pour passer un AST en paramètre de template, il suffit de le sérialiser**
 
 ---
+
+### Temps de compilation via sérialisation
 
 | Backend | Hello World | Hello World x2 | Mandelbrot |
 |-|-|-|-|
 | **Noeuds d'AST**  | *106* | *212* | *11672*           |
 | Gen. avec ET      | 19.18 | 74.51 | Failure (timeout) |
 | Gen. sans ET      | 3.55  | 12.73 | Failure (timeout) |
-| Serialisation     | 0.63  | 0.80  | 18.16             |
+| Sérialisation     | 0.63  | 0.80  | 18.16             |
 
-![width:1400px](images/bf-imbricated-loops-graph.svg)
+- Temps de compilation **linéaire**
+
+---
+
+### Benchmarks synthétiques de petite taille
+
+![width:1800px](images/bf-imbricated-loops-graph.svg)
+
+**Impact négligeable sur les cas de petite taille**
 
 ---
 
 ## Application pour le calcul numérique
 
-- **Parser:** algorithme Shunting-Yard (Dijkstra, 1961)
-
-  - Précédence et associativité des opérateurs
-
-  - Sortie en **notation postfix**
-    *Exemple: 2 + 3 -> 2 3 +*
-
 - **Langage mathématique simple:** Tiny Math Language
 
 ```cpp
 static constexpr auto formula = "sin((x + 3) / 3 * y ^ 2)";
-auto function = tml::codegen<formula>();
+auto function = tml::codegen<formula>(); // Génère une lambda polymorphe
 
 blaze::DynamicVector<float> vector_x(16, 1.), vector_y(16, 12.);
 blaze::DynamicVector<float> result = function(vector_x, vector_y);
 ```
 
+- **Parser:** Shunting-Yard (Dijkstra, 1961)
+
+  - Précédence et associativité des opérateurs
+
+  - Sortie en **notation postfix**
+    *Exemple: 2 + 3 + 4 -> 2 3 + 4 +*
+
+  - Implique la création d'une pile, matérialisée par un tuple
+
+  - Le temps de compilation ne peut pas être linéaire
+
 ---
 
-<!-- TODO: perfs -->
+### Les performances de TML
+
+![width:1500px](images/shunting-yard.addition-series-partial.svg)
+*Mesures de temps de compilation pour des séries d'additions
+(0 + x + y + ...)*
 
 ---
+
+### Les performances de TML
+
+![width:1500px](images/shunting-yard.addition-series.svg)
+*Mesures de temps de compilation pour des séries d'additions
+(0 + x + y + ...)*
+
+
+<!-----
 
 ## poacher
-*github.com/jpenuchot/poacher*
 
 Projet expérimental pour l'implémentation de parsers **constexpr**,
 et de **générateurs de code** associés
@@ -680,38 +780,53 @@ Plusieurs méthodes:
 - Sérialisation vers NTTP: langages complexes
 - Fonctionnent pour le calcul hautes performances
 
-Nouvelle méthodologie pour le benchmarking des temps de compilation
+Nouvelle méthodologie pour le benchmarking des temps de compilation-->
 
 ---
 
 # Conclusions
 
-- Codegen pour la perf:
-
-  - Tres utilis\'e pour les squelettes algorithmiques,
-    tr\`es peu pour les routines haute performance,
+- Codegen pour la performance:
+  - Tres utilisé pour les squelettes algorithmiques,
+    très peu pour les routines haute performance,
     et encore moins pour du cross-vendor pour les GPU
   - Usage sous-optimal des ressources humaines,
     on ~~peut~~ doit faire un BLAS++ avec de la lazy evaluation
-
-- Benchmarking:
-
-  - Il faut encore plus d'outils
-  - Il manque GCC, et le support de ctbench pour Windows
-
 - Codegen:
-
   - Les difficultés proviennent des limitations sur la memoire dynamique
-  - Contournable par un modele de metaprog plus direct
-  - En attendant: on peut améliorer les DSELs via des générateurs de parsers constexpr
+
+  **TODO**: propre
 
 ---
 
-# Les publications
+# Perspectives
 
-- "ctbench - compile-time benchmarking and analysis", 2023
+- Benchmarking:
+  - Il faut encore plus d'outils
+  - Il manque GCC, et le support de ctbench pour Windows
+- Codegen:
+  - Contournable par un modele de metaprog plus direct
+  - En attendant: on peut améliorer les DSELs via des générateurs de parsers constexpr
+  - Consommer du LaTeX ? Du Matlab ? ~~De l'UTF-8 ?~~
+
+  **TODO**: exemple
+
+---
+
+# Contributions et logiciels
+
+### Publications
+
+- *ctbench - compile-time benchmarking and analysis*
   Jules Pénuchot, Joël Falcou
-  Journal of Open Source Software
+  Journal of Open Source Software, vol. 8, 2023
+
+  **TODO**: Le reste
+
+### Logiciels
+
+- *github.com/jpenuchot/ctbench*
+- *github.com/jpenuchot/poacher*
 
 <!--
 @article{Penuchot2023,
