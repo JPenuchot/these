@@ -325,7 +325,7 @@ void gemv(mat<T, M, N> &mat, vec<T, N> &vec, vec<T, N> &r) {
 
 ---
 
-## L'évaluation directe de code C++ à la compilation
+## L'exécution de programmes à la compilation en C++
 
 - Croissance du support et de l'utilisation de la métaprogrammation:
 
@@ -745,7 +745,7 @@ blaze::DynamicVector<float> result = function(vector_x, vector_y);
 
 ---
 
-### Les performances de TML
+### Temps de compilation de Blaze et TML
 
 ![width:1500px](images/shunting-yard.addition-series-partial.svg)
 *Mesures de temps de compilation pour des séries d'additions
@@ -753,7 +753,7 @@ blaze::DynamicVector<float> result = function(vector_x, vector_y);
 
 ---
 
-### Les performances de TML
+### Temps de compilation de Blaze et TML
 
 ![width:1500px](images/shunting-yard.addition-series.svg)
 *Mesures de temps de compilation pour des séries d'additions
