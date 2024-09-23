@@ -918,7 +918,7 @@ auto res = function("x"_var = std::vector<double>{1.2, 2.4, 3., .1});
 
 ---
 
-# Contributions et logiciels
+# Contributions
 
 - *Modern Generative Programming for Optimizing Small Matrix-Vector Multiplication*
   Jules Pénuchot, Joël Falcou, Amal Khabou
