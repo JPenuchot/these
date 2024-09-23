@@ -70,11 +70,11 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 
 - Des abstractions **à forte capacité d'adaptation**:
 
+  - Différents types de processeurs (CPU/GPU)
+
   - Differents jeux d'instructions
 
   - Différents paramètres de tuning (taille de cache, etc.)
-
-  - Différents types de processeurs (CPU/GPU)
 
 - Des abstractions **performantes**:
 
@@ -219,7 +219,7 @@ gemv, expression templates
   - Le coût des abstractions est **critique**
 <br/>
 
-**Est-il possible de générer ce code au lieu de le réimplémenter
+**Comment générer du code performant au lieu de le réimplémenter
 pour chaque architecture?**
 
 ---
@@ -333,7 +333,7 @@ void gemv(mat<T, M, N> &mat, vec<T, N> &vec, vec<T, N> &r) {
   - *C++98:* templates récursifs
   - *C++11:* parameter pack, constexpr
   - *C++17:* if constexpr
-  - *C++20:* concepts, alloc constexpr, std::vector, std::string
+  - *C++20:* concepts, constexpr new, std::vector, std::string
   - *C++23:* std::unique_ptr
 
 - **Comment comparer l'efficacité des techniques de métaprogrammation?**
@@ -485,7 +485,7 @@ template <typename... Ts> constexpr auto sum(Ts const &...) {
 
 ## Etat de l'art des DSEL
 
-- **Pour le HPC:** Eigen (2009), Blaze (2012), NT2 (2014)
+- **Pour le calcul numérique:** Eigen (2009), Blaze (2012), NT2 (2014)
 
 ```c++
 #include <blaze/Blaze.h>
@@ -507,7 +507,7 @@ int main() {
 *Hana Dusíková, 2018*
 *github.com/hanickadot/compile-time-regular-expressions*
 
-Parsing d'expressions régulières PCRE et transformation en fonctions C++
+Parsing d'expressions régulières PCRE et transformation en code C++
 
 ```cpp
 std::optional<std::string_view> extract_number(std::string_view s) noexcept
@@ -717,9 +717,9 @@ my_type<foo_arr()> my_value; // OK
 - Méthode **généralisable** pour passer des tableaux dynamiques
   en paramètres de templates
 
-- **Réduction de la complexité**: `foo()` n'est appelée que 2 fois
-
 - **Pour passer un AST en paramètre de template, il suffit de le sérialiser**
+
+- **Réduction de la complexité**: la génératrice n'est appelée que 2 fois
 
 ---
 
@@ -759,7 +759,7 @@ my_type<foo_arr()> my_value; // OK
 
 ```cpp
 static constexpr auto formula = "sin(x + 3) / 3 * y ^ 2";
-auto function = tml::codegen<formula>(); // Génère un objet fonction générique
+auto function = tml::codegen<formula>(); // Génère une fonction générique
 
 auto res_scalar = function(8.3, 42.8);
 
@@ -865,14 +865,17 @@ Nouvelle méthodologie pour le benchmarking des temps de compilation-->
 ## Perspectives
 
 - **Benchmarking:**
-  - Il faut encore plus d'outils
-  - Il manque GCC
+  - Améliorer les outils existants
+  - Données de profiling pour GCC
 
 - **Génération de code:**
-  - Contournable par un modele de metaprog plus direct
-    *Passage par NTTP ou réflexion + réification ?*
+  - *Proposer un modèle de métaprogrammation plus direct:*
 
-  - Amélioration des DSELs en C++26:
+    - Mémoire dynamique en paramètre de templates
+    - réflexion + réification
+
+  - *Amélioration des DSELs en C++23:*
+
       - Sérialisation automatique vers une IR générique
       - Générateurs de parsers constexpr
 
@@ -880,8 +883,7 @@ Nouvelle méthodologie pour le benchmarking des temps de compilation-->
 
 ## Perspectives
 
-- Externalisation des paramètres:
-
+- **Externalisation des paramètres:**
 
 ```cpp
 static constexpr auto formula = "sin(λ + 3) / 3 * ω ^ 2";
@@ -890,20 +892,21 @@ auto function = tml::codegen<formula>(); // Génère un objet fonction génériq
 auto res = function("λ"_var = 3.5, "ω"_var = 32.2)
 ```
 
-- Intégration de langages pré-existants:
+- **Intégration de langages pré-existants:**
 
 ```cpp
-static constexpr auto matlab =  R"function ave = calculateAverage(x)
-                                    ave = sum(x(:))/numel(x);
+static constexpr auto program = R"function ave = calculateAverage(x)
+                                    ave = sum(x(:)) / numel(x);
                                   end";
 
-auto function = tml::codegen<matlab>(); // Génère un objet fonction générique
-
+auto function = matlab::codegen<program, "calculateAverage">();
 auto res = function("x"_var = std::vector<double>{1.2, 2.4, 3., .1});
 ```
 ---
 <!-- paginate: false -->
 
+<br/>
+<br/>
 <br/>
 <br/>
 <br/>
