@@ -30,7 +30,7 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 - Plus de *spécialisation*: TPU, FPGA
   Exemples: Cerebras WSE-3
 
-**Les bibliothèques et applications:**
+**Bibliothèques, langages, et applications:**
 
 - Une compatibilité de plus en plus *large*
 
@@ -88,13 +88,14 @@ Soutenue le 24/09/2024 à l'Université Paris-Saclay
 
 ## La métaprogrammation pour la performance
 
-- **Métaprogramme:** programme prenant du code en entrée ou en sortie.
+- **Métaprogramme:** programme consommant et/ou générant du code.
 
-  - Existe dans LISP, C, Rust, D, MetaOCaml, etc.
+  - Exemples: LISP, C, Rust, Haskell, MetaOCaml, etc...
 
 - En C++, les bibliothèques HPC utilisent très majoritairement
   **la métaprogrammation de templates**
 
+  - **Principe:** utiliser les types pour effectuer des calculs à la compilation
   - **Intérêts:** évaluation partielle, composabilité, nouvelles abstractions
   - **Exemples:** Thrust, EVE, HPX
 <br/>
@@ -172,7 +173,7 @@ int main() {
 - **Techniques d'implémentation des DSELs**
 
   - Nouvelles méthodes pour leur implémentation
-  - DSEL arbitraires appliqués au HPC
+  - DSEL arbitraires appliqués au calcul numérique
 
 ---
 
@@ -211,7 +212,7 @@ gemv, expression templates
 - **Ge**neral **M**atrix-**V**ector multiply *(GEMV)*
   *matrice column-major*
 
-  - Implémentée en **assembleur** dans OpenBLAS
+  - Référence: implémentation en **assembleur** dans OpenBLAS
 
   - Optimisée manuellement pour **chaque architecture**
 
@@ -223,7 +224,7 @@ pour chaque architecture?**
 
 ---
 
-### Génération de noyaux GEMV performants
+## Génération de noyaux GEMV performants
 
 - **Deux techniques pour son optimisation:**
 
@@ -242,14 +243,15 @@ pour chaque architecture?**
 
 ---
 
-### Optimisation de GEMV
+## GEMV optimisé: broadcast, produit, réduction SIMD
 
-![width:1200px](1-current-metaprogramming/images/gemv-fig1.svg)
-*3 étapes en SIMD: Broadcast, produit, réduction*
+<!-- _class: centered -->
+
+![width:1300px](1-current-metaprogramming/images/gemv-fig1.svg)
 
 ---
 
-### Implémentation générique de GEMV
+## Implémentation générique de GEMV
 
 ```cpp
 template <typename T, std::size_t M, std::size_t N>
@@ -277,36 +279,35 @@ void gemv(mat<T, M, N> &mat, vec<T, N> &vec, vec<T, N> &r) {
 
 ---
 
-### Performances des noyaux GEMV
+<!-- _class: centered -->
 
-![width:1100px](1-current-metaprogramming/images/gemv-fig3.svg)
-*Code généré vs OpenBLAS - x86 (Intel i5-7200)*
+## GEMV: Code généré vs OpenBLAS - x86 (Intel i5-7200)
 
----
-
-### Performances des noyaux GEMV
-
-![width:1100px](1-current-metaprogramming/images/gemv-fig4.svg)
-*Code généré vs OpenBLAS - ARM (ARM Cortex A57)*
+![width:1200px](1-current-metaprogramming/images/gemv-fig3.svg)
 
 ---
 
-### GEMV: conclusions
+<!-- _class: centered -->
 
+## GEMV: Code généré vs OpenBLAS - ARM (ARM Cortex A57)
 
-- Grace à la métaprogrammation:
+![width:1200px](1-current-metaprogramming/images/gemv-fig4.svg)
+
+---
+
+## GEMV: Conclusion
+
+- Grâce à la métaprogrammation:
 
   - Les performances des noyaux générés sont **très bonnes**
   - Le code est **compact**
   - Le code est **portable**
+  - Il bénéficie des **optimisations du compilateur**
 
 - Mais...
 
   - Les temps de compilation sont notablement **plus longs**
-
-<br/>
-
-**Quels outils pour les analyser ?**
+  - On ne sait pas précisémment **pourquoi**
 
 ---
 
@@ -335,21 +336,41 @@ void gemv(mat<T, M, N> &mat, vec<T, N> &vec, vec<T, N> &r) {
   - *C++20:* concepts, alloc constexpr, std::vector, std::string
   - *C++23:* std::unique_ptr
 
-- Temps de **compilation** vs temps de **développement** vs temps **d'exécution**
-
 - **Comment comparer l'efficacité des techniques de métaprogrammation?**
-Exemple: *if constexpr* vs *SFINAE* vs *concepts*
+Exemple: *SFINAE* vs *if constexpr* vs *concepts*
+
+- Temps de **compilation** vs temps de **développement**
 
 - **Besoin d'outils d'analyse des temps de compilation**
 
 ---
 
-## ctbench - github.com/jpenuchot/ctbench
+## L'analyse des temps de compilation
+
+<br/>
+
+- **Templight:** Zoltán Borók-Nagy, Zoltán Porkoláb, József Mihalicza, 2009
+  Profiling et debug d'instanciation de templates
+
+- **Build-bench:** Fred Tingaud, 2017
+  Benchmarking basique sans analyse
+
+- **Metabench:** Louis Dionne, 2017
+  Analyse de temps de compilation, export en fichiers web
+
+<br/>
+
+**Aucun outil ne permet des analyses détaillées, complètes, et reproductibles**
+
+---
+
+## ctbench
+
 
 - **Objectif:** Analyse des temps de compilation via le profiler de Clang
 
 - **Orienté C++:** API CMake, configuration JSON, bibliothèque C++,
-utilisation du préprocesseur pour les benchmarks
+  utilisation du préprocesseur pour l'instanciation des benchmarks
 
 - **Fonctionnalités:**
 
@@ -359,10 +380,13 @@ utilisation du préprocesseur pour les benchmarks
   - Génère des graphes dans plusieurs formats: SVG, PNG, etc.
 
   - S'adapte à d'autres compilateurs *(mesure des temps d'exécution)*
+<br/>
+
+*Publié dans le Journal of Open-Source Software 2023*
 
 ---
 
-### Cas d'usage de ctbench
+## Cas d'usage de ctbench
 
 - Entiers sous forme de types
 
@@ -387,9 +411,9 @@ constexpr std::size_t result = decltype(foo())::value;
 
 ---
 
-### Cas d'usage de ctbench
+## Cas d'usage de ctbench
 
-- **1e implémentation:** récursion
+- **1e implémentation:** récursion *(C++11)*
 ```cpp
 template<typename ... Ts> constexpr auto sum();
 template <> constexpr auto sum() { return ct_uint_t<0>{}; }
@@ -401,7 +425,7 @@ constexpr auto sum(T const &, Ts const &...tl) {
 }
 ```
 
-- **2e implémentation:** expansion de parameter pack
+- **2e implémentation:** fold expression *(C++17)*
 
 ```cpp
 template<typename ... Ts> constexpr auto sum();
@@ -414,31 +438,32 @@ template <typename... Ts> constexpr auto sum(Ts const &...) {
 
 ---
 
-### Cas d'usage de ctbench - résultats
+<!-- _class: centered -->
 
+## Cas d'usage de ctbench: Récursion vs fold expression
 
-![width:1500px](images/ctbench-example.svg)
-*Comparaison du temps de compilation, récursion vs parameter pack*
+![width:1600px](images/ctbench-example.svg)
 
 ---
 
-## Conclusion sur ctbench
+## ctbench: Conclusion
 
 - Disponible en open-source: *github.com/jpenuchot/ctbench*
 
-- On dispose désormais d'un outil pour des **analyses reproductibles**
-  de temps de compilation
-
 - L'outil est facilement **installable et réutilisable**
 
-- On peut chercher des metaprogrammes plus complexes:
-  **des DSELs arbitraires**
+- Il permet d'effectuer des **analyses reproductibles** des temps de compilation
 
-- Cet outil peut nous guider dans leur implémentation
+<br/>
+
+- **Applications:**
+
+  - Estimation globale de l'impact sur le temps de compilation
 
   - Comparaison des techniques de métaprogrammation
 
-  - Estimation globale de l'impact sur le temps de compilation
+  - Peut nous guider dans l'implémentation de **métaprogrammes plus complexes**
+
 
 ---
 
@@ -454,7 +479,7 @@ template <typename... Ts> constexpr auto sum(Ts const &...) {
 - **Techniques d'implémentation des DSELs**
 
   - Nouvelles méthodes pour leur implémentation
-  - DSEL arbitraires appliqués au HPC
+  - DSEL arbitraires appliqués au calcul numérique
 
 ---
 
@@ -471,7 +496,7 @@ int main() {
 }
 ```
 
-- **Problème:** la syntaxe C++ limite la syntaxe des DSELs pour le HPC
+- **Problème:** la syntaxe C++ limite celle des DSELs pour le calcul numérique
 
 - **Est-il possible de s'affranchir de la syntaxe C++?**
 
@@ -485,12 +510,11 @@ int main() {
 Parsing d'expressions régulières PCRE et transformation en fonctions C++
 
 ```cpp
-std::optional<std::string_view> extract_number(std::string_view s) noexcept {
-  if (auto m = ctre::match<"[a-z]+([0-9]+)">(s)) {
+std::optional<std::string_view> extract_number(std::string_view s) noexcept
+{
+  if (auto m = ctre::match<"[a-z]+([0-9]+)">(s)) // Génération du matcher
     return m.get<1>().to_view();
-  } else {
-    return std::nullopt;
-  }
+  else return std::nullopt;
 }
 ```
 
@@ -498,25 +522,23 @@ CTRE utilise un **parser d'expressions PCRE** à la compilation
 
 - **Quelles techniques pour généraliser cette idée ?**
 
-- **Peut-on appliquer ces techniques aux DSELs pour le HPC ?**
+- **Peut-on appliquer ces techniques aux DSELs pour le calcul numérique ?**
 
 ---
 
-### Vers des compilateurs embarqués constexpr
+## Vers des compilateurs embarqués constexpr
 
-- Rappel des nouveautés constexpr
-
+- **constexpr**: permet d'exécuter des fonctions à la compilation
+- Nouvelles fonctionnalités constexpr:
   - Allocation dynamique
   - Support de la bibliothèque standard (std::vector, std::unique_ptr...)
 
 ```cpp
 constexpr std::vector<int> foo() { return {0, 1, 2, 3}; }
 ```
+<br/>
 
-**Idée:** peut-on adapter un parser runtime quelconque pour le compile-time ?
-
-- Mémoire dynamique dans les **fonctions constexpr**,
-  mais pas dans les **paramètres de templates**
+**Idée:** peut-on développer un parser constexpr et passer son résultat en paramètre template ?
 
 ```cpp
 template <auto Value> struct my_type {};
@@ -527,7 +549,7 @@ my_type<foo()> my_value; // ERREUR
 
 ---
 
-### Le langage Brainfuck
+## Le langage Brainfuck
 
 | Token   | Sémantique            | Token   | Sémantique            |
 |---------|-----------------------|---------|-----------------------|
@@ -548,7 +570,7 @@ my_type<foo()> my_value; // ERREUR
 
 ---
 
-### Un parser Brainfuck
+## Un parser Brainfuck
 
 ```cpp
 std::tuple<ast_block_t, token_vec_t::const_iterator>
@@ -574,7 +596,7 @@ parse_block(token_vec_t::const_iterator parse_begin,
 ```
 ---
 
-### Un parser Brainfuck constexpr
+## Un parser Brainfuck constexpr
 
 ```cpp
 constexpr std::tuple<ast_block_t, token_vec_t::const_iterator>
@@ -601,7 +623,7 @@ parse_block(token_vec_t::const_iterator parse_begin,
 
 ---
 
-### Génération de programmes Brainfuck
+## Génération de programmes Brainfuck
 
 - **Intuition:** On souhaite traduire des AST en expression templates
 
@@ -626,7 +648,7 @@ my_type<foo> my_value;      // OK
 
 ---
 
-### Temps de génération via expression templates
+## Temps de génération via expression templates
 
 *Temps de compilation en secondes*
 
@@ -644,7 +666,7 @@ my_type<foo> my_value;      // OK
 
 ---
 
-### Temps de génération sans expression templates
+## Temps de génération sans expression templates
 
 *Temps de compilation en secondes*
 
@@ -664,7 +686,9 @@ my_type<foo> my_value;      // OK
 
 ---
 
-### Benchmarks synthétiques de petite taille
+<!-- _class: centered -->
+
+## Benchmarks synthétiques de petite taille
 
 - Boucles imbriquées: **[[...]]** *(AST profond)*
 - Boucles consecutives: **[][]...** *(AST large)*
@@ -675,7 +699,7 @@ my_type<foo> my_value;      // OK
 
 ---
 
-### Conversion de tableaux dynamiques en tableaux statiques
+## Conversion de tableaux dynamiques en tableaux statiques
 
 ```c++
 constexpr std::vector<int> foo() { return {0, 1, 2, 3}; }
@@ -699,7 +723,7 @@ my_type<foo_arr()> my_value; // OK
 
 ---
 
-### Temps de compilation via sérialisation
+## Temps de compilation via sérialisation
 
 | Backend | Hello World | Hello World x2 | Mandelbrot |
 |-|-|-|-|
@@ -710,9 +734,18 @@ my_type<foo_arr()> my_value; // OK
 
 - Temps de compilation **linéaire**
 
+- Coût d'implémentation **non négligeable**:
+
+  - Représentation intermédiaire sérialisée
+  - Fonctions de sérialisation
+
+-> **Temps d'implémentation vs temps de compilation**
+
 ---
 
-### Benchmarks synthétiques de petite taille
+<!-- _class: centered -->
+
+## Benchmarks synthétiques de petite taille
 
 ![width:1800px](images/bf-imbricated-loops-graph.svg)
 
@@ -722,30 +755,32 @@ my_type<foo_arr()> my_value; // OK
 
 ## Application pour le calcul numérique
 
-- **Langage mathématique simple:** Tiny Math Language
+- **Langage mathématique simple:** Tiny Math Language, inspiré d'AsciiMath
 
 ```cpp
-static constexpr auto formula = "sin((x + 3) / 3 * y ^ 2)";
-auto function = tml::codegen<formula>(); // Génère une lambda polymorphe
+static constexpr auto formula = "sin(x + 3) / 3 * y ^ 2";
+auto function = tml::codegen<formula>(); // Génère un objet fonction générique
+
+auto res_scalar = function(8.3, 42.8);
 
 blaze::DynamicVector<float> vector_x(16, 1.), vector_y(16, 12.);
-blaze::DynamicVector<float> result = function(vector_x, vector_y);
+blaze::DynamicVector<float> res_vec = function(vector_x, vector_y);
 ```
 
 - **Parser:** Shunting-Yard (Dijkstra, 1961)
 
   - Précédence et associativité des opérateurs
 
-  - Sortie en **notation postfix**
-    *Exemple: 2 + 3 + 4 -> 2 3 + 4 +*
+  - Sortie en **notation postfix**, *exemple: 2 + 3 + 4 -> 2 3 + 4 +*
 
-  - Implique la création d'une pile, matérialisée par un tuple
-
-  - Le temps de compilation ne peut pas être linéaire
+  - Nécessite une pile implémentée par un tuple
+    -> Temps de compilation non-linéaire ?
 
 ---
 
-### Temps de compilation de Blaze et TML
+<!-- _class: centered -->
+
+## Temps de compilation de Blaze et TML
 
 ![width:1500px](images/shunting-yard.addition-series-partial.svg)
 *Mesures de temps de compilation pour des séries d'additions
@@ -753,7 +788,9 @@ blaze::DynamicVector<float> result = function(vector_x, vector_y);
 
 ---
 
-### Temps de compilation de Blaze et TML
+<!-- _class: centered -->
+
+## Temps de compilation de Blaze et TML
 
 ![width:1500px](images/shunting-yard.addition-series.svg)
 *Mesures de temps de compilation pour des séries d'additions
@@ -784,90 +821,114 @@ Nouvelle méthodologie pour le benchmarking des temps de compilation-->
 
 ---
 
-# Conclusions
+## DSELs: Conclusion
 
-- Codegen pour la performance:
-  - Tres utilisé pour les squelettes algorithmiques,
-    très peu pour les routines haute performance,
-    et encore moins pour du cross-vendor pour les GPU
-  - Usage sous-optimal des ressources humaines,
-    on ~~peut~~ doit faire un BLAS++ avec de la lazy evaluation
-- Codegen:
-  - Les difficultés proviennent des limitations sur la memoire dynamique
+- Implémentations et benchmarks: *github.com/jpenuchot/poacher*
 
-  **TODO**: propre
+- **Résultats:**
+
+  - On peut s'affranchir de la syntaxe C++
+
+  - Techniques de génération de code adaptées à différents cas
+    *(prototypage, expressions simples, programmes de grande taille)*
+
+  - On peut combiner ces abstractions avec des bibliothèques existantes
+
+- **Utilité de ctbench:**
+
+  - Validation des hypothèses sur les temps de compilation
+
+  - Analyse fine des résultats finaux
 
 ---
 
-# Perspectives
+# Conclusions
 
-- Benchmarking:
+- **Etat de l'art: des métaprogrammes de "seconde zone"**
+
+  - Les templates limitent la métaprogrammation C++ constexpr
+  - Les outils d'analyse de temps de compilation sont insuffisants
+
+- **Première contribution: ctbench**
+
+  - Analyse des temps de compilation
+  - Reproductibilité
+  - Contribue à l'optimisation des métaprogrammes
+
+- **Deuxième contribution: parsing de DSELs arbitraires**
+
+  - Stratégie d'implémentation à faible coût de compilation
+  - Démonstration de leur utilisation pour le calcul numérique
+
+---
+
+## Perspectives
+
+- **Benchmarking:**
   - Il faut encore plus d'outils
-  - Il manque GCC, et le support de ctbench pour Windows
-- Codegen:
-  - Contournable par un modele de metaprog plus direct
-  - En attendant: on peut améliorer les DSELs via des générateurs de parsers constexpr
-  - Consommer du LaTeX ? Du Matlab ? ~~De l'UTF-8 ?~~
+  - Il manque GCC
 
-  **TODO**: exemple
+- **Génération de code:**
+  - Contournable par un modele de metaprog plus direct
+    *Passage par NTTP ou réflexion + réification ?*
+
+  - Amélioration des DSELs en C++26:
+      - Sérialisation automatique vers une IR générique
+      - Générateurs de parsers constexpr
+
+---
+
+## Perspectives
+
+- Externalisation des paramètres:
+
+
+```cpp
+static constexpr auto formula = "sin(λ + 3) / 3 * ω ^ 2";
+auto function = tml::codegen<formula>(); // Génère un objet fonction générique
+
+auto res = function("λ"_var = 3.5, "ω"_var = 32.2)
+```
+
+- Intégration de langages pré-existants:
+
+```cpp
+static constexpr auto matlab =  R"function ave = calculateAverage(x)
+                                    ave = sum(x(:))/numel(x);
+                                  end";
+
+auto function = tml::codegen<matlab>(); // Génère un objet fonction générique
+
+auto res = function("x"_var = std::vector<double>{1.2, 2.4, 3., .1});
+```
+---
+<!-- paginate: false -->
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+# Merci de votre attention
 
 ---
 
 # Contributions et logiciels
 
-### Publications
+- *Modern Generative Programming for Optimizing Small Matrix-Vector Multiplication*
+  Jules Pénuchot, Joël Falcou, Amal Khabou
+  International Conference on High Performance Computing Simulation, 2018
+
+- *ctbench: compile time benchmarking for Clang*
+  Jules Pénuchot
+  CPPP 2021
+
+- *A totally constexpr standard library*
+  Paul Keir, Joel Falcou, Jules Pénuchot, Andrew Gozillon
+  Meeting C++, 2022
 
 - *ctbench - compile-time benchmarking and analysis*
   Jules Pénuchot, Joël Falcou
   Journal of Open Source Software, vol. 8, 2023
-
-  **TODO**: Le reste
-
-### Logiciels
-
-- *github.com/jpenuchot/ctbench*
-- *github.com/jpenuchot/poacher*
-
-<!--
-@article{Penuchot2023,
-  doi = {10.21105/joss.05165},
-  url = {https://doi.org/10.21105/joss.05165},
-  year = {2023},
-  publisher = {The Open Journal},
-  volume = {8},
-  number = {88},
-  pages = {5165},
-  author = {Jules Penuchot and Joel Falcou},
-  title = {ctbench - compile-time benchmarking and analysis},
-  journal = {Journal of Open Source Software},
-}
-
-@inproceedings{hpcs2018-matvec,
-  author = {Penuchot, Jules and Falcou, Joel and Khabou, Amal},
-  booktitle = {2018 International Conference on High Performance Computing
-               Simulation (HPCS)},
-  title = {Modern Generative Programming for Optimizing Small Matrix-Vector
-           Multiplication},
-  year = {2018},
-  volume = {},
-  number = {},
-  pages = {508-514},
-  doi = {10.1109/HPCS.2018.00086},
-}
-
-@online{ctbench-cppp21,
-  author = {Jules {Penuchot}},
-  title = {ctbench: compile time benchmarking for Clang},
-  year = {2021},
-  url = {https://www.youtube.com/watch?v=1RZY6skM0Rc},
-}
-
-
-@online{meetingcpp22,
-  author = {Paul {Keir} and Joel {Falcou} and Jules {Penuchot} and Andrew {
-            Gozillon}},
-  title = {Meeting C++ - A totally constexpr standard library},
-  year = {2022},
-  url = {https://www.youtube.com/watch?v=ekFPm7e__vI},
-}
--->
