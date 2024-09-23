@@ -1,5 +1,3 @@
-!main.pdf
-!soutenance.pdf
 *.aux
 *.bbl
 *.bcf
@@ -20,3 +18,6 @@
 *.xdv
 scratchpad/
 svg-inkscape/
+
+!main.pdf
+!soutenance.pdf
