@@ -528,7 +528,7 @@ CTRE utilise un **parser d'expressions PCRE** à la compilation
 
 ## Vers des compilateurs embarqués constexpr
 
-- **constexpr**: permet d'exécuter des fonctions à la compilation
+- **constexpr**: rend des fonctions exécutables à la compilation
 - Nouvelles fonctionnalités constexpr:
   - Allocation dynamique
   - Support de la bibliothèque standard (std::vector, std::unique_ptr...)
@@ -631,7 +631,7 @@ parse_block(token_vec_t::const_iterator parse_begin,
   - On passe pas les noeuds, on passe leurs **fonctions génératrices**
 
 ```cpp
-constexpr std::vector<int> foo() { {0, 1, 2, 3}; }
+constexpr std::vector<int> foo() { return {0, 1, 2, 3}; }
 
 template <auto Value> struct my_type {};
 
@@ -872,7 +872,7 @@ Nouvelle méthodologie pour le benchmarking des temps de compilation-->
   - *Proposer un modèle de métaprogrammation plus direct:*
 
     - Mémoire dynamique en paramètre de templates
-    - réflexion + réification
+    - Réflexion + réification
 
   - *Amélioration des DSELs en C++23:*
 
