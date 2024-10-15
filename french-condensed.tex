@@ -1,10 +1,6 @@
 \documentclass[main]{subfiles}
 \begin{document}
 
-\chapter*{Techniques avanc\'ees de g\'en\'eration de code pour la performance}
-
-\section*{R\'esum\'e en Fran\c{c}ais}
-
 Depuis le d\'ebut de l'informatique les architectures des ordinateurs n'ont
 cess\'e de croitre en complexit\'e. Le nombre de transistor dans ces derniers
 double encore aujourd'hui tous les 3 ans, et la fin de ce doublement
@@ -57,8 +53,8 @@ de manipuler des programmes en entr\'ee comme en sortie lors de la compilation,
 nous parlerons dans ce cas de \textbf{m\'etaprogrammation}.
 
 La m\'etaprogrammation permet donc de compiler des programmes en ex\'ecutables
-optimis\'es pour des architectures cibl\'ees. On retrouve ces techniques cette
-pratique dans de nombreux langages, l'exemple historique le plus notable \'etant
+optimis\'es pour des architectures cibl\'ees. On retrouve ces techniques
+dans de nombreux langages, l'exemple historique le plus notable \'etant
 Lisp, paru en 1960, dont le syst\`eme de macros permet d'utiliser
 l'int\'egralit\'e du langage Lisp pour g\'en\'erer des programmes Lisp.
 Le langage C, lui, permet d'injecter des tokens lors de la phase de
@@ -83,7 +79,7 @@ D'autres, comme Compile Time Regular Expressions, utilisent
 la m\'etaprogrammation de templates pour impl\'ementer des analyseurs
 syntaxiques permettant de reconna\^itre des langages arbitraires.
 
-Depuis peu, la m\'emoire dynamique peut \^etre utilis\'ee dans les fonctions
+Depuis C++20, la m\'emoire dynamique peut \^etre utilis\'ee dans les fonctions
 ex\'ecut\'ees \`a la compilation d'un programme \cpp. Nous souhaitons \'etudier
 l'impact de cette nouvelle fonctionnalit\'e sur l'impl\'ementation d'analyseurs
 syntaxiques de langages arbitraires, autant sur la conception des analyseurs
@@ -92,7 +88,9 @@ Comment peut-on exploiter la m\'emoire dynamique dans l'\'evaluation de code
 \cpp \`a la compilation pour l'int\'egration de langages d\'edi\'es de syntaxes
 arbitraires pour la programmation <<haute performance>> ?
 
-\subsection*{G\'en\'eration de code SIMD performant}
+\section{
+  G\'en\'eration de code SIMD performant
+}
 
 Pour r\'epondre \`a ces questions, nous commencerons d'abord par montrer
 l'efficacit\'e de la m\'etaprogrammation \cpp pour la programmation
@@ -152,7 +150,7 @@ de la matrice (voir figures \ref{fig:gemv-sse-bench-fr},
 Ce chapitre a fait l'objet d'une publication scientifique \`a la conf\'erence
 internationale \textbf{High Performance Computation \& Simulation 2018}.
 
-\subsection*{
+\section{
   Nouvelle m\'ethodologie pour l'analyse des temps de compilation
 }
 
@@ -187,7 +185,7 @@ Ce chapitre a fait l'objet d'une publication scientifique au
 \textbf{Journal of Open Source Software}, et d'une pr\'esentation
 \`a \textbf{CPPP 2021}.
 
-\subsection*{
+\section{
   Des nouvelles m\'ethodes pour la g\'en\'eration de code
 }
 
@@ -221,7 +219,7 @@ Cette technique n\'ecessite plus d'effort, mais on peut s'attendre \`a
 ce qu'elle soit moins co\^uteuse en temps de compilation car elle ne n\'ecessite
 d'appeler la fonction de g\'en\'eration de la structure que deux fois.
 
-\subsection*{
+\section{
   \'Etude de cas: int\'egration du langage Brainfuck dans \cpp
 }
 
@@ -275,7 +273,7 @@ r\'esultats
 Ce chapitre a fait l'objet d'une pr\'esentation \`a \textbf{Meeting C++ 2022}
 dans le cadre d'un projet commun de recherche avec Paul Keir et Andrew Gozillon.
 
-\subsection*{
+\section{
   Application: int\'egration d'un langage math\'ematique dans \cpp
 }
 
