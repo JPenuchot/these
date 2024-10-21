@@ -251,10 +251,10 @@ bool var = (std::is_integral_v<Ts> && ...);
 \end{lstlisting}
 
 \subsection{
-  Compile time logic
+  Compile time computation
 }
 
-Compile time logic can be achieved in many \cpp constructs.
+Compile time computation can be achieved through many \cpp constructs.
 
 \begin{itemize}
 
@@ -456,7 +456,7 @@ to call \gls{blas} routines instead of using regular element-wise assignment.
 enable the creation of high level, portable \glspl{dsel} that resolve into
 high performance code thanks to a combination of metaprogramming techniques.
 In the next section, we will see a collection of libraries that go beyond the
-idea of using templates for math code generation, and implement or enable the
+idea of using templates for math code generation, and enable or facilitate the
 implementation of arbitrary compile-time programs.
 
 \section{
@@ -519,7 +519,8 @@ using pos_of_6 = brigand::size<brigand::find<
 All these libraries either enable \gls{tmp}, or use \gls{tmp} to achieve
 a specific goal. However with the introduction of \gls{constexpr} programming,
 a new range of compile-time libraries aims to provide new capabilities
-for this new metaprogramming paradigm.
+for this new metaprogramming paradigm, including the \cpp standard library
+itself.
 
 \subsection{
   Value based metaprogramming
@@ -563,10 +564,10 @@ although all of them usable in \glspl{consteval}. For example,
 \lstinline{std::deque} is not usable in \glspl{consteval} whereas
 its \textbf{C'est} equivalent named \lstinline{cest::deque} is.
 It was instrumental for this thesis as the research work I present here started
-a long time before \cpp23 was adopted and standard libraries as well as
+before \cpp23 was adopted, and before standard libraries as well as
 compilers started implementing it.
 
-Similar to previous examples, listing \ref{lst:cest-example} shows a
+Similar to the previous examples, listing \ref{lst:cest-example} shows a
 compile-time program in which we find the index of the first element of value 6.
 Note that in this example, we are using properly typed values and functions
 instead of templates to represent values, predicates, and functions.

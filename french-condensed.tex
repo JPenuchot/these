@@ -67,7 +67,7 @@ d'\'evaluer du code \cpp \`a la compilation pour construire des param\`etres de
 templates.
 
 Ces techniques, en plus des aspects <<haute performance>> du langage \cpp,
-on fait na\^itre un \'ecosyst\`eme de biblioth\`eques m\'etaprogramm\'ees
+ont fait na\^itre un \'ecosyst\`eme de biblioth\`eques m\'etaprogramm\'ees
 permettant d'optimiser automatiquement des programmes pour des architectures
 tr\`es diverses: les architectures SIMD, les processeurs multi-coeurs, les GPU,
 ou tout autre type d'acc\'el\'erateur programmable.
@@ -79,7 +79,7 @@ D'autres, comme Compile Time Regular Expressions, utilisent
 la m\'etaprogrammation de templates pour impl\'ementer des analyseurs
 syntaxiques permettant de reconna\^itre des langages arbitraires.
 
-Depuis C++20, la m\'emoire dynamique peut \^etre utilis\'ee dans les fonctions
+Depuis \cpp20, l'allocation dynamique peut \^etre utilis\'ee dans des fonctions
 ex\'ecut\'ees \`a la compilation d'un programme \cpp. Nous souhaitons \'etudier
 l'impact de cette nouvelle fonctionnalit\'e sur l'impl\'ementation d'analyseurs
 syntaxiques de langages arbitraires, autant sur la conception des analyseurs
@@ -139,24 +139,25 @@ Nous comparons ensuite les performances du code g\'en\'er\'e avec des
 impl\'ementations en assembleur d\'eclin\'ees pour chaque micro-architecture
 fournies par la biblioth\`eque OpenBLAS en l'appliquant sur des matrices de
 tailles allant de $4 \times 4$ \`a $512 \times 512$.
-Malgr\'e des r\'esultats peu concluants en SSE4.2, les r\'esultats se montrent
-tr\`es positifs en AVX2 o\`u nous obtenons des r\'esultats sup\'erieurs ou
-\'equivalents \`a OpenBLAS. Quant \`a ARM, les r\'esultats nous y obtenons
+Malgr\'e les r\'esultats peu concluants en SSE4.2
+(figure \ref{fig:gemv-sse-bench-fr}), les r\'esultats se montrent
+tr\`es positifs en AVX2 (figure \ref{fig:gemv-avx-bench-fr}) o\`u nous obtenons
+des r\'esultats sup\'erieurs ou \'equivalents \`a OpenBLAS. Quant \`a ARM
+(figure \ref{fig:gemv-arm-bench-fr}), les r\'esultats nous y obtenons
 des performances sup\'erieures \`a celles d'OpenBLAS quelle que soit la taille
-de la matrice (voir figures \ref{fig:gemv-sse-bench-fr},
-\ref{fig:gemv-avx-bench-fr} et \ref{fig:gemv-arm-bench-fr}).
+de la matrice.
 \\
 
 Ce chapitre a fait l'objet d'une publication scientifique \`a la conf\'erence
 internationale \textbf{High Performance Computation \& Simulation 2018}.
 
 \section{
-  Nouvelle m\'ethodologie pour l'analyse des temps de compilation
+  Nouvelle m\'ethode pour l'analyse des temps de compilation
 }
 
-Nous proposons ensuite une nouvelle m\'ethodologie pour l'analyse des temps
-de compilation des m\'etaprogrammes \cpp, ainsi que des outils impl\'ementant
-cette m\'ethodologie de mani\`ere reproductible. Cette m\'ethodologie
+Nous pr\'esentons ensuite une nouvelle m\'ethode pour l'analyse des temps
+de compilation de m\'etaprogrammes \cpp, ainsi que des outils impl\'ementant
+cette m\'ethode de mani\`ere reproductible. Cette m\'ethode
 repose sur l'utilisation des donn\'ees de profiling de Clang pour permettre
 des analyses cibl\'ees, et permet de r\'ealiser des \'etudes de temps
 de compilation sur des m\'etaprogrammes param\'etrables, et donc d'observer
@@ -174,7 +175,7 @@ de programmation clairement document\'ee. Il s'accompagne d'une biblioth\`eque
 \cpp pour exploiter les hi\'erarchies de fichiers g\'en\'er\'ees
 par \textbf{ctbench}.
 
-Cette nouvelle m\'ethodologie permet de mieux comprendre l'impact des
+Cette m\'ethode permet de mieux comprendre l'impact des
 techniques de m\'etaprogrammation sur les temps de compilation en permettant
 d'observer finement chaque \'etape de la compilation \'etant donn\'e que les
 mesures du profiler de Clang sont accompagn\'ees de m\'etadonn\'ees relatives
@@ -200,7 +201,8 @@ Cette option a un co\^ut car les r\'esultats interm\'ediaires ne peuvent pas
 \^etre stock\'es, ainsi la fonction g\'en\'erant la structure devra \^etre
 rappel\'ee pour chaque \'el\'ement de la structure. Cette mani\`ere de passer
 les \'el\'ements d'une structure arbitraire en param\`etre de template est
-baptis\'ee <<pass by generator>>, et permet de g\'en\'erer du code \`a partir
+baptis\'ee <<pass-by-generator>> (ou <<passage par g\'en\'eratrice>>),
+et permet de g\'en\'erer du code \`a partir
 d'une structure dynamique sans n\'ecessiter de repr\'esentation interm\'ediaire.
 Elle peut toutefois \^etre utilis\'ee pour g\'en\'erer une repr\'esentation
 interm\'ediaire sous forme d'arborescence de templates de types (appel\'ees
@@ -240,7 +242,7 @@ la fractale de Mandelbrot, ainsi que des benchmarks synth\'etiques effectu\'es
 des diff\'erentes techniques plus en finesse.
 
 Lors de ces benchmarks, nous constatons que la m\'ethode dite
-<<pass by generator>> induit des temps de compilation quadratiques en raison
+<<pass-by-generator>> induit des temps de compilation quadratiques en raison
 du nombre d'appels \`a la fonction de parsing, appell\'ee elle-m\^eme par les
 fonctions g\'en\'eratrices pour chaque n\oe{}ud de l'arbre de syntaxe.
 Cette technique est suffisante pour des programmes de petite taille
@@ -271,16 +273,18 @@ r\'esultats
 \\
 
 Ce chapitre a fait l'objet d'une pr\'esentation \`a \textbf{Meeting C++ 2022}
-dans le cadre d'un projet commun de recherche avec Paul Keir et Andrew Gozillon.
+dans le cadre d'un projet commun de recherche avec Paul Keir et Andrew Gozillon
+de University of the West of Scotland.
 
 \section{
   Application: int\'egration d'un langage math\'ematique dans \cpp
 }
 
 Les conclusions tir\'ees du cas de Brainfuck nous permettent d'impl\'ementer
-un autre analyseur syntaxique pour un langage math\'ematique que nous appelons
-Tiny Math Language (TML). Nous d\'ecidons d'impl\'ementer un parser bas\'e sur
-l'algorithme Shunting yard d'Edsger Dijkstra dont la sortie est la formule
+un autre analyseur syntaxique pour un langage math\'ematique de d\'emonstration
+que nous appelons Tiny Math Language (TML).
+Nous d\'ecidons d'impl\'ementer un parser bas\'e sur
+l'algorithme Shunting Yard d'Edsger Dijkstra dont la sortie est la formule
 en notation polonaise inverse. Cette repr\'esentation permet ensuite de
 g\'en\'erer le programme correspondant \`a l'aide d'un m\'etaprogramme template
 stockant les r\'esultats interm\'ediaires dans une pile sous forme de tuple.

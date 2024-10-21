@@ -30,8 +30,8 @@ Multiplication}",
 The efforts of optimizing the performance of \gls{blas} routines
 fall into two main directions. The first direction is about
 writing very specific assembly code. This is the case for
-almost all the vendor libraries including Intel MKL\cite{hpcs1},
-AMD ACML\cite{hpcs2} etc. To provide the users with efficient \gls{blas}
+almost all the vendor libraries including Intel MKL \cite{hpcs1},
+AMD ACML \cite{hpcs2} etc. To provide the users with efficient \gls{blas}
 routines, the vendors usually implement their own routines
 for their own hardware using assembly code with specific
 optimizations which is a low level solution that gives the
@@ -51,12 +51,12 @@ However, they only solve partially the trade-off between the
 abstraction level and the efficiency of the generated codes.
 This is for example the case of the approach followed by
 the Formal Linear Algebra Methods Environment (FLAME)
-with the Libflame library\cite{hpcs3}. Thus, it offers a framework to
-develop dense linear solvers using algorithmic skeletons\cite{hpcs4}
+with the Libflame library \cite{hpcs3}. Thus, it offers a framework to
+develop dense linear solvers using algorithmic skeletons \cite{hpcs4}
 and an API which is more user-friendly than LAPACK, giving
 satisfactory performance results. A more generic approach is
 the one followed in recent years by \cpp libraries built around
-expression templates\cite{hpcs5} or other generative programming\cite{hpcs6}
+expression templates \cite{hpcs5} or other generative programming \cite{hpcs6}
 principles. In this section, we will focus on such an approach.
 To show the interest of this approach, we consider as
 example the matrix-vector multiplication kernel (gemv) which
@@ -81,7 +81,7 @@ stemmed from metaprogramming and a proper \cpp \gls{simd} layer.
 }
 
 As we saw earlier, metaprogramming is used in \cpp \cite{hpcs9},D \cite{hpcs10},
-OCaml\cite{hpcs11} or Haskell\cite{hpcs12}. A subset of basic notions emerges:
+OCaml \cite{hpcs11} or Haskell \cite{hpcs12}. A subset of basic notions emerges:
 
 \begin{itemize}
 \item
@@ -155,8 +155,9 @@ which was able to enumerate a variadic list of functions
 or template arguments in a comma-separated code
 fragment. Its main use was to provide the syntactic
 support required to write a code with variadic template
-arguments. However, Niebler and Parent showed that
-this can be used to generate far more complex code
+arguments. However, Niebler and Parent
+% TODO: ref
+showed that this can be used to generate far more complex code
 when paired with other language constructs. Both
 code replication and a crude form of code unrolling
 were possible. However, it required the use of some
@@ -621,7 +622,7 @@ AVX2 to the performance of a similarly configured OpenBLAS \gls{gemv} kernel.
 Again, the performances of our implementation are close
 to that of OpenBLAS and are even quite better for matrices of
 small sizes ranging from 4 to 16 elements. For example, for a
-matrix of size 8 elements,the automatically generated code has
+matrix of size 8 elements, the automatically generated code has
 a performance that is 3 times better than the OpenBLAS \gls{gemv}
 kernel (15.78 Gflop/s vs 5.06 Gflop/s). Two phenomenons
 appear however. The first one is that the increased number

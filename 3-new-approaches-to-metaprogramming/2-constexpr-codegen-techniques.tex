@@ -72,7 +72,7 @@ for generating structures and functions.
 This section will cover the implementation of \gls{constexpr} \glspl{ast},
 and techniques to work around the limitations that prevent their direct use as
 \glspl{nttp} either through functional wrapping techniques, or through
-their convertion of into values that satisfy \gls{nttp} requirements.
+their convertion into values that satisfy \gls{nttp} requirements.
 
 \subsection{
   Code generation from pointer tree data structures
@@ -80,7 +80,7 @@ their convertion of into values that satisfy \gls{nttp} requirements.
 
 \label{lbl:ptr-tree-codegen}
 
-In this subsection, we introduce three techniques that will allow us to use
+In this section, we introduce three techniques that will allow us to use
 a pointer tree generated from a \gls{constexpr} function as a template parameter
 for code generation.
 
@@ -106,8 +106,8 @@ The techniques we will use to pass the result as a template parameter are:
       a \gls{nttp},
 \end{itemize}
 
-The compilation performance measurements in \ref{lbl:compile-time-eval} will
-rely on the same data passing techniques, but with more complex examples such
+The compilation performance measurements in section \ref{lbl:compile-time-eval}
+will rely on the same data passing techniques, but with more complex examples such
 as embedded compilation of Brainfuck programs, and of \LaTeX math formulae
 into high performance math computation kernels.
 
@@ -173,7 +173,7 @@ or \gls{nttp}.
 
 The downside of using this value passing technique is that the
 number of calls of the generator function is proportional to the
-number of nodes. Experiments in \ref{lbl:compile-time-eval} highlight
+number of nodes. Experiments in section \ref{lbl:compile-time-eval} highlight
 the scaling issues induced by this code generation method.
 And while it is very quick to implement, there are still difficulties
 related to \gls{constexpr} memory constraints and compiler or library support.
@@ -310,7 +310,8 @@ proves that \gls{constexpr} programming is interoperable with existing
 type-based paradigms, even when \gls{constexpr} allocated memory is involved.
 
 It is worth mentioning that both this technique and the previous one induce
-very high compilation times, as we will see in \ref{lbl:bf-parsing-and-codegen}.
+very high compilation times, as we will see in section
+\ref{lbl:bf-parsing-and-codegen}.
 
 \subsubsection{
   FLAT - AST serialization
@@ -477,11 +478,11 @@ Current token & Action & Stack \\
 \end{figure}
 
 Parsing algorithms may output serialized data. In this case, the serialization
-step described in \ref{lbl:flat-technique} is not needed, and the result
+step described in section \ref{lbl:flat-technique} is not needed, and the result
 can be converted into a static array.
 This makes the code generation process rather straightforward as no complicated
 transformation is needed, while still scaling decently as we will see in
-\ref{lbl:compile-time-eval} where we will be using a
+section \ref{lbl:compile-time-eval} where we will be using a
 Shunting Yard parser \cite{shunting-yard} to parse math formulae to a
 \gls{rpn}, which is its postfix notation.
 

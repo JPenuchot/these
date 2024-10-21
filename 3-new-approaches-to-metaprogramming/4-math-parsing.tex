@@ -13,7 +13,7 @@ As such, we will be generating code from mathematical expressions using
 a parsing algorithm that transforms infix formulas into their \gls{rpn}
 representation.
 
-In \ref{lbl:codegen-from-rpn}, we already demonstrated that generating code
+In section \ref{lbl:codegen-from-rpn}, we already demonstrated that generating code
 from \gls{rpn} formulas is a rather easy task, therefore this section
 will only cover the Shunting Yard algorithm, and the use of \gls{rpn}
 code generation applied to high performance computing.
@@ -23,7 +23,7 @@ code generation applied to high performance computing.
 }
 
 As parsing algorithms and \gls{constexpr} dynamic data representations were
-already covered in \ref{lbl:bf-parsing-and-codegen}, the implementation of
+already covered in section \ref{lbl:bf-parsing-and-codegen}, the implementation of
 the Shunting Yard algorithm will not be covered in detail here.
 A thoroughly commented \gls{constexpr} implementation is available in appendix
 \ref{app:shunting-yard-impl}. It features the algorithm itself, as well as
@@ -38,7 +38,7 @@ operator stack is read, then the operator stack is dumped in the output queue.
 The worst case time and memory complexity of the algorithm is $O(N)$.
 
 Once again, code generation from postfix notation formulas was already covered
-in \ref{lbl:codegen-from-rpn}, so we will skip straight to the use of Blaze
+in section \ref{lbl:codegen-from-rpn}, so we will skip straight to the use of Blaze
 to generate high performance code from \gls{constexpr} formulas.
 
 \subsection{

@@ -156,27 +156,31 @@
 
 \newglossaryentry{bf}{
   name=Brainfuck,
-  description=empty
+  description={An esoteric language in which basic
+  commands are encoded as single characters.}
 }
 
 \newglossaryentry{ir}{
   name=intermediate representation,
-  description=empty
+  description={An internal data structure used by compilers
+  for the representation of programs.}
 }
 
 \newglossaryentry{pbg}{
   name=pass by generator,
-  description=empty
+  description={An indirect value passing technique which consists in passing
+  generator functions instead of their results.}
 }
 
 \newglossaryentry{tmp}{
   name=template metaprogramming,
-  description=empty
+  description={The use of templates for the implementation of metaprograms.}
 }
 
 \newglossaryentry{et}{
   name=expression template,
-  description=empty
+  description={The representation of mathematical expressions in the form of
+  template arborescences.}
 }
 
 \newacronym{api}{API}{Application Programming Interface}
@@ -307,50 +311,6 @@ Ma\^itre de conf\'erences, Universit\'e Paris-Saclay & \\
 
 \end{titlepage}
 
-\chapter*{Remerciements}
-
-Merci \`a \textbf{Christine Paulin} d'assurer la pr\'esidence du jury,
-aux rapporteurs \textbf{David Hill} et \textbf{Thierry G\'eraud},
-ainsi qu'\`a \textbf{Amina Guermouche} d'examiner la th\`ese avec
-Christine Paulin.
-
-Je tiens \'egalement \`a faire part de ma reconnaissance envers
-\textbf{Christine Paulin-Mohring} pour la cr\'eation du Magist\`ere d'Informatique
-qui m'a permis de d\'ecouvrir la recherche dans un cadre tr\`es privil\'egi\'e.
-
-Merci \'egalement \`a \textbf{Jean-Thierry Laprest\'e} et
-\textbf{Daniel \'Etiemble} pour leurs relectures.
-
-Merci, bien s\^ur, \`a \textbf{Jo\"el Falcou}, pour son accompagnement
-bienveillant, valorisant, et d\'evou\'e depuis mon premier stage de recherche.
-
-% Merci les collegues et les parents
-
-Merci \`a \textbf{Amal Khabou}, dont l'aide m'a \'et\'e pr\'ecieuse pour la pr\'eparation
-de ma premi\`ere conf\'erence.
-
-Merci \`a \textbf{Hartmut Kaiser}, pour son accueil \`a LSU,
-\textbf{Adrian et Cory Lemoine}, qui m'ont aid\'e \`a
-traverser un \'ev\'enement difficile et marquant pendant mon s\'ejour,
-et bien s\^ur \textbf{au reste de l'\'equipe Ste||ar} pour les amiti\'es
-que j'ai pu y nouer, et la gentillesse de chaque personne que j'y ai
-rencontr\'ee.
-
-Merci \`a \textbf{Paul Keir}, pour sa collaboration amicale et bienveillante.
-
-Merci \`a \textbf{mes parents},
-pour m'avoir transmis la passion de l'informatique,
-pour m'avoir soutenu \`a tout \^age,
-y compris pendant mes ann\'ees de th\`ese.
-
-% Merci les potes
-
-\textbf{Antoine Lanco et Alexandrina Korneva}, pour leur camaraderie, les
-d\'ecorations de f\^etes, les f\^etes dans les champs, et les champs de pizzas.
-
-\textbf{Marie Debard}, pour son soutien moral lorsque je m'inqui\'etais
-pour le financement de ma th\`ese.
-
 % page des résumés à garder en 2ème page.
 % Si les résumés sont trop longs pour tenir sur une seule et même page,
 % on peut mettre un résumé par page
@@ -458,7 +418,7 @@ to study and compare different code generation techniques, whereas TML is used
 to study code generation using portable high performance computing libraries.
 
 In order to assess the compile-time impact of these various metaprogramming
-techniques, we propose a new benchmarking methodology that uses
+techniques, we propose a new benchmarking method that uses
 Clang's built-in profiler, enabling compile-time performance scaling analysis
 beyond black-box benchmarking.
 \end{multicols}
@@ -484,6 +444,50 @@ beyond black-box benchmarking.
 
 % ------------------------------------------------------------------------------
 % These de Jules
+
+
+\chapter*{
+  Acknowledgements
+}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+
+Thanks to \textbf{Christine Paulin} for presiding the jury,
+as well as \textbf{David Hill}, \textbf{Thierry G\'eraud} for being
+reporters on this thesis, and \textbf{Amina Guermouche}
+for being an examiner of it.
+
+I would also like to thank \textbf{Sylvain Conchon and Steven Martin} for
+the creation of the Magist\`ere d'Informatique,
+and thanks to \textbf{Sarah Cohen-Boulakia} for being responsible for it and
+leading me to my first reseach internship.
+
+Thanks to \textbf{Jean-Thierry Laprest\'e} and \textbf{Daniel \'Etiemble}
+for their proofreading.
+
+And of course, thanks to \textbf{Jo\"el Falcou} for his support that has been
+valorizing, careful, and devoted since my first research internship.
+
+Thanks to \textbf{Amal Khabou} for her help during
+the preparation of my first conference.
+
+Thanks to \textbf{Hartmut Kaiser} for welcoming me at Louisiana State
+University, thanks to \textbf{Adrian and Cory Lemoine} for their kind support
+during a very difficult and striking event in Baton Rouge, and of course thanks
+to \textbf{the rest of the STE||AR Group} for the friendships I made along the
+way.
+
+Thanks to \textbf{Paul Keir}, for his friendly and caring partnership.
+
+Thanks to \textbf{my parents} for fostering my passion for computer science
+and for supporting me throughout my childhood and my student years,
+including my years as a PhD student.
+
+Thanks to \textbf{Antoine Lanco and Alexandrina Korneva} for their
+companionship, the party decorations, the parties in open fields,
+and the fields of pizza.
+
+Thanks to \textbf{Marie Debard} for being supportive when I was worried for
+the financing of my thesis.
 
 \chapter*{
   R\'esum\'e en Fran\c{c}ais
@@ -549,7 +553,7 @@ of \gls{hpc} applications: linear algebra kernels.
 }
 
 \chapter{
-  Compile time benchmarking methodology
+  Compile time benchmarking method
 }
 
 With \gls{tmp} libraries like Eigen\cite{eigen}, Blaze\cite{blazelib},
@@ -559,7 +563,7 @@ These needs might grow
 even larger as \cpp embeds more features over time to support and extend this
 kind of practices, like compile time containers \cite{more-constexpr-containers}
 or static reflection\cite{static-reflection}. However, there is still no clear
-cut methodology to compare the performance impact of different metaprogramming
+cut method to compare the performance impact of different metaprogramming
 strategies.
 As new \cpp features allow for new techniques with alleged
 better compile time performance, no scientific process can back up those claims.
@@ -569,7 +573,7 @@ compile time benchmarking and analysis in \cpp. It provides developer-friendly
 tools
 to define and run benchmarks, then aggregate, filter out, and plot the data to
 analyze them. As such, \ctbench aims to be a foundational layer of a proper
-scientific methodology for analyzing compile time program behavior.
+scientific method for analyzing compile time program behavior.
 \\
 
 ctbench puts an emphasis on software quality.
@@ -683,7 +687,7 @@ backend that supports high performance code generation via Blaze.
 \section{Conclusion}
 
 The Brainfuck example shows that using \gls{constexpr} programming to embed
-large programs written in foreign languages in \cpp can be achieved.
+large programs written in arbitrary languages in \cpp can be achieved.
 \gls{ast} serialization makes it possible to store parsing results
 and avoid running into quadratic compilation time issues, as long as
 the code generation methods do not rely on heavy metaprogramming methods.
@@ -713,11 +717,12 @@ tackle the challenge of portability in the context of \acrlong{hpc},
 even for very low level tasks where the reduction of abstraction overhead
 is critical to achieve decent performance.
 
+% TODO: ???
 \section*{...}
 
 Before moving on to \gls{constexpr} programming, we adressed the lack of
 tools for the scientific study of compilation times with ctbench.
-We proposed a new compile-time study methodology based on Clang's built-in
+We proposed a new compile-time study method based on Clang's built-in
 profiler that help us understand the impacts of metaprograms on each step
 of the compilation process. While it offers limited benchmarking capabilities
 when used with GCC as the latter does not output any detailed profiling data,

@@ -8,7 +8,7 @@
 
 % TODO: dig this for references https://youtu.be/q6X9bKpAmnI
 
-As mentioned in \ref{lbl:cpp-meta-constructs}, the \gls{constexpr}
+As mentioned in section \ref{lbl:cpp-meta-constructs}, the \gls{constexpr}
 allows variables and functions to be used in \gls{consteval},
 making a whole subset of the \cpp language itself usable for compile-time logic.
 
@@ -73,8 +73,9 @@ constexpr std::vector<int> generate() { return {1,2,3,4,5}; }
 // Function template foo takes a polymorphic NTTP
 template<auto bar> constexpr int foo() { return 1; }
 
-// generate's return value cannot be stored in a constexpr variable
-// or used as a NTTP, but it can be used to produce other literal
+// generate's return value cannot be stored
+// in a constexpr variable or used as a NTTP,
+// but it can be used to produce other literals
 
 // constexpr auto a = generate();         // ERROR
 constexpr auto b = generate().size();     // OK
@@ -133,7 +134,7 @@ used directly as an \gls{nttp} for code generation.
 The addition of \gls{constexpr} memory allocation goes hand in hand
 with the ability to use virtual functions in \glspl{consteval}.
 This feature allows calls to virtual functions in constant expressions
-\cite{virtual-constexpr}. This allows heritage-based polymorphism in
+\cite{virtual-constexpr}. This allows inheritance-based polymorphism in
 \gls{constexpr} programming when used with \gls{constexpr} allocation of
 polymorphic types.
 
