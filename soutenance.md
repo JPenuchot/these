@@ -232,7 +232,7 @@ pour chaque architecture?**
 
   - Déroulage des boucles pour exploiter le pipelining des instructions
 
-- **Générer du code quelle que soit l'architecture**
+- **Générer du code quelle que soit l'architecture:**
 
   - Exploiter les architectures SIMD de manière portable,
     et dont la taille est connue à la compilation
@@ -883,15 +883,6 @@ Nouvelle méthodologie pour le benchmarking des temps de compilation-->
 
 ## Perspectives
 
-- **Externalisation des paramètres:**
-
-```cpp
-static constexpr auto formula = "sin(λ + 3) / 3 * ω ^ 2";
-auto function = tml::codegen<formula>(); // Génère un objet fonction générique
-
-auto res = function("λ"_var = 3.5, "ω"_var = 32.2)
-```
-
 - **Intégration de langages pré-existants:**
 
 ```cpp
@@ -902,7 +893,18 @@ static constexpr auto program = R"function ave = calculateAverage(x)
 auto function = matlab::codegen<program, "calculateAverage">();
 auto res = function("x"_var = std::vector<double>{1.2, 2.4, 3., .1});
 ```
+
+- **Externalisation des paramètres:**
+
+```cpp
+static constexpr auto formula = "sin(λ + 3) / 3 * ω ^ 2";
+auto function = tml::codegen<formula>(); // Génère un objet fonction générique
+
+auto res = function("λ"_var = 3.5, "ω"_var = 32.2);
+```
+
 ---
+
 <!-- paginate: false -->
 
 <br/>
