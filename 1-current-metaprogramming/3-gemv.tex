@@ -1,7 +1,6 @@
 \documentclass[../main]{subfiles}
 \begin{document}
 
-
 \gls{blas} level functions\cite{blas} are the cornerstone of a large
 subset of applications. If a large body of work surrounding
 efficient and large-scale implementation of some routines such
@@ -257,7 +256,9 @@ Another point is that, by relying on higher-level library
 instead of \gls{simd} pragma, Boost.SIMD guarantees
 the quality of the vectorization across compilers and
 compiler versions. It also leads to a cleaner and easier to
-maintain codes, relying only on standard \cpp constructs.
+maintain codes, relying only on standard \cpp
+constructs
+\footnote{pragma are compiler-dependent and can be ignored}.
 
 \begin{lstlisting}[
   language=c++,
@@ -369,11 +370,9 @@ The function proceed to compute the proper
 integral constant sequence from the Start,
 End and D compile-time integral constant.
 
-% TODO: Rephraser
 As \lstinline{std::integral_sequence<N...>} enumerates values
-from 0 to N , we need to pass the start index and iteration
-1 pragma are compiler-dependent and can be ignored
-increment as separate constants. The actual index is then
+from 0 to N, we need to pass the start index and
+iteration increment as separate constants. The actual index is then
 computed at the unrolling site. To prevent unwanted copies
 and ensure inlining, all elements are passed to the function
 as a rvalue-reference or a universal reference.

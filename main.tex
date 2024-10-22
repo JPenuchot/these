@@ -443,6 +443,12 @@ beyond black-box benchmarking.
 % ------------------------------------------------------------------------------
 % These de Jules
 
+\chapter*{
+  R\'esum\'e en Fran\c{c}ais
+}
+\addcontentsline{toc}{chapter}{R\'esum\'e en Fran\c{c}ais}
+
+\subfile{french-condensed.tex}
 
 \chapter*{
   Acknowledgements
@@ -476,6 +482,9 @@ way.
 
 Thanks to \textbf{Paul Keir}, for his friendly and caring partnership.
 
+Thanks to \textbf{Luke D'Alessandro}, for sharing parameter passing techniques
+that enabled me to develop the code generators I present in this thesis.
+
 Thanks to \textbf{my parents} for fostering my passion for computer science
 and for supporting me throughout my childhood and my student years,
 including my years as a PhD student.
@@ -486,13 +495,6 @@ and the fields of pizza.
 
 Thanks to \textbf{Marie Debard} for being supportive when I was worried for
 the financing of my thesis.
-
-\chapter*{
-  R\'esum\'e en Fran\c{c}ais
-}
-\addcontentsline{toc}{chapter}{R\'esum\'e en Fran\c{c}ais}
-
-\subfile{french-condensed.tex}
 
 \chapter*{
   Introduction
@@ -543,6 +545,7 @@ of \gls{hpc} applications: linear algebra kernels.
 \chapter{
   Code generation at low level
 }
+\label{lbl:gemv}
 
 \subfile{1-current-metaprogramming/3-gemv.tex}
 
@@ -703,98 +706,7 @@ could facilitate scalable code generation from \gls{constexpr} function results.
 
 \chapter*{Conclusion \& perspectives}
 
-In the first part we have shown that metaprogramming is a widespread practice,
-and that it is still evolving across many languages with \cpp continuously
-evolving on that front, while being the most comprehensive platform for
-parallel computing.
-We then demonstrated that code generation is a viable option to greatly reduce
-the implementation complexity of high performance linear algebra kernels,
-while still providing similar, or even higher level of performance.
-These results reinforce the hypothesis that metaprogramming can be used to
-tackle the challenge of portability in the context of \acrlong{hpc},
-even for very low level tasks where the reduction of abstraction overhead
-is critical to achieve decent performance.
-
-% TODO: ???
-\section*{...}
-
-Before moving on to \gls{constexpr} programming, we adressed the lack of
-tools for the scientific study of compilation times with ctbench.
-We proposed a new compile-time study method based on Clang's built-in
-profiler that help us understand the impacts of metaprograms on each step
-of the compilation process. While it offers limited benchmarking capabilities
-when used with GCC as the latter does not output any detailed profiling data,
-conclusions drawn on Clang might be relevant for GCC, even if they are not
-directly transposable.
-
-Then we demonstrated that using \gls{constexpr} code to
-implement embedded language parsers for in \cpp23 is possible despite
-limitations on \gls{constexpr} memory allocation, and that doing so is possible
-with reasonable impact on compilation times.
-
-The Brainfuck example shows that code generation backends are
-a determining factor for embedded compiler performance,
-and if implemented correctly, a code generator can provide
-adequate scaling for embedding large programs.
-More specifically, we have shown that code generation backends must rely on
-value-based metaprogramming in favor of type-based metaprogramming to achieve
-decent compile time performance scaling. However, using value-based
-metaprogramming for code generation might require additional implementation
-efforts, and backends based on the \gls{pbg} technique might be a better fit
-for quick \gls{dsel} prototyping.
-
-On the other hand, the \gls{tml} example demonstrated the interoperability
-between \gls{constexpr} programming and existing high performance libraries
-relying on \glspl{et}. It also showed that using value-based representations for
-code generation is not always trivial as the use of tuples was necessary to
-store partial results during the code generation phase.
-
-\clearpage%
-
-Allowing the direct use of \gls{constexpr} allocated memory as \acrlongpl{nttp}
-could help greatly reduce the implementation complexity of compile-time code
-generators, and improve their performance as well by removing the requirement
-for additional serialization steps or compile time heavy workarounds such as
-\gls{pbg}.
-Another way forward could also be the development of reflection and slicing
-capabilities for \cpp, or an imperative-style code generation \gls{api}.
-
-In the meantime, developing \gls{constexpr} serialization libraries could
-greatly help with the development of performant code generation backends
-as it would reduce the development effort to use more performant code generation
-methods, and could be achievable without waiting for a new \cpp release.
-
-% TODO: Talk about faer
-
-% \textbf{faer} \cite{faer}
-%
-% \begin{lstlisting}[
-%   language=c++
-% ]{}
-% use faer::{mat, Mat, prelude::*};
-%
-% // empty 0x0 matrix
-% let m0: Mat<f64> = Mat::new();
-%
-% // zeroed 4x3 matrix
-% let m1: Mat<f64> = Mat::zeros(4, 3);
-%
-% // 3x3 identity matrix
-% let m2 = Mat::from_fn(
-%   3, 3,
-%   |i, j| if i == j { 1.0 } else { 0.0 });
-%
-% // 4x2 matrix with custom data
-% let m3 = mat![
-%     [4.93, 2.41],
-%     [5.43, 4.33],
-%     [9.83, 1.59],
-%     [7.13, 5.02_f64],
-% ];
-%
-% // compute the qr decomposition of a matrix
-% let qr_decomposition = m3.qr();
-% \end{lstlisting}
+\subfile{conclusion.tex}
 
 \clearpage
 \printbibliography

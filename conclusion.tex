@@ -1,0 +1,200 @@
+\documentclass[main]{subfiles}
+\begin{document}
+
+In the first part we have shown that metaprogramming is a widespread practice,
+and that it is still evolving across many languages with \cpp continuously
+evolving on that front, while being the most comprehensive platform for
+parallel computing.
+We then demonstrated that code generation is a viable option to greatly reduce
+the implementation complexity of high performance linear algebra kernels,
+while still providing similar, or even higher level of performance.
+These results reinforce the hypothesis that metaprogramming can be used to
+tackle the challenge of portability in the context of \acrlong{hpc},
+even for very low level tasks where the reduction of abstraction overhead
+is critical to achieve decent performance.
+
+\section*{Contributions}
+
+Before moving on to \gls{constexpr} programming, we adressed the lack of
+tools for the scientific study of compilation times with ctbench.
+We proposed a new compile-time study method based on Clang's built-in
+profiler that help us understand the impacts of metaprograms on each step
+of the compilation process. While it offers limited benchmarking capabilities
+when used with GCC as the latter does not output any detailed profiling data,
+conclusions drawn on Clang might be relevant for GCC, even if they are not
+directly transposable.
+
+Then we demonstrated that using \gls{constexpr} code to
+implement embedded language parsers for in \cpp23 is possible despite
+limitations on \gls{constexpr} memory allocation, and that doing so is possible
+with reasonable impact on compilation times.
+
+The Brainfuck example shows that code generation backends are
+a determining factor for embedded compiler performance,
+and if implemented correctly, a code generator can provide
+adequate scaling for embedding large programs.
+More specifically, we have shown that code generation backends must rely on
+value-based metaprogramming in favor of type-based metaprogramming to achieve
+decent compile time performance scaling. However, using value-based
+metaprogramming for code generation might require additional implementation
+efforts, and backends based on the \gls{pbg} technique might be a better fit
+for quick \gls{dsel} prototyping.
+
+\clearpage%
+
+On the other hand, the \gls{tml} example demonstrated the interoperability
+between \gls{constexpr} programming and existing high performance libraries
+relying on \glspl{et}. It also showed that using value-based representations for
+code generation is not always trivial as the use of tuples was necessary to
+store partial results during the code generation phase.
+
+\section*{Perspectives}
+
+Overall, there are many ways in which \cpp metaprogramming is not seen as
+a first class practice: it lacks proper interfaces for the use of dynamic
+data structures for code generation, and compilation time profiling is still
+lacking on GCC.
+
+There are many ways in which compilation time measurement, \cpp metaprogramming,
+and metaprogramming outside of \cpp can be improved or could improve \gls{hpc}
+libraries in the future.
+
+\subsection*{Compile-time benchmarking}
+
+Compile-time analysis with ctbench could be improved in three major ways.
+
+\begin{itemize}
+
+\item Developing new data visualization strategies for hierarchical
+data, and for compile time evolution in function of the benchmark size factor
+could help identify which compilation events are impacted the most
+as the size factor increases.
+
+\item Adding profiling data export in GCC in the same format as Clang's
+time trace feature would make compilation time analysis possible for this
+compiler.
+A feature request \footnote{
+\url{https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92396}, 22nd of October 2024}
+was submitted on the 6th of November 2019, but remains unassigned so far.
+
+\item Adding Windows support would be beneficial to bring support for the
+Visual C++ compiler, which already has a time trace feature similar to
+what Clang provides\footnote{\tiny{}\url{https://devblogs.microsoft.com/cppblog/introducing-vcperf-timetrace-for-cpp-build-time-analysis/},
+\footnotesize{}22nd of October 2024}.
+
+\end{itemize}
+
+\subsection*{C++ metaprogramming}
+
+Allowing the direct use of \gls{constexpr} allocated memory as \acrlongpl{nttp}
+could help greatly reduce the implementation complexity of compile-time code
+generators, and improve their performance as well by removing the requirement
+for additional serialization steps or compile time heavy workarounds such as
+\gls{pbg}.
+
+Another way forward could also be the development of reflection and slicing
+capabilities for \cpp, or an imperative-style code generation \gls{api}.
+This code generation model was proposed to the \cpp standard, although
+experimental compiler implementations are either closed source or unmaintained.
+
+In the meantime, developing \gls{constexpr} serialization libraries could
+greatly help with the development of performant code generation backends
+as it would reduce the development effort to use more performant code generation
+methods, and could be achievable without waiting for a new \cpp standard.
+
+\subsection*{Parameter externalization}
+
+\begin{lstlisting}[
+  language=c++
+]{}
+static constexpr auto formula = "sin(λ + 3) / 3 * ω ^ 2";
+auto function = tml::codegen<formula>();
+
+auto res = function("λ"_var = 3.5, "ω"_var = 32.2);
+\end{lstlisting}
+
+The introduction of math languages with named parameters can solve aliasing,
+which is a common issue in \glspl{et} libraries as variables cannot be
+identified using \cpp templates.
+
+In order to address this problem, Blaze implements identity
+checks at runtime. These identity checks could be done at compile-time
+using math formulas with named variables.
+
+\subsection*{Reuse of existing math languages}
+
+\begin{lstlisting}[
+  language=c++
+]{}
+static constexpr auto program =
+  R"function ave = calculateAverage(x)
+      ave = sum(x(:)) / numel(x);
+    end";
+
+auto function =
+  matlab::codegen<program, "calculateAverage">();
+auto res =
+  function("x"_var = std::vector<double>{1.2, 2.4, 3., .1});
+\end{lstlisting}
+
+The reuse of existing math languages could make high performance programming
+by bringing math languages that are familiar to non-\cpp audiences into \cpp.
+A hypothetical use case could be the parsing and interpretation of Matlab,
+or a subset of the language in order to generate high performance code.
+
+\subsection*{High performance code generation beyond C++}
+
+In the future, industry leading companies could shift their focus towards
+memory-safe programming languages like Rust as their main platform for
+\gls{hpc}.
+As mentioned in section \ref{lbl:meta-styles-languages}, Rust does have
+metaprogramming capabilities which can be used to develop high performance
+portable linear algebra libraries \cite{faer} with high level abstractions,
+similar to what we presented in section \ref{lbl:gemv}, as shown in
+listing \ref{lst:faer-example}.
+
+\begin{lstlisting}[
+  language={Rust},
+  caption={Faer code example \protect\footnotemark{}},
+  label={lst:faer-example}
+]{}
+use faer::{mat, Mat, prelude::*};
+
+// empty 0x0 matrix
+let m0: Mat<f64> = Mat::new();
+
+// zeroed 4x3 matrix
+let m1: Mat<f64> = Mat::zeros(4, 3);
+
+// 3x3 identity matrix
+let m2 = Mat::from_fn(
+  3, 3,
+  |i, j| if i == j { 1.0 } else { 0.0 });
+
+// 4x2 matrix with custom data
+let m3 = mat![
+    [4.93, 2.41],
+    [5.43, 4.33],
+    [9.83, 1.59],
+    [7.13, 5.02_f64],
+];
+
+// compute the qr decomposition of a matrix
+let qr_decomposition = m3.qr();
+\end{lstlisting}
+
+\footnotetext{Source: \url{https://docs.rs/faer/latest/faer/}, 22nd of October 2024}
+
+\section*{Research software availability}
+
+All the software and experiments developed for this thesis,
+as well as the thesis source files are publicly available in git repositories:
+
+\begin{itemize}
+\item ctbench: \url{https://github.com/jpenuchot/ctbench}
+\item \gls{dsel} experiments: \url{https://github.com/jpenuchot/poacher}
+\item Thesis source files: \url{https://github.com/jpenuchot/these}
+\end{itemize}
+
+
+\end{document}
