@@ -33,7 +33,7 @@ The first version of the metaprogram in listing \ref{lst:recursive-sum} is based
 which we believe to offer poor compile-time performance due to the many
 template instantiation it may trigger.
 The version in listing \ref{lst:expansion-sum} relies on \cpp11
-parameter pack expansion, which we believe to offer much better scaling.
+parameter pack expansion, which should offer much better scaling.
 
 \begin{lstlisting}[
   language=C++,,
@@ -91,7 +91,7 @@ template <typename = void> constexpr auto foo() {
 constexpr std::size_t result = decltype(foo())::value;
 \end{lstlisting}
 
-Both versions share the same interface, and thus the same driver code in
+Both versions share the same interface, and thus the driver code shown in
 listing \ref{lst:ctbench-driver-code} is the same for both cases.
 It takes care of scaling the benchmark according to \lstinline{BENCHMARK_SIZE},
 which is defined by \ctbench through the CMake API.

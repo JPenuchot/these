@@ -369,6 +369,7 @@ The function proceed to compute the proper
 integral constant sequence from the Start,
 End and D compile-time integral constant.
 
+% TODO: Rephraser
 As \lstinline{std::integral_sequence<N...>} enumerates values
 from 0 to N , we need to pass the start index and iteration
 1 pragma are compiler-dependent and can be ignored
@@ -417,8 +418,8 @@ to be applied.
 One can argue about the advantage of such a method
 compared to relying on the compiler unrolling algorithm
 or using non-standard unrolling pragma. In both cases, our
-method ensure that the unrolling is always done at the fullest
-extend and does not rely on non-standard extensions.
+method ensures that the unrolling is always done at the fullest
+extent and does not rely on non-standard extensions.
 \end{itemize}
 
 \section{
@@ -484,7 +485,7 @@ in constexpr contexts to ensure their usability in the
 upcoming unrolling steps.
 
 \item
-A first level of unrolling that takes care of iterating
+A first level of unrolling takes care of iterating
 over all set of columns that are able to fit into \gls{simd}
 registers. This unrolling is done so that both the
 corresponding columns of the matrix and the elements

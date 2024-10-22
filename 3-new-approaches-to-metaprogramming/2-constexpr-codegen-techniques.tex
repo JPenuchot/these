@@ -164,7 +164,7 @@ constexpr auto codegen() {
 \end{lstlisting}
 
 In listing \ref{lst:pass-by-generator-example}, we show how a \gls{constexpr}
-pointer tree result can be visited recusively using generator lambdas
+pointer tree result can be visited recursively using generator lambdas
 to pass the subnodes' values, and used to generate code.
 
 This technique is fairly simple to implement as it does not require any
@@ -675,7 +675,7 @@ related to \gls{ast} transformation, and keep most of the computing in
 \gls{constexpr} functions that are easier to write and maintain
 for most \cpp developers.
 
-We can alreaady notice a few differences between those techniques:
+We can already notice a few differences between those techniques:
 \gls{pbg}-based backends seem to have much higher compilation times,
 and they induce errors that are harder to diagnose despite the implementation
 being seemingly straightforward.

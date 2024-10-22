@@ -35,7 +35,8 @@ an operator and an operand stack are read in order, and moved
 from the input list to the output queue and the operator stack.
 If an operator of lower precedence than the operator on top of the
 operator stack is read, then the operator stack is dumped in the output queue.
-The worst case time and memory complexity of the algorithm is $O(N)$.
+The worst case time and memory complexity of the algorithm is $O(N)$, where $N$
+is the number of tokens in an input formula.
 
 Once again, code generation from postfix notation formulas was already covered
 in section \ref{lbl:codegen-from-rpn}, so we will skip straight to the use of Blaze
