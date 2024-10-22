@@ -228,7 +228,7 @@ d'appeler la fonction de g\'en\'eration de la structure que deux fois.
 Pour \'etudier ces nouvelles techniques de m\'etaprogrammation,
 nous les appliquons pour l'impl\'ementation d'un analyseur syntaxique et
 de g\'en\'erateurs de code pour le langage Brainfuck.
-L'impl\'ementation du parser est triviale, et sa sortie est un arbre syntaxique
+L'impl\'ementation du parseur est triviale, et sa sortie est un arbre syntaxique
 sous forme d'arbres de pointeurs, similaire \`a ce qui est utilis\'e dans les
 compilateurs d\'evelopp\'es en \cpp.
 Les g\'en\'erateurs de code utilisent les techniques pr\'esent\'ees
@@ -270,8 +270,8 @@ Flat (Surcharg\'e)  & 0.66        & 0.90            & 28.51 \\
 \label{fig:bf-compile-times-fr}
 \end{figure}
 
-Nous en concluons donc que la s\'erialisation d'une AST permet d'obtenir des
-r\'esultats
+Nous en concluons donc que la s\'erialisation d'un AST permet d'obtenir des
+r\'esultats satisfaisants pour des cas de grande taille.
 \\
 
 Ce chapitre a fait l'objet d'une pr\'esentation \`a \textbf{Meeting C++ 2022}
@@ -285,7 +285,7 @@ de University of the West of Scotland.
 Les conclusions tir\'ees du cas de Brainfuck nous permettent d'impl\'ementer
 un autre analyseur syntaxique pour un langage math\'ematique de d\'emonstration
 que nous appelons Tiny Math Language (TML).
-Nous d\'ecidons d'impl\'ementer un parser bas\'e sur
+Nous d\'ecidons d'impl\'ementer un parseur bas\'e sur
 l'algorithme Shunting Yard d'Edsger Dijkstra dont la sortie est la formule
 en notation polonaise inverse. Cette repr\'esentation permet ensuite de
 g\'en\'erer le programme correspondant \`a l'aide d'un m\'etaprogramme template
@@ -295,7 +295,7 @@ L'analyseur syntaxique est facilement param\'etrable: il permet de d\'efinir des
 fonctions, op\'erateurs (avec leur associativit\'e et leur pr\'ecedence),
 des parenth\`eses, et des variables.
 
-Nous d\'ecidons ensuite d'utiliser le parser et le g\'en\'erateur de code
+Nous d\'ecidons ensuite d'utiliser le parseur et le g\'en\'erateur de code
 pour mesurer les temps de compilation pour des formules math\'ematiques
 de 1 \`a 41 symboles. Dans un premier cas, nous l'utilisons pour effectuer une
 s\'erie d'addition sur des entiers natifs.
@@ -303,10 +303,10 @@ Dans un autre cas, nous l'utilisons pour effectuer des op\'erations sur des
 vecteurs de la biblioth\`eque \textbf{Blaze}. Par surcharge d'op\'erateurs,
 les types de Blaze g\'en\`erent l'arborescence de formules math\'ematiques
 pour ensuite g\'en\'erer le code les \'evaluant. Ce cas repr\'esente donc
-l'utilisation \`a la compilation d'un parser pour la g\'en\'eration de code dit
+l'utilisation \`a la compilation d'un parseur pour la g\'en\'eration de code dit
 <<hautes performances>>.
 Enfin nous introduisons un troisi\`eme cas consistant simplement \`a
-g\'en\'erer les formules Blaze sans utiliser le parser en amont.
+g\'en\'erer les formules Blaze sans utiliser le parseur en amont.
 
 \begin{figure}[h]
 % \fontsize{8}{10}\selectfont
