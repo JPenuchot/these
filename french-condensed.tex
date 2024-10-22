@@ -245,7 +245,9 @@ Lors de ces benchmarks, nous constatons que la m\'ethode dite
 <<pass-by-generator>> induit des temps de compilation quadratiques en raison
 du nombre d'appels \`a la fonction de parsing, appell\'ee elle-m\^eme par les
 fonctions g\'en\'eratrices pour chaque n\oe{}ud de l'arbre de syntaxe.
-Cette technique est suffisante pour des programmes de petite taille
+Cette technique est suffisante pour des programmes de petite taille,
+mais sa complexit\'e quadratique la rend inutilisable
+sur des cas de grande taille.
 
 La m\'ethode consistant \`a s\'erialiser l'arbre, quant \`a elle, n'appelle
 la fonction de parsing que deux fois. De fait, sa complexit\'e est lin\'eaire
