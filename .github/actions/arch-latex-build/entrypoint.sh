@@ -1,6 +1,6 @@
 #!/bin/sh -l
 
-latexmk -output-format=pdf main.tex
-makeglossaries main
+latexmk -xelatex --shell-escape -output-format=pdf main.tex
 biber main
-latexmk -output-format=pdf main.tex
+makeglossaries main
+latexmk -xelatex --shell-escape -output-format=pdf main.tex
