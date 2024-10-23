@@ -107,10 +107,11 @@ methods, and could be achievable without waiting for a new \cpp standard.
 \begin{lstlisting}[
   language=c++
 ]{}
-static constexpr auto formula = "sin(λ + 3) / 3 * ω ^ 2";
+static constexpr auto formula =
+  "sin(alpha + 3) / 3 * omega ^ 2";
 auto function = tml::codegen<formula>();
 
-auto res = function("λ"_var = 3.5, "ω"_var = 32.2);
+auto res = function("alpha"_var = 3.5, "omega"_var = 32.2);
 \end{lstlisting}
 
 The introduction of math languages with named parameters can solve aliasing,
